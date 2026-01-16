@@ -158,4 +158,4 @@ LLM-THERAPY/
 │   ├── synthetic_data_protocol.md
 │   └── regulatory_notes.md
 │
-└── old_version/                                  # Legacy architecture
+└── old_versions/                                  # Legacy architectures
