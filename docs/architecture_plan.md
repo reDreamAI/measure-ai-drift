@@ -89,17 +89,18 @@ LLM-THERAPY/
 │   │       ├── trial_aggregator.py
 │   │       └── experiment_summary.py
 │   │
-│   ├── models/                                     # Thin inference adapters
-│   │   ├── base_model.py
-│   │   ├── sovereign/
-│   │   │   ├── mistral.py
-│   │   │   ├── llama.py
-│   │   │   └── qwen.py
-│   │   └── benchmark/
-│   │       └── gemini3.py
+│   ├── llm/                                        # Config-driven LLM provider (single file)
+│   │   ├── __init__.py
+│   │   └── provider.py                             # LLMProvider class + factory (all providers)
+│   │
+│   ├── core/                                       # Shared data models
+│   │   ├── __init__.py
+│   │   ├── conversation.py                         # Message, Conversation
+│   │   ├── stages.py                               # Stage enum + transitions
+│   │   └── config.py                               # Config loading + validation
 │   │
 │   ├── config/                                     # YAML-only runtime configs
-│   │   ├── models.yaml
+│   │   ├── models.yaml                             # Providers, model menu, active roles, eval targets
 │   │   ├── sampling.yaml
 │   │   ├── evaluation.yaml
 │   │   └── paths.yaml
@@ -144,7 +145,7 @@ LLM-THERAPY/
 │   │
 │   └── README.md
 │
-├── analysis/
+├── analysis/ # DON'T TOUCH YET
 │   ├── notebooks/
 │   ├── figures/
 │   ├── tables/
@@ -152,10 +153,13 @@ LLM-THERAPY/
 │
 ├── docs/
 │   ├── architecture_plan.md
-│   ├── Proposal_DMenzel_Measuring_Drift_in_Therapeutic_AI.md
+│   ├── thesis_proposal.md
 │   ├── run_bundle_example.md
 │   ├── evaluation_framework.md
 │   ├── synthetic_data_protocol.md
 │   └── regulatory_notes.md
+│
+├── tests/
+│   └── key_test.py
 │
 └── old_versions/                                  # Legacy architectures

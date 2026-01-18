@@ -1,0 +1,115 @@
+# LLM Provider Configuration
+# This file defines providers, available model options, and active role assignments.
+
+# =============================================================================
+# PROVIDERS - API endpoints and authentication
+# =============================================================================
+providers:
+  scaleway:
+    type: openai_compatible
+    base_url: https://api.scaleway.ai/v1
+    api_key_env: SCALEWAY_API_KEY
+
+  groq:
+    type: openai_compatible
+    base_url: https://api.groq.com/openai/v1
+    api_key_env: GROQ_API_KEY
+
+  openai:
+    type: openai_compatible
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+
+  vertex:
+    type: openai_compatible  # Vertex has OpenAI-compatible endpoint
+    base_url: https://${GCP_REGION}-aiplatform.googleapis.com/v1/projects/${GCP_PROJECT_ID}/locations/${GCP_REGION}/endpoints/openapi
+    api_key_env: GOOGLE_APPLICATION_CREDENTIALS  # Uses ADC
+
+  gemini:
+    type: google
+    api_key_env: GEMINI_API_KEY  # Falls back to G_DEVELOPER_KEY
+
+# =============================================================================
+# MODEL OPTIONS - Full menu of available models per role
+# =============================================================================
+model_options:
+  therapist:
+    mistral_sovereign:
+      provider: scaleway
+      model: mistral-small-3.2-24b-instruct
+      notes: "Sovereign EU option"
+    groq_oss:
+      provider: groq
+      model: openai/gpt-oss-120
+      notes: "Fast, free tier available"
+    openai_gpt4o:
+      provider: openai
+      model: gpt-4o-2024-08-06
+      notes: "Benchmark baseline"
+
+  patient:
+    groq_kimi:
+      provider: groq
+      model: moonshotai/kimi-k2-instruct-0905
+      notes: "Good roleplay, fast"
+    vertex_claude:
+      provider: vertex
+      model: claude-sonnet-4-20250514
+      notes: "Strong reasoning, higher cost"
+
+  router:
+    mistral_nemo:
+      provider: scaleway
+      model: mistral-nemo-instruct-2407
+      notes: "Lightweight, fast"
+    llama70b:
+      provider: groq
+      model: llama-3.3-70b-versatile
+      notes: "More capable, slower"
+
+  judge:
+    gemini3_pro:
+      provider: gemini
+      model: gemini-3-pro-preview
+      fallback: gemini-2.5-pro
+      notes: "Primary evaluation model"
+
+# =============================================================================
+# ACTIVE ROLES - Current selection (change these to swap models)
+# =============================================================================
+roles:
+  therapist:
+    use: groq_oss  # References model_options.therapist.groq_oss
+    temperature: 0.0
+    max_tokens: 1024
+
+  patient:
+    use: groq_kimi
+    temperature: 0.7
+    max_tokens: 512
+
+  router:
+    use: llama70b
+    temperature: 0.0
+    max_tokens: 32
+
+  judge:
+    use: gemini3_pro
+    temperature: 0.0
+    max_tokens: 2048
+
+# =============================================================================
+# EVALUATION TARGETS - Models to compare in experiments
+# =============================================================================
+evaluation_models:
+  - name: mistral_small
+    provider: scaleway
+    model: mistral-small-3.2-24b-instruct
+
+  - name: llama70b
+    provider: groq
+    model: llama-3.3-70b-versatile
+
+  - name: gemini3_pro
+    provider: gemini
+    model: gemini-3-pro-preview
