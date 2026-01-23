@@ -34,6 +34,10 @@ providers:
 # =============================================================================
 model_options:
   therapist:
+    groq_llama70b:
+      provider: groq
+      model: llama-3.3-70b-versatile
+      notes: "Same as router for consistency"
     mistral_sovereign:
       provider: scaleway
       model: mistral-small-3.2-24b-instruct
@@ -48,6 +52,10 @@ model_options:
       notes: "Benchmark baseline"
 
   patient:
+    groq_qwen:
+      provider: groq
+      model: qwen/qwen3-32b
+      notes: "Strong reasoning, good roleplay"
     groq_kimi:
       provider: groq
       model: moonshotai/kimi-k2-instruct-0905
@@ -79,12 +87,12 @@ model_options:
 # =============================================================================
 roles:
   therapist:
-    use: groq_oss  # References model_options.therapist.groq_oss
+    use: groq_llama70b  # References model_options.therapist.groq_llama70b
     temperature: 0.0
     max_tokens: 1024
 
   patient:
-    use: groq_kimi
+    use: groq_qwen
     temperature: 0.7
     max_tokens: 512
 

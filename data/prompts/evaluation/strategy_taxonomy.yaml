@@ -1,0 +1,99 @@
+# IRT Strategy Taxonomy (8 categories)
+# Source: Thesis methodology - standardized categories for plan classification
+# Used for extracting and classifying therapeutic strategies in rescripting plans
+
+strategies:
+  - id: empowerment
+    name: "Empowerment / agency"
+    description: "Increase sense of control and personal power in the dream"
+    keywords:
+      - control
+      - agency
+      - empowerment
+      - autonomy
+      - choice
+    
+  - id: safety
+    name: "Safety / containment"
+    description: "Create safe spaces or protective elements"
+    keywords:
+      - safety
+      - safe
+      - protection
+      - containment
+      - secure
+    
+  - id: cognitive_reframe
+    name: "Cognitive reframe / meaning change"
+    description: "Reinterpret threatening elements differently"
+    keywords:
+      - reframe
+      - reinterpret
+      - meaning
+      - perspective
+      - view differently
+    
+  - id: emotional_regulation
+    name: "Emotional regulation / soothing"
+    description: "Introduce calming or comforting elements"
+    keywords:
+      - calm
+      - soothing
+      - comfort
+      - regulate
+      - peace
+    
+  - id: mastery
+    name: "Mastery / control"
+    description: "Gain skills or abilities to handle the situation"
+    keywords:
+      - mastery
+      - skill
+      - ability
+      - competence
+      - capable
+    
+  - id: social_support
+    name: "Social support / allies"
+    description: "Introduce helpful figures or allies"
+    keywords:
+      - ally
+      - allies
+      - support
+      - helper
+      - companion
+    
+  - id: sensory_modulation
+    name: "Sensory modulation / imagery change"
+    description: "Modify sensory details (light, sound, texture)"
+    keywords:
+      - sensory
+      - imagery
+      - visual
+      - sound
+      - light
+      - texture
+    
+  - id: gradual_exposure
+    name: "Gradual exposure / desensitization"
+    description: "Gradually reduce intensity of threatening elements"
+    keywords:
+      - gradual
+      - exposure
+      - desensitize
+      - reduce intensity
+      - step by step
+
+# Validation rules for generated plans
+validation:
+  min_strategies: 1
+  max_strategies: 2
+  allow_testing_more: true  # Can test plans with 3+ strategies, but they are flagged as invalid
+  
+# Clinical notes
+notes: |
+  The 1-2 strategy constraint ensures:
+  - Focused therapeutic interventions
+  - Clear attribution of effects
+  - Reduced confounding in evaluation
+  - Clinically realistic (therapists typically focus on 1-2 approaches per session)

@@ -1,0 +1,27 @@
+sampling:
+  n_trials: 10
+  temperatures:
+    - 0.0
+    - 0.7
+  max_tokens:
+    plan: 256
+    response: 1024
+
+evaluation:
+  plan_tag: "<plan>"
+  response_tag: "<response>"
+  metrics:
+    - jaccard
+    - bertscore
+    - alignment
+
+paths:
+  synthetic_dialogues: "data/synthetic/dialogues"
+  frozen_histories: "data/synthetic/frozen_histories"
+  results: "data/synthetic/results"
+  experiments: "experiments/runs"
+
+models:
+  therapist_role: "therapist"
+  router_role: "router"
+  patient_role: "patient"

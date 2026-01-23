@@ -1,0 +1,172 @@
+"""Patient agent for simulating realistic therapy patient behavior.
+
+The PatientAgent uses vignette data to simulate patient responses
+with appropriate personality traits, resistance behaviors, and
+engagement patterns.
+"""
+
+from typing import Any
+
+from src.agents.base import BaseAgent
+from src.core import (
+    Conversation,
+    load_patient_prompt,
+    load_vignette,
+    format_vignette_for_prompt,
+)
+from src.llm.provider import LLMProvider
+
+
+class PatientAgent(BaseAgent):
+    """Agent that simulates a therapy patient based on vignette data.
+    
+    The patient agent uses a vignette profile to generate realistic
+    patient responses that reflect:
+    - The patient's nightmare content
+    - Personality traits and communication style
+    - Resistance behaviors and engagement patterns
+    - Gradual progress through the therapy session
+    
+    Attributes:
+        vignette: The patient profile data
+        vignette_name: Name of the loaded vignette
+        language: Current session language
+        
+    Example:
+        >>> patient = PatientAgent.from_vignette("anxious")
+        >>> response, usage = await patient.generate(
+        ...     user_message="Tell me about your nightmare."
+        ... )
+    """
+    
+    def __init__(
+        self,
+        vignette: dict[str, Any],
+        vignette_name: str = "unknown",
+        language: str = "en",
+        provider: LLMProvider | None = None,
+    ) -> None:
+        """Initialize the patient agent with vignette data.
+        
+        Args:
+            vignette: Patient profile dictionary from vignette file
+            vignette_name: Name identifier for the vignette
+            language: Session language ("en" or "de")
+            provider: Optional pre-configured LLMProvider
+        """
+        super().__init__(role="patient", provider=provider, name=vignette.get("name", "Patient"))
+        self.vignette = vignette
+        self.vignette_name = vignette_name
+        self.language = language
+        self._base_prompt = load_patient_prompt()
+    
+    @classmethod
+    def from_vignette(
+        cls,
+        vignette_name: str,
+        language: str = "en",
+        provider: LLMProvider | None = None,
+    ) -> "PatientAgent":
+        """Create a patient agent from a vignette file.
+        
+        Args:
+            vignette_name: Name of the vignette (without .json extension)
+            language: Session language ("en" or "de")
+            provider: Optional pre-configured LLMProvider
+            
+        Returns:
+            Configured PatientAgent instance
+            
+        Example:
+            >>> patient = PatientAgent.from_vignette("cooperative")
+        """
+        vignette = load_vignette(vignette_name)
+        return cls(
+            vignette=vignette,
+            vignette_name=vignette_name,
+            language=language,
+            provider=provider,
+        )
+    
+    def get_system_prompt(self) -> str:
+        """Build the full system prompt with vignette data.
+        
+        Combines the base patient simulation prompt with the
+        formatted vignette data for realistic patient behavior.
+        Uses the vignette_format template from patient_prompt.yaml
+        for consistent formatting.
+        
+        Returns:
+            Complete system prompt string
+        """
+        base_prompt = self._base_prompt.get("system_prompt", "")
+        vignette_context = format_vignette_for_prompt(self.vignette)
+        
+        # Add language instruction
+        language_note = f"\n\n## Language\nRespond in {'German (de)' if self.language == 'de' else 'English (en)'}."
+        
+        # Add sample responses as behavioral guidance
+        sample_responses = self.vignette.get("sample_responses", [])
+        sample_text = ""
+        if sample_responses:
+            sample_text = "\n\n## Sample Response Patterns\n"
+            sample_text += "Use these as inspiration for your communication style:\n"
+            for response in sample_responses:
+                sample_text += f"- \"{response}\"\n"
+        
+        return f"{base_prompt}{language_note}\n\n{vignette_context}{sample_text}"
+    
+    def get_role(self) -> str:
+        """Return the agent's role identifier."""
+        return "patient"
+    
+    def get_initial_message(self) -> str:
+        """Get the patient's initial nightmare description.
+        
+        Returns a natural opening message based on the vignette's
+        nightmare content and personality traits.
+        
+        Returns:
+            Initial message to start the therapy session
+        """
+        nightmare = self.vignette.get("nightmare", {})
+        content = nightmare.get("content", "I've been having bad dreams...")
+        
+        # Craft an opening based on personality
+        traits = self.vignette.get("personality_traits", [])
+        
+        if "worried" in traits or "anxious" in traits:
+            opener = "I'm not sure where to start... I've been having these awful dreams. "
+        elif "resistant" in traits:
+            opener = "I don't know if this will help, but... "
+        elif "cooperative" in traits:
+            opener = "I'd like to tell you about a recurring dream I've been having. "
+        else:
+            opener = "I've been having this nightmare. "
+        
+        # Keep the initial description brief to allow therapist to probe
+        return f"{opener}It's about {content.split('.')[0].lower()}..."
+    
+    def get_nightmare_content(self) -> str:
+        """Get the full nightmare content from the vignette.
+        
+        Returns:
+            The nightmare content string
+        """
+        return self.vignette.get("nightmare", {}).get("content", "")
+    
+    def get_resistance_level(self) -> str:
+        """Get the patient's resistance level.
+        
+        Returns:
+            Resistance level string (e.g., "low", "moderate", "high")
+        """
+        return self.vignette.get("resistance_level", "moderate")
+    
+    def __repr__(self) -> str:
+        """String representation of the patient agent."""
+        return (
+            f"PatientAgent(name={self.name!r}, "
+            f"vignette={self.vignette_name!r}, "
+            f"resistance={self.get_resistance_level()!r})"
+        )
