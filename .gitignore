@@ -3,3 +3,6 @@
 # Protect API keys from getting public:
 .env 
 
+# Ignore markdown files in root directory only (keep docs/*.md, etc.)
+/*.md
+
