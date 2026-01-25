@@ -1,0 +1,143 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                                                                            ║
+║                 ✅ .ENV AUTO-LOAD SUCCESSFULLY ADDED                      ║
+║                                                                            ║
+║             Your GROQ_API_KEY will now be loaded automatically!            ║
+║                                                                            ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+PROBLEM YOU HAD
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Terminal showed:
+  $ uv run python -m src generate
+  API key not found for provider 'groq'
+  ✗ Error: API key required for provider 'groq'
+
+But you had .env file with:
+  GROQ_API_KEY=...
+
+Why it failed:
+  Python doesn't automatically load .env files
+  Needed python-dotenv library
+
+WHAT WAS FIXED
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Files Modified:
+  ✓ requirements.txt       Added: python-dotenv>=1.0.0
+  ✓ pyproject.toml         Added: python-dotenv>=1.0.0
+  ✓ src/cli.py             Added: from dotenv import load_dotenv
+  ✓ src/cli.py             Added: load_dotenv() call
+  ✓ Python cache           Cleared
+
+HOW TO USE NOW
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Step 1: Update dependencies
+  uv sync
+
+Step 2: Run generate (that's it!)
+  uv run python -m src generate
+
+The .env file is automatically loaded! No export needed!
+
+VERIFICATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Success looks like:
+  ╭──────────── Starting Dialogue Generation ────────────╮
+  │ Vignette: cooperative                                │
+  │ Language: en                                         │
+  │ Max turns: 20                                        │
+  │ Output: outputs/dialogue_cooperative_...json         │
+  ╰──────────────────────────────────────────────────────╯
+  
+  Turn 1/20
+  [Patient] ...
+  [Therapist] ...
+  ✓ Generating dialogue
+
+Failure would look like:
+  API key not found for provider 'groq'  ← Not this anymore!
+
+ALL METHODS NOW AUTO-LOAD .ENV
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  ✅ python3 -m src generate
+     Automatically loads .env
+
+  ✅ ./run generate
+     Automatically loads .env
+
+  ✅ uv run python -m src generate
+     Automatically loads .env
+
+  ✅ python -m src generate
+     Automatically loads .env
+
+No need to manually export GROQ_API_KEY anymore!
+
+WHAT load_dotenv() DOES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+When you run any command:
+  1. CLI starts
+  2. load_dotenv() runs first (line 24 in cli.py)
+  3. Reads .env file from project root
+  4. Loads GROQ_API_KEY into environment
+  5. Your command runs with API key available
+
+All automatic! ✓
+
+YOUR .ENV FILE FORMAT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Correct format (no spaces around =):
+  GROQ_API_KEY=gsk_your_actual_key_here
+
+Wrong format (has spaces):
+  GROQ_API_KEY = gsk_your_actual_key_here  ← Don't do this
+
+NEXT STEPS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Update uv:
+   $ uv sync
+
+2. Run generate:
+   $ uv run python -m src generate
+
+3. Watch it work! ✓
+
+That's it! Your .env file will be automatically loaded every time.
+
+DOCUMENTATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Created:
+  ✓ ENV_FILE_SUPPORT.md      (detailed guide)
+  ✓ QUICK_FIX_APPLIED.md      (quick reference)
+  ✓ DOTENV_FIX_SUMMARY.txt    (this file)
+
+SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Before:
+  ✗ Had .env with GROQ_API_KEY
+  ✗ But CLI couldn't find it
+  ✗ Had to manually export
+
+After:
+  ✅ .env file automatically loaded
+  ✅ GROQ_API_KEY available
+  ✅ Just run and it works
+
+Status: FIXED ✓
+
+RUN THIS NOW:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  uv sync && uv run python -m src generate
+
+Should start generating dialogue! 🎉

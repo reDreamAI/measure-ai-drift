@@ -10,9 +10,11 @@ from typing import Any
 from src.agents.base import BaseAgent
 from src.core import (
     Conversation,
+    Message,
     load_patient_prompt,
     load_vignette,
     format_vignette_for_prompt,
+    get_intro_message,
 )
 from src.llm.provider import LLMProvider
 
@@ -119,7 +121,50 @@ class PatientAgent(BaseAgent):
     def get_role(self) -> str:
         """Return the agent's role identifier."""
         return "patient"
-    
+
+    def format_messages(
+        self,
+        conversation: Conversation | None = None,
+        user_message: str | None = None,
+    ) -> list[dict[str, str]]:
+        """Format messages with inverted roles for patient perspective.
+
+        From the patient's perspective:
+        - Therapist messages appear as "user" (what we respond to)
+        - Patient's own messages appear as "assistant" (what we said)
+
+        This ensures the LLM understands it should generate patient
+        responses, not therapist responses.
+
+        Args:
+            conversation: Optional conversation with history
+            user_message: Optional new therapist message to respond to
+
+        Returns:
+            List of message dicts for the LLM API with inverted roles
+        """
+        messages = [{"role": "system", "content": self.get_system_prompt()}]
+
+        # Start with therapist's intro message as the first "user" message
+        intro = get_intro_message(self.language)
+        messages.append({"role": "user", "content": intro})
+
+        if conversation:
+            for msg in conversation.messages:
+                # Invert roles: patient (user) -> assistant, therapist (assistant) -> user
+                if msg.role == "user":
+                    # Patient's message becomes assistant (our previous response)
+                    messages.append({"role": "assistant", "content": msg.content})
+                else:
+                    # Therapist's message becomes user (what we respond to)
+                    messages.append({"role": "user", "content": msg.content})
+
+        if user_message:
+            # New therapist message to respond to
+            messages.append({"role": "user", "content": user_message})
+
+        return messages
+
     def get_initial_message(self) -> str:
         """Get the patient's initial nightmare description.
         

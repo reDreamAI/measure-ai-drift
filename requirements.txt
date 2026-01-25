@@ -1,0 +1,20 @@
+# Measure AI Drift - Dependencies
+# Thesis project for evaluating LLM stability in therapy simulations
+
+# Core dependencies
+pydantic>=2.0
+pyyaml>=6.0
+rich>=13.0
+python-dotenv>=1.0.0
+
+# LLM Providers
+openai>=1.0  # OpenAI-compatible providers (Groq, Scaleway, OpenAI)
+google-generativeai>=0.5  # Gemini
+
+# Testing
+pytest>=8.0
+pytest-asyncio>=0.23
+
+# Optional: Enhanced CLI (not used right now)
+# click>=8.0
+# typer>=0.9

@@ -29,6 +29,11 @@ providers:
     type: google
     api_key_env: GEMINI_API_KEY  # Falls back to G_DEVELOPER_KEY
 
+  openrouter:
+    type: openai_compatible
+    base_url: https://openrouter.ai/api/v1
+    api_key_env: OPENROUTER_API_KEY
+
 # =============================================================================
 # MODEL OPTIONS - Full menu of available models per role
 # =============================================================================
@@ -64,6 +69,10 @@ model_options:
       provider: vertex
       model: claude-sonnet-4-20250514
       notes: "Strong reasoning, higher cost"
+    openrouter_mimo:
+      provider: openrouter
+      model: xiaomi/mimo-v2-flash:free
+      notes: "Free tier, fast"
 
   router:
     mistral_nemo:
@@ -92,9 +101,14 @@ roles:
     max_tokens: 1024
 
   patient:
-    use: groq_qwen
+    use: openrouter_mimo
     temperature: 0.7
     max_tokens: 512
+    extra_params:
+      # OpenRouter reasoning param expects object format, not boolean
+      # Use empty object or omit to disable reasoning for Mimo model
+      reasoning:
+        effort: "low"
 
   router:
     use: llama70b

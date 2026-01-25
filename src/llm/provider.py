@@ -45,7 +45,7 @@ DEFAULT_CONFIG_PATH = Path(__file__).parent.parent / "config" / "models.yaml"
 @dataclass
 class LLMConfig:
     """Configuration for an LLM provider instance.
-    
+
     Attributes:
         provider: Provider identifier (e.g., "groq", "scaleway", "openai", "gemini")
         model: Model identifier (provider-specific)
@@ -54,6 +54,7 @@ class LLMConfig:
         api_key: API key (resolved from environment)
         base_url: API base URL (for OpenAI-compatible providers)
         provider_type: Type of API ("openai_compatible" or "google")
+        extra_params: Additional provider-specific parameters (e.g., reasoning: false)
     """
     provider: str
     model: str
@@ -62,6 +63,7 @@ class LLMConfig:
     api_key: str = ""
     base_url: str = ""
     provider_type: str = "openai_compatible"
+    extra_params: dict = field(default_factory=dict)
     
     def __post_init__(self) -> None:
         """Validate configuration after initialization."""
@@ -192,22 +194,47 @@ class LLMProvider:
         **kwargs: Any
     ) -> tuple[str, dict[str, Any]]:
         """Generate completion using OpenAI-compatible API.
-        
+
         Args:
             messages: Chat messages
             temperature: Sampling temperature
             max_tokens: Maximum response tokens
             **kwargs: Additional API parameters
-            
+
         Returns:
             Tuple of (content, usage)
         """
+        # Standard OpenAI API parameters that can be passed directly
+        standard_params = {
+            "frequency_penalty", "logit_bias", "logprobs", "top_logprobs",
+            "n", "presence_penalty", "response_format", "seed", "stop",
+            "stream", "tools", "tool_choice", "user", "top_p",
+        }
+
+        # Merge extra_params from config with kwargs
+        all_params = {**self.config.extra_params, **kwargs}
+
+        # Separate standard params from provider-specific params
+        api_kwargs = {}
+        extra_body = {}
+
+        for key, value in all_params.items():
+            if key in standard_params:
+                api_kwargs[key] = value
+            else:
+                # Provider-specific params go in extra_body (for OpenRouter, etc.)
+                extra_body[key] = value
+
+        # Only include extra_body if there are provider-specific params
+        if extra_body:
+            api_kwargs["extra_body"] = extra_body
+
         response = await self._client.chat.completions.create(
             model=self.config.model,
             messages=messages,
             temperature=temperature,
             max_tokens=max_tokens,
-            **kwargs
+            **api_kwargs
         )
         
         content = response.choices[0].message.content or ""
@@ -365,23 +392,48 @@ class LLMProvider:
         **kwargs: Any
     ) -> AsyncGenerator[str, None]:
         """Stream completion using OpenAI-compatible API.
-        
+
         Args:
             messages: Chat messages
             temperature: Sampling temperature
             max_tokens: Maximum response tokens
             **kwargs: Additional API parameters
-            
+
         Yields:
             Content chunks
         """
+        # Standard OpenAI API parameters that can be passed directly
+        standard_params = {
+            "frequency_penalty", "logit_bias", "logprobs", "top_logprobs",
+            "n", "presence_penalty", "response_format", "seed", "stop",
+            "stream", "tools", "tool_choice", "user", "top_p",
+        }
+
+        # Merge extra_params from config with kwargs
+        all_params = {**self.config.extra_params, **kwargs}
+
+        # Separate standard params from provider-specific params
+        api_kwargs = {}
+        extra_body = {}
+
+        for key, value in all_params.items():
+            if key in standard_params:
+                api_kwargs[key] = value
+            else:
+                # Provider-specific params go in extra_body (for OpenRouter, etc.)
+                extra_body[key] = value
+
+        # Only include extra_body if there are provider-specific params
+        if extra_body:
+            api_kwargs["extra_body"] = extra_body
+
         stream = await self._client.chat.completions.create(
             model=self.config.model,
             messages=messages,
             temperature=temperature,
             max_tokens=max_tokens,
             stream=True,
-            **kwargs
+            **api_kwargs
         )
         
         async for chunk in stream:
@@ -590,6 +642,7 @@ def create_provider(
         api_key=api_key,
         base_url=provider_config.get("base_url", ""),
         provider_type=provider_config.get("type", "openai_compatible"),
+        extra_params=role_config.get("extra_params", {}),
     )
     
     logger.info(
