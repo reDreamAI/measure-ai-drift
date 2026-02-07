@@ -169,7 +169,8 @@ class PatientAgent(BaseAgent):
         """Get the patient's initial nightmare description.
         
         Returns a natural opening message based on the vignette's
-        nightmare content and personality traits.
+        nightmare content and personality traits. Converts third-person
+        vignette descriptions to first-person speech.
         
         Returns:
             Initial message to start the therapy session
@@ -177,20 +178,29 @@ class PatientAgent(BaseAgent):
         nightmare = self.vignette.get("nightmare", {})
         content = nightmare.get("content", "I've been having bad dreams...")
         
+        # Convert third-person vignette content to first-person fragment
+        # Take just the first sentence/clause for brevity
+        first_part = content.split(".")[0].strip()
+        # Common third-person to first-person replacements
+        first_part = first_part.replace(" her ", " my ").replace(" his ", " my ")
+        first_part = first_part.replace(" she ", " I ").replace(" he ", " I ")
+        first_part = first_part.replace("Her ", "My ").replace("His ", "My ")
+        first_part = first_part.replace("She ", "I ").replace("He ", "I ")
+        
         # Craft an opening based on personality
         traits = self.vignette.get("personality_traits", [])
         
         if "worried" in traits or "anxious" in traits:
             opener = "I'm not sure where to start... I've been having these awful dreams. "
-        elif "resistant" in traits:
+        elif "resistant" in traits or "dismissive" in traits:
             opener = "I don't know if this will help, but... "
-        elif "cooperative" in traits:
+        elif "cooperative" in traits or "engaged" in traits:
             opener = "I'd like to tell you about a recurring dream I've been having. "
         else:
             opener = "I've been having this nightmare. "
         
         # Keep the initial description brief to allow therapist to probe
-        return f"{opener}It's about {content.split('.')[0].lower()}..."
+        return f"{opener}It's about {first_part.lower()}..."
     
     def get_nightmare_content(self) -> str:
         """Get the full nightmare content from the vignette.

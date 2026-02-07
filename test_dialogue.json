@@ -1,0 +1,152 @@
+{
+  "session_id": "a52c6107-e5d7-4064-9cee-a15e5a4fbc60",
+  "language": "en",
+  "vignette": "avoidant",
+  "patient_name": "Jordan",
+  "messages": [
+    {
+      "role": "user",
+      "content": "I've been having this nightmare. It's about being back in a combat zone, but the faces of enemies are people i knows - family members, friends...",
+      "stage": null,
+      "timestamp": "2026-02-07T13:49:13.984888"
+    },
+    {
+      "role": "assistant",
+      "content": "That sounds really tough and disturbing. Can you tell me more about what happens in the nightmare - what are you doing, and how do these family members and friends behave towards you?",
+      "stage": "recording",
+      "timestamp": "2026-02-07T13:49:14.715658"
+    },
+    {
+      "role": "user",
+      "content": "It's always the same. I'm in this... this place that looks like where I served, but the people I'm supposed to be fighting - they're my sister, my old college roommate, even my dad sometimes. They're coming at me with weapons, like I'm supposed to shoot them. But I can't. I just... freeze. And then there's this explosion, and I wake up sweating.",
+      "stage": null,
+      "timestamp": "2026-02-07T13:49:17.843268"
+    },
+    {
+      "role": "assistant",
+      "content": "It sounds like the nightmare is really getting to you, especially since it involves people you care about. What's the moment like right before the explosion - do you feel any emotions or sensations, like fear, guilt, or panic, or is it more of a sense of disconnection or numbness?",
+      "stage": "recording",
+      "timestamp": "2026-02-07T13:49:18.314551"
+    },
+    {
+      "role": "user",
+      "content": "I don't know. It's like everything goes slow motion, and I'm just... stuck. Can't move, can't think, can't do anything. Just this overwhelming feeling of... I don't know, helplessness I guess. Like I'm trapped in this impossible situation.",
+      "stage": null,
+      "timestamp": "2026-02-07T13:49:19.986697"
+    },
+    {
+      "role": "assistant",
+      "content": "It sounds like that feeling of helplessness is really intense and overwhelming for you. Now that you've shared the details of your nightmare, would you like to proceed with rewriting it according to Imagery Rehearsal Therapy, to see if we can transform it into a more empowering and positive experience for you?",
+      "stage": "recording",
+      "timestamp": "2026-02-07T13:49:20.468065"
+    },
+    {
+      "role": "user",
+      "content": "Yeah, I guess. I mean, it's worth a shot, right?",
+      "stage": null,
+      "timestamp": "2026-02-07T13:49:21.489759"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling helpless when you're faced with family and friends as enemies, and you're unable to move or act. How could you change this situation to make it less overwhelming or more empowering for yourself?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-07T13:49:21.953425"
+    },
+    {
+      "role": "user",
+      "content": "Maybe... maybe I could try to talk to them? Like, try to reason with them instead of just freezing up. Or maybe I could find a way to get out of there, like find an exit or something.",
+      "stage": null,
+      "timestamp": "2026-02-07T13:49:23.153504"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling helpless when you're faced with family and friends as enemies, and you're unable to move or act. How could you change this situation to make it less overwhelming or more empowering for yourself, perhaps by exploring what happens when you try to talk to them or find an exit?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-07T13:49:23.845340"
+    },
+    {
+      "role": "user",
+      "content": "I don't know. I guess I could try talking to them, like maybe they're not really enemies after all. Or maybe I could find a way out of the situation, like a door or something.",
+      "stage": null,
+      "timestamp": "2026-02-07T13:49:25.690559"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned considering talking to them or finding a way out. How would you feel if, as you try to communicate with your family and friends, they start to recognize you and lower their weapons, and what would that look like in terms of sights, sounds, and emotions?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-07T13:49:26.612924"
+    },
+    {
+      "role": "user",
+      "content": "I don't know. It's hard to imagine. But maybe... maybe they would look surprised at first, and then their faces would soften. They might lower their weapons and come closer, like they're trying to understand what's going on.",
+      "stage": null,
+      "timestamp": "2026-02-07T13:49:28.452292"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned they might lower their weapons and come closer, trying to understand what's going on. How could you respond to them in that moment to create a sense of resolution or peace, perhaps by using a specific tone of voice, words, or gestures?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-07T13:49:29.144720"
+    },
+    {
+      "role": "user",
+      "content": "I guess I could try to talk to them calmly, like maybe explain that I don't want to fight. I could put my hands up, like I'm surrendering, but also like I'm open to talking.",
+      "stage": null,
+      "timestamp": "2026-02-07T13:49:30.651409"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned putting your hands up and talking to them calmly. How would their response make you feel, and what sensations or emotions would you experience if they began to understand your perspective and the tension started to dissipate?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-07T13:49:31.336053"
+    },
+    {
+      "role": "user",
+      "content": "I don't know. It's hard to imagine feeling anything other than tense in that situation. But maybe... maybe I would feel a sense of relief, like a weight lifting off my shoulders.",
+      "stage": null,
+      "timestamp": "2026-02-07T13:49:32.752805"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling a sense of relief, like a weight lifting off your shoulders, if your family and friends began to understand your perspective. How could you build on that feeling of relief to create a more positive and empowering outcome, perhaps by imagining a specific environment or action that reinforces that sense of calm and resolution?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-07T13:49:33.393399"
+    },
+    {
+      "role": "user",
+      "content": "I guess I could imagine us all sitting down together, like in a safe place, and just talking things out. Maybe we could find a way to resolve whatever conflict there is, without violence.",
+      "stage": null,
+      "timestamp": "2026-02-07T13:49:34.567302"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned sitting down together in a safe place and talking things out. What would that safe place look like, and what kind of conversation would you have with your family and friends to resolve the conflict and create a sense of peace and understanding?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-07T13:49:35.468236"
+    },
+    {
+      "role": "user",
+      "content": "I don't know. Maybe we could be in a living room or something, like a normal family setting. And we could just talk, like about what's really going on and how we can fix it.",
+      "stage": null,
+      "timestamp": "2026-02-07T13:49:37.644609"
+    }
+  ],
+  "stages": [
+    "recording",
+    "recording",
+    "recording",
+    "rewriting",
+    "rewriting",
+    "rewriting",
+    "rewriting",
+    "rewriting",
+    "rewriting",
+    "rewriting"
+  ],
+  "metadata": {
+    "generated_at": "2026-02-07T13:49:37.650131",
+    "total_turns": 21,
+    "completed": false,
+    "max_turns": 20
+  }
+}

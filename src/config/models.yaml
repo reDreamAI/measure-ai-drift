@@ -72,7 +72,11 @@ model_options:
     openrouter_mimo:
       provider: openrouter
       model: xiaomi/mimo-v2-flash:free
-      notes: "Free tier, fast"
+      notes: "Free tier (DEPRECATED - free period ended)"
+    openrouter_trinity:
+      provider: openrouter
+      model: arcee-ai/trinity-large-preview:free
+      notes: "Free tier, good roleplay, fast"
 
   router:
     mistral_nemo:
@@ -101,14 +105,9 @@ roles:
     max_tokens: 1024
 
   patient:
-    use: openrouter_mimo
+    use: openrouter_trinity
     temperature: 0.7
     max_tokens: 512
-    extra_params:
-      # OpenRouter reasoning param expects object format, not boolean
-      # Use empty object or omit to disable reasoning for Mimo model
-      reasoning:
-        effort: "low"
 
   router:
     use: llama70b

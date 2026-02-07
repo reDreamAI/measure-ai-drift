@@ -6,3 +6,4 @@
 # Ignore markdown files in root directory only (keep docs/*.md, etc.)
 /*.md
 
+node_modules
