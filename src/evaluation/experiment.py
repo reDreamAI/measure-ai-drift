@@ -1,0 +1,178 @@
+"""Experiment runner with structured output for reproducibility.
+
+Creates experiment runs in the format:
+    experiments/runs/{timestamp}_{model}_{vignette}/
+        config.yaml
+        frozen_history.json
+        trials/
+            trial_01.json
+            trial_02.json
+            ...
+        metrics.json
+"""
+
+from __future__ import annotations
+
+import json
+from dataclasses import asdict
+from datetime import datetime
+from pathlib import Path
+from typing import Any
+
+import yaml
+
+from src.core import Conversation
+from src.evaluation.sampler import Sampler, TrialResult
+from src.evaluation.metrics import (
+    extract_plan_strategies,
+    compute_validity_rate,
+    compute_pairwise_jaccard,
+)
+
+
+class ExperimentRun:
+    """Manages a single experiment run with structured output."""
+
+    def __init__(
+        self,
+        frozen_history: Conversation,
+        model_name: str,
+        vignette_name: str,
+        base_dir: str | Path = "experiments/runs",
+    ) -> None:
+        self.frozen_history = frozen_history
+        self.model_name = model_name
+        self.vignette_name = vignette_name
+        self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # Create run directory
+        dir_name = f"{self.timestamp}_{model_name}_{vignette_name}"
+        self.run_dir = Path(base_dir) / dir_name
+        self.trials_dir = self.run_dir / "trials"
+
+        self._results: list[TrialResult] = []
+        self._config: dict[str, Any] = {}
+
+    def setup(self) -> "ExperimentRun":
+        """Create directory structure and save frozen history."""
+        self.run_dir.mkdir(parents=True, exist_ok=True)
+        self.trials_dir.mkdir(exist_ok=True)
+
+        # Save frozen history
+        history_path = self.run_dir / "frozen_history.json"
+        with open(history_path, "w") as f:
+            json.dump(self.frozen_history.to_dict(), f, indent=2, ensure_ascii=False)
+
+        return self
+
+    async def run(
+        self,
+        n_trials: int,
+        temperature: float,
+        language: str = "en",
+        parallel: bool = False,
+    ) -> list[TrialResult]:
+        """Run the experiment and save results."""
+        # Store config
+        self._config = {
+            "model": self.model_name,
+            "vignette": self.vignette_name,
+            "n_trials": n_trials,
+            "temperature": temperature,
+            "language": language,
+            "parallel": parallel,
+            "timestamp": self.timestamp,
+        }
+
+        # Save config
+        config_path = self.run_dir / "config.yaml"
+        with open(config_path, "w") as f:
+            yaml.dump(self._config, f, default_flow_style=False)
+
+        # Run trials
+        sampler = Sampler(language=language)
+        self._results = await sampler.run(
+            self.frozen_history,
+            n_trials=n_trials,
+            temperature=temperature,
+            parallel=parallel,
+        )
+
+        # Save individual trials
+        for i, result in enumerate(self._results, 1):
+            trial_path = self.trials_dir / f"trial_{i:02d}.json"
+            trial_data = {
+                "temperature": result.temperature,
+                "plan": result.plan,
+                "response": result.response,
+                "plan_usage": result.plan_usage,
+                "response_usage": result.response_usage,
+                "strategies": list(extract_plan_strategies(result.plan)),
+            }
+            with open(trial_path, "w") as f:
+                json.dump(trial_data, f, indent=2, ensure_ascii=False)
+
+        # Compute and save metrics
+        self._save_metrics()
+
+        return self._results
+
+    def _save_metrics(self) -> None:
+        """Compute and save metrics to metrics.json."""
+        strategy_sets = [extract_plan_strategies(r.plan) for r in self._results]
+
+        metrics = {
+            "n_trials": len(self._results),
+            "temperature": self._config.get("temperature", 0.0),
+            "validity_rate": compute_validity_rate(strategy_sets),
+            "jaccard_all": compute_pairwise_jaccard(strategy_sets, only_valid=False),
+            "jaccard_valid_only": compute_pairwise_jaccard(strategy_sets, only_valid=True),
+            "strategy_counts": self._compute_strategy_counts(strategy_sets),
+        }
+
+        metrics_path = self.run_dir / "metrics.json"
+        with open(metrics_path, "w") as f:
+            json.dump(metrics, f, indent=2)
+
+    def _compute_strategy_counts(self, strategy_sets: list[set[str]]) -> dict[str, int]:
+        """Count frequency of each strategy across trials."""
+        counts: dict[str, int] = {}
+        for strategies in strategy_sets:
+            for s in strategies:
+                counts[s] = counts.get(s, 0) + 1
+        return dict(sorted(counts.items(), key=lambda x: -x[1]))
+
+    @property
+    def results(self) -> list[TrialResult]:
+        return self._results
+
+    @property
+    def path(self) -> Path:
+        return self.run_dir
+
+
+def load_experiment(run_dir: str | Path) -> dict[str, Any]:
+    """Load a completed experiment run."""
+    run_dir = Path(run_dir)
+
+    # Load config
+    with open(run_dir / "config.yaml") as f:
+        config = yaml.safe_load(f)
+
+    # Load metrics
+    with open(run_dir / "metrics.json") as f:
+        metrics = json.load(f)
+
+    # Load trials
+    trials = []
+    trials_dir = run_dir / "trials"
+    for trial_path in sorted(trials_dir.glob("trial_*.json")):
+        with open(trial_path) as f:
+            trials.append(json.load(f))
+
+    return {
+        "config": config,
+        "metrics": metrics,
+        "trials": trials,
+        "path": str(run_dir),
+    }

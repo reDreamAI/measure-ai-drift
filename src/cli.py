@@ -101,107 +101,88 @@ def cmd_generate(args: argparse.Namespace) -> int:
 def cmd_evaluate(args: argparse.Namespace) -> int:
     """Run the Evaluation Stack for multi-trial experiments."""
     from src.core import Conversation
-    from src.stacks import EvaluationStack
     from src.evaluation import (
+        ExperimentRun,
         extract_plan_strategies,
         compute_validity_rate,
         compute_pairwise_jaccard,
     )
-    
+    from src.llm.provider import load_config
+    import re
+
+    # Infer vignette from filename if not provided
+    vignette = getattr(args, 'vignette', None)
+    if not vignette:
+        match = re.search(r'dialogue_(\w+)_\d+', Path(args.history).stem)
+        vignette = match.group(1) if match else "unknown"
+
+    # Get model name from config
+    config = load_config()
+    model_key = config.get("roles", {}).get("therapist", {}).get("use", "unknown")
+
     console.print(Panel(
-        f"[bold]Evaluation Stack[/bold]\n"
+        f"[bold]Evaluation Experiment[/bold]\n"
         f"History: {args.history}\n"
+        f"Model: {model_key}\n"
+        f"Vignette: {vignette}\n"
         f"Trials: {args.trials}\n"
         f"Temperature: {args.temperature}",
         title="Starting Evaluation",
         border_style="green"
     ))
-    
+
     async def _run():
         try:
             # Load frozen history
             with open(args.history, 'r') as f:
                 history_data = json.load(f)
-            
-            # Handle both dialogue format and conversation format
-            if 'messages' in history_data:
-                frozen_history = Conversation.from_dict(history_data)
-            else:
+
+            if 'messages' not in history_data:
                 console.print("[yellow]Warning:[/yellow] Expected conversation format with 'messages' key")
                 return 1
-            
+
+            frozen_history = Conversation.from_dict(history_data)
             console.print(f"[cyan]→[/cyan] Loaded history: {len(frozen_history.messages)} messages")
-            
-            # Create evaluation stack
-            stack = EvaluationStack(language=args.language)
-            
-            # Run trials
+
+            # Create and run experiment
+            experiment = ExperimentRun(
+                frozen_history=frozen_history,
+                model_name=model_key,
+                vignette_name=vignette,
+            ).setup()
+
             with console.status(f"[bold green]Running {args.trials} trials..."):
-                results = await stack.run_trials(
-                    frozen_history=frozen_history,
+                results = await experiment.run(
                     n_trials=args.trials,
                     temperature=args.temperature,
+                    language=args.language,
                 )
-            
+
             console.print(f"[green]✓[/green] Completed {len(results)} trials")
-            
-            # Compute metrics
+
+            # Compute metrics for display
             strategy_sets = [extract_plan_strategies(r.plan) for r in results]
             validity = compute_validity_rate(strategy_sets)
             jaccard_all = compute_pairwise_jaccard(strategy_sets, only_valid=False)
             jaccard_valid = compute_pairwise_jaccard(strategy_sets, only_valid=True)
-            
+
             # Display metrics
             table = Table(title="Evaluation Metrics")
             table.add_column("Metric", style="cyan")
             table.add_column("Value", style="green")
-            
+
             table.add_row("Trials", str(len(results)))
             table.add_row("Temperature", f"{args.temperature:.2f}")
             table.add_row("Validity Rate", f"{validity:.1%}")
             table.add_row("Jaccard (all)", f"{jaccard_all:.3f}")
             table.add_row("Jaccard (valid only)", f"{jaccard_valid:.3f}")
-            
+
             console.print(table)
-            
-            # Save results if requested
-            if args.output:
-                output_data = {
-                    "config": {
-                        "history_file": str(args.history),
-                        "trials": args.trials,
-                        "temperature": args.temperature,
-                        "language": args.language,
-                    },
-                    "trials": [
-                        {
-                            "temperature": r.temperature,
-                            "plan": r.plan,
-                            "response": r.response,
-                            "plan_usage": r.plan_usage,
-                            "response_usage": r.response_usage,
-                            "strategies": list(extract_plan_strategies(r.plan)),
-                        }
-                        for r in results
-                    ],
-                    "metrics": {
-                        "validity_rate": validity,
-                        "jaccard_all": jaccard_all,
-                        "jaccard_valid_only": jaccard_valid,
-                    }
-                }
-                
-                output_path = Path(args.output)
-                output_path.parent.mkdir(parents=True, exist_ok=True)
-                
-                with open(output_path, 'w') as f:
-                    json.dump(output_data, f, indent=2, ensure_ascii=False)
-                
-                console.print(f"\n[green]✓[/green] Results saved to: {output_path}")
-            
+            console.print(f"\n[green]✓[/green] Experiment saved to: {experiment.path}")
+
             return 0
-            
-        except FileNotFoundError as e:
+
+        except FileNotFoundError:
             console.print(f"[red]✗ Error:[/red] History file not found: {args.history}")
             return 1
         except Exception as e:
@@ -210,7 +191,7 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
             if args.verbose:
                 traceback.print_exc()
             return 1
-    
+
     return asyncio.run(_run())
 
 
@@ -274,7 +255,7 @@ def cmd_keys(args: argparse.Namespace) -> int:
             
             # Check environment variables
             console.print("\n[bold]Environment Variables:[/bold]")
-            env_vars = ['GROQ_API_KEY', 'OPENAI_API_KEY', 'SCALEWAY_API_KEY', 'GEMINI_API_KEY']
+            env_vars = ['GROQ_API_KEY', 'OPENAI_API_KEY', 'SCALEWAY_API_KEY', 'GOOGLE_AI_STUDIO_API_KEY', 'OPENROUTER_API_KEY']
             for var in env_vars:
                 status = "✓ Set" if os.environ.get(var) else "✗ Not set"
                 color = "green" if os.environ.get(var) else "yellow"
@@ -351,47 +332,48 @@ def cmd_list_vignettes(args: argparse.Namespace) -> int:
 
 def cmd_list_models(args: argparse.Namespace) -> int:
     """List configured models and active selections."""
-    from src.llm.provider import load_config, list_model_options
-    
-    options = list_model_options()
-    
+    from src.llm.provider import load_config
+
+    config = load_config()
+    roles = config.get("roles", {})
+    model_options = config.get("model_options", {})
+
     # Active roles table
     table = Table(title="Active Model Configuration")
     table.add_column("Role", style="bold cyan")
     table.add_column("Selection", style="green")
     table.add_column("Temperature", style="yellow")
     table.add_column("Max Tokens", style="blue")
-    
-    for role, info in options['active_roles'].items():
+
+    for role, role_config in roles.items():
         table.add_row(
             role,
-            info['using'],
-            f"{info['temperature']:.1f}",
-            str(info['max_tokens'])
+            role_config.get("use", "direct"),
+            f"{role_config.get('temperature', 0.0):.1f}",
+            str(role_config.get("max_tokens", 1024))
         )
-    
+
     console.print(table)
-    
+
     # Model options per role
     if args.verbose:
-        config = load_config()
-        
-        for role in ['patient', 'therapist', 'router']:
-            if role not in config.get('model_options', {}):
+        for role in ['patient', 'therapist', 'router', 'judge']:
+            if role not in model_options:
                 continue
-            
+
             console.print(f"\n[bold]{role.upper()} Options:[/bold]")
-            
-            for option_name, option_config in config['model_options'][role].items():
+            active_key = roles.get(role, {}).get("use", "")
+
+            for option_name, option_config in model_options[role].items():
                 provider = option_config.get('provider', 'unknown')
                 model = option_config.get('model', 'unknown')
                 notes = option_config.get('notes', '')
-                
-                active = " [green]← ACTIVE[/green]" if options['active_roles'][role]['using'] == option_name else ""
+
+                active = " [green]← ACTIVE[/green]" if active_key == option_name else ""
                 console.print(f"  • {option_name}: {provider}/{model}{active}")
                 if notes:
                     console.print(f"    {notes}")
-    
+
     return 0
 
 
@@ -440,7 +422,7 @@ def main() -> int:
     eval_parser.add_argument('--trials', '-n', type=int, default=10, help='Number of trials')
     eval_parser.add_argument('--temperature', '-t', type=float, default=0.7, help='Sampling temperature')
     eval_parser.add_argument('--language', '-l', default='en', choices=['en', 'de'], help='Session language')
-    eval_parser.add_argument('--output', '-o', help='Output file path (JSON)')
+    eval_parser.add_argument('--vignette', '-v', help='Vignette name (auto-detected from filename if omitted)')
     eval_parser.add_argument('--verbose', action='store_true', help='Show detailed output')
     
     # Keys command

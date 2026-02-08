@@ -26,8 +26,9 @@ providers:
     api_key_env: GOOGLE_APPLICATION_CREDENTIALS  # Uses ADC
 
   gemini:
-    type: google
-    api_key_env: GEMINI_API_KEY  # Falls back to G_DEVELOPER_KEY
+    type: openai_compatible
+    base_url: https://generativelanguage.googleapis.com/v1beta/openai/
+    api_key_env: GOOGLE_AI_STUDIO_API_KEY
 
   openrouter:
     type: openai_compatible
@@ -92,8 +93,11 @@ model_options:
     gemini3_pro:
       provider: gemini
       model: gemini-3-pro-preview
-      fallback: gemini-2.5-pro
-      notes: "Primary evaluation model"
+      notes: "Primary evaluation model (future)"
+    gemini_flash:
+      provider: gemini
+      model: gemini-2.5-flash
+      notes: "Fast, cheap testing"
 
 # =============================================================================
 # ACTIVE ROLES - Current selection (change these to swap models)
@@ -115,7 +119,7 @@ roles:
     max_tokens: 32
 
   judge:
-    use: gemini3_pro
+    use: gemini_flash
     temperature: 0.0
     max_tokens: 2048
 
@@ -131,6 +135,6 @@ evaluation_models:
     provider: groq
     model: llama-3.3-70b-versatile
 
-  - name: gemini3_pro
+  - name: gemini_flash
     provider: gemini
-    model: gemini-3-pro-preview
+    model: gemini-2.5-flash
