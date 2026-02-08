@@ -11,7 +11,7 @@ node_modules
 
 # ignore temporary data files
 .DS_Store
-src/evaluation/__pycache__/*
+src/evaluation/__pycache__/*.cpython-310.pyc
 # Python bytecode
 __pycache__/
 *.pyc
