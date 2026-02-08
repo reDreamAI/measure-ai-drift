@@ -1,0 +1,494 @@
+{
+  "evalId": "eval-YBn-2026-02-08T12:35:10",
+  "results": {
+    "version": 3,
+    "timestamp": "2026-02-08T12:35:10.119Z",
+    "prompts": [
+      {
+        "id": "78600aa6d0af50ab71defea8b9df442f352815acaa261ee6a5f342f5ccdda0d3",
+        "raw": "Run dialogue for vignette={{vignette_name}} max_turns={{max_turns}}",
+        "label": "Run dialogue for vignette={{vignette_name}} max_turns={{max_turns}}",
+        "provider": "python:prompts/dialogue_provider.py",
+        "metrics": {
+          "score": 0.9090909090909091,
+          "testPassCount": 0,
+          "testFailCount": 1,
+          "testErrorCount": 0,
+          "assertPassCount": 10,
+          "assertFailCount": 1,
+          "totalLatencyMs": 17093,
+          "tokenUsage": {
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "total": 0,
+            "numRequests": 1,
+            "completionDetails": {
+              "reasoning": 0,
+              "acceptedPrediction": 0,
+              "rejectedPrediction": 0
+            },
+            "assertions": {
+              "total": 0,
+              "prompt": 0,
+              "completion": 0,
+              "cached": 0,
+              "numRequests": 0,
+              "completionDetails": {
+                "reasoning": 0,
+                "acceptedPrediction": 0,
+                "rejectedPrediction": 0
+              }
+            }
+          },
+          "namedScores": {
+            "NoConsecutiveRepeats": 1,
+            "NoExcessiveRepetition": 1,
+            "ResponseLengthVariety": 1,
+            "MixOfShortAndLonger": 0,
+            "ReachesRewriting": 1,
+            "RecordingNotTooLong": 1,
+            "NoRoleConfusion": 1,
+            "AllResponsesReasonableLength": 1,
+            "NoAIVocabulary": 1,
+            "NoFantasyImagery": 1,
+            "TherapistNoRepeats": 1
+          },
+          "namedScoresCount": {
+            "NoConsecutiveRepeats": 1,
+            "NoExcessiveRepetition": 1,
+            "ResponseLengthVariety": 1,
+            "MixOfShortAndLonger": 1,
+            "ReachesRewriting": 1,
+            "RecordingNotTooLong": 1,
+            "NoRoleConfusion": 1,
+            "AllResponsesReasonableLength": 1,
+            "NoAIVocabulary": 1,
+            "NoFantasyImagery": 1,
+            "TherapistNoRepeats": 1
+          },
+          "cost": 0
+        }
+      }
+    ],
+    "results": [
+      {
+        "cost": 0,
+        "error": "Custom function returned false\n// At least one patient response should be very short (≤5 words)\n// and at least one should be moderate (≥8 words) — like a real person\nconst data = JSON.parse(output);\nconst lengths = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content.split(/\\s+/).length);\nconst hasShort = lengths.some(l => l <= 5);\nconst hasModerate = lengths.some(l => l >= 8);\nreturn hasShort && hasModerate;",
+        "gradingResult": {
+          "pass": false,
+          "score": 0.9090909090909091,
+          "reason": "Custom function returned false\n// At least one patient response should be very short (≤5 words)\n// and at least one should be moderate (≥8 words) — like a real person\nconst data = JSON.parse(output);\nconst lengths = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content.split(/\\s+/).length);\nconst hasShort = lengths.some(l => l <= 5);\nconst hasModerate = lengths.some(l => l >= 8);\nreturn hasShort && hasModerate;",
+          "namedScores": {
+            "NoConsecutiveRepeats": 1,
+            "NoExcessiveRepetition": 1,
+            "ResponseLengthVariety": 1,
+            "MixOfShortAndLonger": 0,
+            "ReachesRewriting": 1,
+            "RecordingNotTooLong": 1,
+            "NoRoleConfusion": 1,
+            "AllResponsesReasonableLength": 1,
+            "NoAIVocabulary": 1,
+            "NoFantasyImagery": 1,
+            "TherapistNoRepeats": 1
+          },
+          "tokensUsed": {
+            "total": 0,
+            "prompt": 0,
+            "completion": 0,
+            "cached": 0,
+            "numRequests": 0
+          },
+          "componentResults": [
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "// No 3+ identical consecutive patient messages\nconst data = JSON.parse(output);\nconst patientMsgs = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content);\nlet maxRun = 1, run = 1;\nfor (let i = 1; i < patientMsgs.length; i++) {\n  if (patientMsgs[i] === patientMsgs[i - 1]) {\n    run++;\n    maxRun = Math.max(maxRun, run);\n  } else {\n    run = 1;\n  }\n}\nreturn maxRun < 3;\n",
+                "metric": "NoConsecutiveRepeats"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "// No single patient response appears 3+ times total\nconst data = JSON.parse(output);\nconst patientMsgs = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content);\nconst counts = {};\nfor (const msg of patientMsgs) {\n  counts[msg] = (counts[msg] || 0) + 1;\n}\nconst maxCount = Math.max(...Object.values(counts));\nreturn maxCount < 3;\n",
+                "metric": "NoExcessiveRepetition"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "// Patient response word counts should have meaningful variance\n// (stdev > 2 means not all responses are the same length)\nconst data = JSON.parse(output);\nconst lengths = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content.split(/\\s+/).length);\nconst avg = lengths.reduce((a, b) => a + b, 0) / lengths.length;\nconst variance = lengths.reduce((s, l) => s + Math.pow(l - avg, 2), 0) / lengths.length;\nreturn Math.sqrt(variance) > 2;\n",
+                "metric": "ResponseLengthVariety"
+              }
+            },
+            {
+              "pass": false,
+              "score": 0,
+              "reason": "Custom function returned false\n// At least one patient response should be very short (≤5 words)\n// and at least one should be moderate (≥8 words) — like a real person\nconst data = JSON.parse(output);\nconst lengths = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content.split(/\\s+/).length);\nconst hasShort = lengths.some(l => l <= 5);\nconst hasModerate = lengths.some(l => l >= 8);\nreturn hasShort && hasModerate;",
+              "assertion": {
+                "type": "javascript",
+                "value": "// At least one patient response should be very short (≤5 words)\n// and at least one should be moderate (≥8 words) — like a real person\nconst data = JSON.parse(output);\nconst lengths = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content.split(/\\s+/).length);\nconst hasShort = lengths.some(l => l <= 5);\nconst hasModerate = lengths.some(l => l >= 8);\nreturn hasShort && hasModerate;\n",
+                "metric": "MixOfShortAndLonger"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "// Dialogue should reach the rewriting stage\nconst data = JSON.parse(output);\nreturn data.stages_visited.includes('rewriting');\n",
+                "metric": "ReachesRewriting"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "// Recording should not consume more than 70% of total turns\nconst data = JSON.parse(output);\nconst recordingMsgs = data.messages.filter(\n  m => m.stage === 'recording'\n).length;\nconst ratio = recordingMsgs / data.messages.length;\nreturn ratio <= 0.7;\n",
+                "metric": "RecordingNotTooLong"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "// Patient never uses therapist-like phrases across any turn\nconst data = JSON.parse(output);\nconst patientText = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content)\n  .join(' ')\n  .toLowerCase();\nconst banned = [\n  \"that's really helpful\",\n  \"you're doing wonderfully\",\n  \"let's try this\",\n  \"how does that feel\",\n  \"as your therapist\",\n  \"i'm here to help you\",\n  \"you mentioned feeling\",\n];\nreturn !banned.some(p => patientText.includes(p));\n",
+                "metric": "NoRoleConfusion"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "// All patient responses should be ≤80 words (no essays)\nconst data = JSON.parse(output);\nconst patientMsgs = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content);\nreturn patientMsgs.every(\n  m => m.split(/\\s+/).length <= 80\n);\n",
+                "metric": "AllResponsesReasonableLength"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "// No banned AI vocabulary across the full dialogue\nconst data = JSON.parse(output);\nconst patientText = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content)\n  .join(' ')\n  .toLowerCase();\nconst aiWords = [\n  'whimsical', 'vibrant', 'primal', 'profound',\n  'empowering', 'psychedelic', 'swirling', 'wafting',\n];\nreturn !aiWords.some(w => patientText.includes(w));\n",
+                "metric": "NoAIVocabulary"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "// No fantasy imagery in rewriting responses\nconst data = JSON.parse(output);\nconst rewritingPatient = data.messages\n  .filter((m, i) => {\n    // Patient messages during/after rewriting stage\n    // (patient messages have role 'user' and appear after\n    //  a therapist rewriting message)\n    if (m.role !== 'user') return false;\n    // Check if previous assistant message was rewriting\n    const prev = data.messages[i - 1];\n    return prev && prev.stage === 'rewriting';\n  })\n  .map(m => m.content)\n  .join(' ')\n  .toLowerCase();\nconst fantasy = [\n  'butterfly', 'rainbow', 'magical', 'fairy',\n  'unicorn', 'sparkle', 'golden light',\n  'protective bubble', 'playful creature',\n];\nreturn !fantasy.some(f => rewritingPatient.includes(f));\n",
+                "metric": "NoFantasyImagery"
+              }
+            },
+            {
+              "pass": true,
+              "score": 1,
+              "reason": "Assertion passed",
+              "assertion": {
+                "type": "javascript",
+                "value": "// No 3+ identical consecutive therapist messages\nconst data = JSON.parse(output);\nconst therapistMsgs = data.messages\n  .filter(m => m.role === 'assistant')\n  .map(m => m.content);\nlet maxRun = 1, run = 1;\nfor (let i = 1; i < therapistMsgs.length; i++) {\n  if (therapistMsgs[i] === therapistMsgs[i - 1]) {\n    run++;\n    maxRun = Math.max(maxRun, run);\n  } else {\n    run = 1;\n  }\n}\nreturn maxRun < 3;\n",
+                "metric": "TherapistNoRepeats"
+              }
+            }
+          ]
+        },
+        "id": "f692f535-62b6-439c-badf-2c47018fbbc6",
+        "latencyMs": 17093,
+        "namedScores": {
+          "NoConsecutiveRepeats": 1,
+          "NoExcessiveRepetition": 1,
+          "ResponseLengthVariety": 1,
+          "MixOfShortAndLonger": 0,
+          "ReachesRewriting": 1,
+          "RecordingNotTooLong": 1,
+          "NoRoleConfusion": 1,
+          "AllResponsesReasonableLength": 1,
+          "NoAIVocabulary": 1,
+          "NoFantasyImagery": 1,
+          "TherapistNoRepeats": 1
+        },
+        "prompt": {
+          "raw": "Run dialogue for vignette=anxious max_turns=16",
+          "label": "Run dialogue for vignette={{vignette_name}} max_turns={{max_turns}}",
+          "config": {}
+        },
+        "promptId": "78600aa6d0af50ab71defea8b9df442f352815acaa261ee6a5f342f5ccdda0d3",
+        "promptIdx": 0,
+        "provider": {
+          "id": "python:prompts/dialogue_provider.py",
+          "label": ""
+        },
+        "response": {
+          "output": "{\"messages\": [{\"role\": \"user\", \"content\": \"I've been having these bad dreams. It's about being in an exam room where the questions keep changing, the clock is speeding up, and everyone else has finished.\", \"stage\": null}, {\"role\": \"assistant\", \"content\": \"It sounds like the dream is really stressful and overwhelming. Can you tell me more about what's happening with the questions - are they changing in a specific way, like getting harder or becoming completely unrelated to what you're expecting to be tested on?\", \"stage\": \"recording\"}, {\"role\": \"user\", \"content\": \"They're changing in a way that makes no sense. Like one minute it's about my thesis topic, then suddenly it's asking about something I've never studied.\", \"stage\": null}, {\"role\": \"assistant\", \"content\": \"That must be really disorienting and frustrating. What's happening with the other people in the exam room - you mentioned everyone else has finished, are they leaving the room or just sitting there, and how are you feeling about being the only one still working on the exam?\", \"stage\": \"recording\"}, {\"role\": \"user\", \"content\": \"They're just sitting there, staring at me. I feel like I'm falling behind and everyone's watching me fail.\", \"stage\": null}, {\"role\": \"assistant\", \"content\": \"It sounds like the feeling of being judged and watched is adding to the anxiety and pressure in the dream. What's happening with the clock - you mentioned it's speeding up, is it counting down to a specific time, or just moving really fast in general, and how are you feeling as you see the time running out?\", \"stage\": \"recording\"}, {\"role\": \"user\", \"content\": \"The clock is just spinning fast, like the hands are moving too quickly. I feel panicked because I know I'll never finish in time.\", \"stage\": null}, {\"role\": \"assistant\", \"content\": \"It sounds like the clock is creating a sense of urgency and hopelessness in the dream. Now that you've described the dream in detail, would you like to proceed with rewriting it according to Imagery Rehearsal Therapy, where we can work together to transform this stressful scenario into a more empowering and positive experience?\", \"stage\": \"recording\"}, {\"role\": \"user\", \"content\": \"I guess so. But what if I can't do it right?\", \"stage\": null}, {\"role\": \"assistant\", \"content\": \"You mentioned feeling panicked when the clock is spinning fast. How could you change this situation to make it less overwhelming or more manageable for yourself?\", \"stage\": \"rewriting\"}, {\"role\": \"user\", \"content\": \"I don't know. Maybe I could make the clock stop moving so fast?\", \"stage\": null}, {\"role\": \"assistant\", \"content\": \"That's a great start. Okay, so you're thinking of stopping the clock from moving so fast - how would that change the way you feel in the exam room, and what might happen next if time were to slow down or stand still?\", \"stage\": \"rewriting\"}, {\"role\": \"user\", \"content\": \"I guess I would feel less panicked. Maybe I could take my time with the questions.\", \"stage\": null}, {\"role\": \"assistant\", \"content\": \"You mentioned feeling less panicked when you think about having more time to work on the questions. How could you use this newfound sense of calm to approach the questions that are changing in a way that makes no sense, and what might you do differently to make them feel more manageable?\", \"stage\": \"rewriting\"}, {\"role\": \"user\", \"content\": \"I could maybe ask for clarification on the questions that don't make sense.\", \"stage\": null}, {\"role\": \"assistant\", \"content\": \"You mentioned feeling more in control when you think about asking for clarification on the confusing questions. How could the response from the exam proctors or instructors change to support you in understanding the questions better, and what kind of environment would that create in the exam room?\", \"stage\": \"rewriting\"}, {\"role\": \"user\", \"content\": \"They could be more helpful and patient. Maybe the room would feel less tense and more supportive.\", \"stage\": null}], \"stages_visited\": [\"recording\", \"rewriting\"], \"completed\": false, \"total_turns\": 17, \"vignette\": \"anxious\"}",
+          "tokenUsage": {
+            "total": 0,
+            "numRequests": 1
+          },
+          "cached": false
+        },
+        "score": 0.9090909090909091,
+        "success": false,
+        "testCase": {
+          "description": "Dialogue - anxious patient (Maya)",
+          "vars": {
+            "vignette_name": "anxious",
+            "max_turns": 16
+          },
+          "assert": [
+            {
+              "type": "javascript",
+              "value": "// No 3+ identical consecutive patient messages\nconst data = JSON.parse(output);\nconst patientMsgs = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content);\nlet maxRun = 1, run = 1;\nfor (let i = 1; i < patientMsgs.length; i++) {\n  if (patientMsgs[i] === patientMsgs[i - 1]) {\n    run++;\n    maxRun = Math.max(maxRun, run);\n  } else {\n    run = 1;\n  }\n}\nreturn maxRun < 3;\n",
+              "metric": "NoConsecutiveRepeats"
+            },
+            {
+              "type": "javascript",
+              "value": "// No single patient response appears 3+ times total\nconst data = JSON.parse(output);\nconst patientMsgs = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content);\nconst counts = {};\nfor (const msg of patientMsgs) {\n  counts[msg] = (counts[msg] || 0) + 1;\n}\nconst maxCount = Math.max(...Object.values(counts));\nreturn maxCount < 3;\n",
+              "metric": "NoExcessiveRepetition"
+            },
+            {
+              "type": "javascript",
+              "value": "// Patient response word counts should have meaningful variance\n// (stdev > 2 means not all responses are the same length)\nconst data = JSON.parse(output);\nconst lengths = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content.split(/\\s+/).length);\nconst avg = lengths.reduce((a, b) => a + b, 0) / lengths.length;\nconst variance = lengths.reduce((s, l) => s + Math.pow(l - avg, 2), 0) / lengths.length;\nreturn Math.sqrt(variance) > 2;\n",
+              "metric": "ResponseLengthVariety"
+            },
+            {
+              "type": "javascript",
+              "value": "// At least one patient response should be very short (≤5 words)\n// and at least one should be moderate (≥8 words) — like a real person\nconst data = JSON.parse(output);\nconst lengths = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content.split(/\\s+/).length);\nconst hasShort = lengths.some(l => l <= 5);\nconst hasModerate = lengths.some(l => l >= 8);\nreturn hasShort && hasModerate;\n",
+              "metric": "MixOfShortAndLonger"
+            },
+            {
+              "type": "javascript",
+              "value": "// Dialogue should reach the rewriting stage\nconst data = JSON.parse(output);\nreturn data.stages_visited.includes('rewriting');\n",
+              "metric": "ReachesRewriting"
+            },
+            {
+              "type": "javascript",
+              "value": "// Recording should not consume more than 70% of total turns\nconst data = JSON.parse(output);\nconst recordingMsgs = data.messages.filter(\n  m => m.stage === 'recording'\n).length;\nconst ratio = recordingMsgs / data.messages.length;\nreturn ratio <= 0.7;\n",
+              "metric": "RecordingNotTooLong"
+            },
+            {
+              "type": "javascript",
+              "value": "// Patient never uses therapist-like phrases across any turn\nconst data = JSON.parse(output);\nconst patientText = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content)\n  .join(' ')\n  .toLowerCase();\nconst banned = [\n  \"that's really helpful\",\n  \"you're doing wonderfully\",\n  \"let's try this\",\n  \"how does that feel\",\n  \"as your therapist\",\n  \"i'm here to help you\",\n  \"you mentioned feeling\",\n];\nreturn !banned.some(p => patientText.includes(p));\n",
+              "metric": "NoRoleConfusion"
+            },
+            {
+              "type": "javascript",
+              "value": "// All patient responses should be ≤80 words (no essays)\nconst data = JSON.parse(output);\nconst patientMsgs = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content);\nreturn patientMsgs.every(\n  m => m.split(/\\s+/).length <= 80\n);\n",
+              "metric": "AllResponsesReasonableLength"
+            },
+            {
+              "type": "javascript",
+              "value": "// No banned AI vocabulary across the full dialogue\nconst data = JSON.parse(output);\nconst patientText = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content)\n  .join(' ')\n  .toLowerCase();\nconst aiWords = [\n  'whimsical', 'vibrant', 'primal', 'profound',\n  'empowering', 'psychedelic', 'swirling', 'wafting',\n];\nreturn !aiWords.some(w => patientText.includes(w));\n",
+              "metric": "NoAIVocabulary"
+            },
+            {
+              "type": "javascript",
+              "value": "// No fantasy imagery in rewriting responses\nconst data = JSON.parse(output);\nconst rewritingPatient = data.messages\n  .filter((m, i) => {\n    // Patient messages during/after rewriting stage\n    // (patient messages have role 'user' and appear after\n    //  a therapist rewriting message)\n    if (m.role !== 'user') return false;\n    // Check if previous assistant message was rewriting\n    const prev = data.messages[i - 1];\n    return prev && prev.stage === 'rewriting';\n  })\n  .map(m => m.content)\n  .join(' ')\n  .toLowerCase();\nconst fantasy = [\n  'butterfly', 'rainbow', 'magical', 'fairy',\n  'unicorn', 'sparkle', 'golden light',\n  'protective bubble', 'playful creature',\n];\nreturn !fantasy.some(f => rewritingPatient.includes(f));\n",
+              "metric": "NoFantasyImagery"
+            },
+            {
+              "type": "javascript",
+              "value": "// No 3+ identical consecutive therapist messages\nconst data = JSON.parse(output);\nconst therapistMsgs = data.messages\n  .filter(m => m.role === 'assistant')\n  .map(m => m.content);\nlet maxRun = 1, run = 1;\nfor (let i = 1; i < therapistMsgs.length; i++) {\n  if (therapistMsgs[i] === therapistMsgs[i - 1]) {\n    run++;\n    maxRun = Math.max(maxRun, run);\n  } else {\n    run = 1;\n  }\n}\nreturn maxRun < 3;\n",
+              "metric": "TherapistNoRepeats"
+            }
+          ],
+          "options": {},
+          "metadata": {}
+        },
+        "testIdx": 0,
+        "vars": {
+          "vignette_name": "anxious",
+          "max_turns": 16
+        },
+        "metadata": {
+          "_promptfooFileMetadata": {}
+        },
+        "failureReason": 1
+      }
+    ],
+    "stats": {
+      "successes": 0,
+      "failures": 1,
+      "errors": 0,
+      "tokenUsage": {
+        "prompt": 0,
+        "completion": 0,
+        "cached": 0,
+        "total": 0,
+        "numRequests": 1,
+        "completionDetails": {
+          "reasoning": 0,
+          "acceptedPrediction": 0,
+          "rejectedPrediction": 0
+        },
+        "assertions": {
+          "total": 0,
+          "prompt": 0,
+          "completion": 0,
+          "cached": 0,
+          "numRequests": 0,
+          "completionDetails": {
+            "reasoning": 0,
+            "acceptedPrediction": 0,
+            "rejectedPrediction": 0
+          }
+        }
+      },
+      "durationMs": 17117
+    }
+  },
+  "config": {
+    "tags": {},
+    "description": "Dialogue Flow & Loop Detection",
+    "prompts": [
+      "Run dialogue for vignette={{vignette_name}} max_turns={{max_turns}}"
+    ],
+    "providers": [
+      {
+        "id": "python:prompts/dialogue_provider.py"
+      }
+    ],
+    "tests": [
+      {
+        "description": "Dialogue - anxious patient (Maya)",
+        "vars": {
+          "vignette_name": "anxious",
+          "max_turns": 16
+        }
+      },
+      {
+        "description": "Dialogue - cooperative patient (Anna)",
+        "vars": {
+          "vignette_name": "cooperative",
+          "max_turns": 16
+        }
+      },
+      {
+        "description": "Dialogue - skeptic patient (Lara)",
+        "vars": {
+          "vignette_name": "skeptic",
+          "max_turns": 16
+        }
+      },
+      {
+        "description": "Dialogue - resistant patient (Marcus)",
+        "vars": {
+          "vignette_name": "resistant",
+          "max_turns": 16
+        }
+      },
+      {
+        "description": "Dialogue - avoidant patient (Jordan)",
+        "vars": {
+          "vignette_name": "avoidant",
+          "max_turns": 16
+        }
+      },
+      {
+        "description": "Dialogue - trauma patient (Sam)",
+        "vars": {
+          "vignette_name": "trauma",
+          "max_turns": 16
+        }
+      }
+    ],
+    "scenarios": [],
+    "env": {},
+    "defaultTest": {
+      "assert": [
+        {
+          "type": "javascript",
+          "value": "// No 3+ identical consecutive patient messages\nconst data = JSON.parse(output);\nconst patientMsgs = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content);\nlet maxRun = 1, run = 1;\nfor (let i = 1; i < patientMsgs.length; i++) {\n  if (patientMsgs[i] === patientMsgs[i - 1]) {\n    run++;\n    maxRun = Math.max(maxRun, run);\n  } else {\n    run = 1;\n  }\n}\nreturn maxRun < 3;\n",
+          "metric": "NoConsecutiveRepeats"
+        },
+        {
+          "type": "javascript",
+          "value": "// No single patient response appears 3+ times total\nconst data = JSON.parse(output);\nconst patientMsgs = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content);\nconst counts = {};\nfor (const msg of patientMsgs) {\n  counts[msg] = (counts[msg] || 0) + 1;\n}\nconst maxCount = Math.max(...Object.values(counts));\nreturn maxCount < 3;\n",
+          "metric": "NoExcessiveRepetition"
+        },
+        {
+          "type": "javascript",
+          "value": "// Patient response word counts should have meaningful variance\n// (stdev > 2 means not all responses are the same length)\nconst data = JSON.parse(output);\nconst lengths = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content.split(/\\s+/).length);\nconst avg = lengths.reduce((a, b) => a + b, 0) / lengths.length;\nconst variance = lengths.reduce((s, l) => s + Math.pow(l - avg, 2), 0) / lengths.length;\nreturn Math.sqrt(variance) > 2;\n",
+          "metric": "ResponseLengthVariety"
+        },
+        {
+          "type": "javascript",
+          "value": "// At least one patient response should be very short (≤5 words)\n// and at least one should be moderate (≥8 words) — like a real person\nconst data = JSON.parse(output);\nconst lengths = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content.split(/\\s+/).length);\nconst hasShort = lengths.some(l => l <= 5);\nconst hasModerate = lengths.some(l => l >= 8);\nreturn hasShort && hasModerate;\n",
+          "metric": "MixOfShortAndLonger"
+        },
+        {
+          "type": "javascript",
+          "value": "// Dialogue should reach the rewriting stage\nconst data = JSON.parse(output);\nreturn data.stages_visited.includes('rewriting');\n",
+          "metric": "ReachesRewriting"
+        },
+        {
+          "type": "javascript",
+          "value": "// Recording should not consume more than 70% of total turns\nconst data = JSON.parse(output);\nconst recordingMsgs = data.messages.filter(\n  m => m.stage === 'recording'\n).length;\nconst ratio = recordingMsgs / data.messages.length;\nreturn ratio <= 0.7;\n",
+          "metric": "RecordingNotTooLong"
+        },
+        {
+          "type": "javascript",
+          "value": "// Patient never uses therapist-like phrases across any turn\nconst data = JSON.parse(output);\nconst patientText = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content)\n  .join(' ')\n  .toLowerCase();\nconst banned = [\n  \"that's really helpful\",\n  \"you're doing wonderfully\",\n  \"let's try this\",\n  \"how does that feel\",\n  \"as your therapist\",\n  \"i'm here to help you\",\n  \"you mentioned feeling\",\n];\nreturn !banned.some(p => patientText.includes(p));\n",
+          "metric": "NoRoleConfusion"
+        },
+        {
+          "type": "javascript",
+          "value": "// All patient responses should be ≤80 words (no essays)\nconst data = JSON.parse(output);\nconst patientMsgs = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content);\nreturn patientMsgs.every(\n  m => m.split(/\\s+/).length <= 80\n);\n",
+          "metric": "AllResponsesReasonableLength"
+        },
+        {
+          "type": "javascript",
+          "value": "// No banned AI vocabulary across the full dialogue\nconst data = JSON.parse(output);\nconst patientText = data.messages\n  .filter(m => m.role === 'user')\n  .map(m => m.content)\n  .join(' ')\n  .toLowerCase();\nconst aiWords = [\n  'whimsical', 'vibrant', 'primal', 'profound',\n  'empowering', 'psychedelic', 'swirling', 'wafting',\n];\nreturn !aiWords.some(w => patientText.includes(w));\n",
+          "metric": "NoAIVocabulary"
+        },
+        {
+          "type": "javascript",
+          "value": "// No fantasy imagery in rewriting responses\nconst data = JSON.parse(output);\nconst rewritingPatient = data.messages\n  .filter((m, i) => {\n    // Patient messages during/after rewriting stage\n    // (patient messages have role 'user' and appear after\n    //  a therapist rewriting message)\n    if (m.role !== 'user') return false;\n    // Check if previous assistant message was rewriting\n    const prev = data.messages[i - 1];\n    return prev && prev.stage === 'rewriting';\n  })\n  .map(m => m.content)\n  .join(' ')\n  .toLowerCase();\nconst fantasy = [\n  'butterfly', 'rainbow', 'magical', 'fairy',\n  'unicorn', 'sparkle', 'golden light',\n  'protective bubble', 'playful creature',\n];\nreturn !fantasy.some(f => rewritingPatient.includes(f));\n",
+          "metric": "NoFantasyImagery"
+        },
+        {
+          "type": "javascript",
+          "value": "// No 3+ identical consecutive therapist messages\nconst data = JSON.parse(output);\nconst therapistMsgs = data.messages\n  .filter(m => m.role === 'assistant')\n  .map(m => m.content);\nlet maxRun = 1, run = 1;\nfor (let i = 1; i < therapistMsgs.length; i++) {\n  if (therapistMsgs[i] === therapistMsgs[i - 1]) {\n    run++;\n    maxRun = Math.max(maxRun, run);\n  } else {\n    run = 1;\n  }\n}\nreturn maxRun < 3;\n",
+          "metric": "TherapistNoRepeats"
+        }
+      ],
+      "vars": {},
+      "options": {},
+      "metadata": {}
+    },
+    "outputPath": [
+      "./promptfoo-dialogue-results.json"
+    ],
+    "extensions": [],
+    "metadata": {},
+    "evaluateOptions": {}
+  },
+  "shareableUrl": null,
+  "metadata": {
+    "promptfooVersion": "0.120.19",
+    "nodeVersion": "v22.18.0",
+    "platform": "darwin",
+    "arch": "arm64",
+    "exportedAt": "2026-02-08T12:35:27.367Z",
+    "evaluationCreatedAt": "2026-02-08T12:35:10.119Z"
+  }
+}

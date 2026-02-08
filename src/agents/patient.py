@@ -112,7 +112,7 @@ class PatientAgent(BaseAgent):
         sample_text = ""
         if sample_responses:
             sample_text = "\n\n## How You Talk\n"
-            sample_text += "Your messages should look like these in length, tone, and simplicity. Do not write longer or more elaborate than these:\n"
+            sample_text += "Aim for this register and length. Some of your messages can be even shorter (a single sentence, or just 'yeah', 'I guess', 'I don't know'):\n"
             for response in sample_responses:
                 sample_text += f"- \"{response}\"\n"
         
