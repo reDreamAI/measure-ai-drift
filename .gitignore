@@ -6,4 +6,9 @@
 # Ignore markdown files in root directory only (keep docs/*.md, etc.)
 /*.md
 
+# Ignore node modules
 node_modules
+
+# ignore temporary data files
+.DS_Store
+src/evaluation/__pycache__/*
