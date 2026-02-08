@@ -8,6 +8,7 @@ from src.evaluation.metrics import (
 )
 from src.evaluation.sampler import Sampler, TrialResult
 from src.evaluation.experiment import ExperimentRun, load_experiment
+from src.evaluation.results import aggregate_experiments, save_results
 
 __all__ = [
     "compute_pairwise_jaccard",
@@ -18,4 +19,6 @@ __all__ = [
     "TrialResult",
     "ExperimentRun",
     "load_experiment",
+    "aggregate_experiments",
+    "save_results",
 ]

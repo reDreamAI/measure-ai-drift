@@ -400,7 +400,7 @@ class GenerationStack:
     
     def get_conversation_summary(self) -> dict[str, Any]:
         """Get a summary of the conversation.
-        
+
         Returns:
             Dictionary with conversation statistics
         """
@@ -414,6 +414,64 @@ class GenerationStack:
             "completed": self._is_complete,
             "language": self.language,
         }
+
+    def save_frozen_history(self, output_dir: str | Path) -> Path:
+        """Slice conversation at REWRITING stage and save as frozen history.
+
+        Creates a frozen history suitable for evaluation stack experiments.
+        The frozen history includes all messages up to and including the
+        REWRITING stage, which is the target for rescripting stability tests.
+
+        Args:
+            output_dir: Directory to save the frozen history
+
+        Returns:
+            Path to the saved frozen history file
+
+        Example:
+            >>> stack = GenerationStack.from_vignette("anxious")
+            >>> await stack.run()
+            >>> frozen_path = stack.save_frozen_history("data/synthetic/frozen_histories")
+        """
+        output_dir = Path(output_dir)
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        # Slice at REWRITING stage
+        frozen = self.conversation.slice_at_stage(Stage.REWRITING)
+
+        # Generate filename
+        session_short = self.conversation.session_id[:8]
+        filename = f"frozen_{self.patient.vignette_name}_{session_short}.json"
+        output_path = output_dir / filename
+
+        # Prepare data with metadata
+        data = {
+            "session_id": frozen.session_id,
+            "language": self.language,
+            "vignette": self.patient.vignette_name,
+            "patient_name": self.patient.name,
+            "frozen_at_stage": Stage.REWRITING.value,
+            "messages": [
+                {
+                    "role": msg.role,
+                    "content": msg.content,
+                    "stage": msg.stage,
+                    "timestamp": msg.timestamp.isoformat(),
+                }
+                for msg in frozen.messages
+            ],
+            "stages": frozen.stages,
+            "metadata": {
+                "frozen_at": datetime.now().isoformat(),
+                "original_message_count": len(self.conversation.messages),
+                "frozen_message_count": len(frozen.messages),
+            },
+        }
+
+        with open(output_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+
+        return output_path
 
 
 async def run_generation(

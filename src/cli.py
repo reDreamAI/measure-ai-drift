@@ -39,23 +39,24 @@ def cmd_generate(args: argparse.Namespace) -> int:
     """Run the Generation Stack to create synthetic dialogues."""
     from src.stacks import GenerationStack
     from datetime import datetime
-    
+
     # Auto-generate output filename if not provided
     output_path = args.output
     if not output_path:
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_path = f"outputs/dialogue_{args.vignette}_{timestamp}.json"
-    
+        output_path = f"data/synthetic/dialogues/dialogue_{args.vignette}_{timestamp}.json"
+
+    freeze_info = " + frozen history" if args.freeze else ""
     console.print(Panel(
         f"[bold]Generation Stack[/bold]\n"
         f"Vignette: {args.vignette}\n"
         f"Language: {args.language}\n"
         f"Max turns: {args.max_turns}\n"
-        f"Output: {output_path}",
+        f"Output: {output_path}{freeze_info}",
         title="Starting Dialogue Generation",
         border_style="blue"
     ))
-    
+
     async def _run():
         try:
             stack = GenerationStack.from_vignette(
@@ -63,27 +64,33 @@ def cmd_generate(args: argparse.Namespace) -> int:
                 language=args.language,
                 max_turns=args.max_turns,
             )
-            
+
             conversation = await stack.run(verbose=args.verbose)
-            
+
             # Always save (either to specified path or auto-generated)
             save_path = Path(output_path)
             stack.save_dialogue(save_path, include_metadata=True)
             console.print(f"\n[green]✓[/green] Dialogue saved to: {save_path}")
-            
+
+            # Optionally create frozen history
+            if args.freeze:
+                frozen_dir = Path("data/synthetic/frozen_histories")
+                frozen_path = stack.save_frozen_history(frozen_dir)
+                console.print(f"[green]✓[/green] Frozen history saved to: {frozen_path}")
+
             # Print summary
             summary = stack.get_conversation_summary()
             table = Table(title="Session Summary")
             table.add_column("Metric", style="cyan")
             table.add_column("Value", style="green")
-            
+
             for key, value in summary.items():
                 table.add_row(key, str(value))
-            
+
             console.print(table)
-            
+
             return 0
-            
+
         except FileNotFoundError as e:
             console.print(f"[red]✗ Error:[/red] {e}")
             console.print("\nUse 'python -m src list-vignettes' to see available vignettes")
@@ -94,7 +101,7 @@ def cmd_generate(args: argparse.Namespace) -> int:
             if args.verbose:
                 traceback.print_exc()
             return 1
-    
+
     return asyncio.run(_run())
 
 
@@ -413,7 +420,8 @@ def main() -> int:
     gen_parser.add_argument('--vignette', '-v', default='cooperative', help='Vignette name (default: cooperative)')
     gen_parser.add_argument('--language', '-l', default='en', choices=['en', 'de'], help='Session language')
     gen_parser.add_argument('--max-turns', '-t', type=int, default=20, help='Maximum dialogue turns (default: 20)')
-    gen_parser.add_argument('--output', '-o', help='Output file path (JSON, default: auto-generated in outputs/)')
+    gen_parser.add_argument('--output', '-o', help='Output file path (JSON, default: auto-generated in data/synthetic/dialogues/)')
+    gen_parser.add_argument('--freeze', '-f', action='store_true', help='Also create frozen history at REWRITING stage')
     gen_parser.add_argument('--verbose', action='store_true', help='Show detailed output')
     
     # Evaluate command

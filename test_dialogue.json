@@ -1,134 +1,134 @@
 {
-  "session_id": "d4040158-fbe0-4bf8-a8ff-b8201aa0d42f",
+  "session_id": "1b4ff90b-f15d-41c9-9e62-39bc3e463bdc",
   "language": "en",
   "vignette": "skeptic",
   "patient_name": "Lara",
   "messages": [
     {
       "role": "user",
-      "content": "I've been having this nightmare. It's about being trapped in a endless maze of server rooms, with error messages flashing everywhere...",
+      "content": "I've been having this nightmare. It's about being trapped in a endless maze of server rooms with error messages flashing everywhere.",
       "stage": null,
-      "timestamp": "2026-02-07T14:44:42.059062"
+      "timestamp": "2026-02-08T14:29:28.304533"
     },
     {
       "role": "assistant",
       "content": "What happens to you as you're trying to navigate through this endless maze of server rooms - do you encounter any obstacles, people, or feelings that stand out to you?",
       "stage": "recording",
-      "timestamp": "2026-02-07T14:44:42.730732"
+      "timestamp": "2026-02-08T14:29:29.076084"
     },
     {
       "role": "user",
-      "content": "There's something chasing me through the corridors. I can hear footsteps but never see what it is. The error messages are flashing red and blue, and the server racks are all identical. I keep turning corners but it's always the same.",
+      "content": "There's something chasing me through the corridors. I can hear footsteps but never see what it is.",
       "stage": null,
-      "timestamp": "2026-02-07T14:44:47.026607"
+      "timestamp": "2026-02-08T14:29:31.835908"
     },
     {
       "role": "assistant",
-      "content": "How do you feel as you're being chased through the corridors - is it a sense of panic, fear, or something else, and do you ever try to do anything to escape or hide from whatever is chasing you?",
+      "content": "How do you feel when you hear those footsteps and know something is chasing you - is it fear, panic, or something else that takes over in that moment?",
       "stage": "recording",
-      "timestamp": "2026-02-07T14:44:47.446549"
+      "timestamp": "2026-02-08T14:29:32.176919"
     },
     {
       "role": "user",
-      "content": "I feel panic. My heart is racing and I can't catch my breath. I try to run faster, I try different corridors, but I always end up back where I started. The footsteps are getting closer.",
+      "content": "It's just fear. Pure fear.",
       "stage": null,
-      "timestamp": "2026-02-07T14:44:50.773404"
+      "timestamp": "2026-02-08T14:29:33.906439"
     },
     {
       "role": "assistant",
-      "content": "It sounds like the sense of panic and disorientation is really intense in this nightmare. What happens next - do the footsteps ever catch up to you, or does something else happen that changes the situation or makes you feel even more trapped?",
+      "content": "That must be really terrifying. Can you tell me more about what happens next in the nightmare - do you try to escape, hide, or do you feel like you're frozen in place as the footsteps get closer?",
       "stage": "recording",
-      "timestamp": "2026-02-07T14:44:51.333625"
+      "timestamp": "2026-02-08T14:29:34.348010"
     },
     {
       "role": "user",
-      "content": "I always wake up just before being caught. That's when I realize I've been holding my breath.",
+      "content": "I'm always running. Trying to find an exit but there isn't one.",
       "stage": null,
-      "timestamp": "2026-02-07T14:44:52.115031"
+      "timestamp": "2026-02-08T14:29:35.476260"
     },
     {
       "role": "assistant",
-      "content": "It's like your mind is sparing you from the worst of it by waking you up just in time. Now that you've shared your nightmare with me, would you like to proceed with rewriting it according to Imagery Rehearsal Therapy, where we can work together to transform this frightening scenario into a more empowering and positive experience?",
+      "content": "It sounds like the sense of being trapped and having no escape route is really intensifying the fear. Does the nightmare ever reach a climax or a conclusion, or does it just keep repeating with you running and the footsteps chasing you, until you wake up?",
       "stage": "recording",
-      "timestamp": "2026-02-07T14:44:52.660888"
+      "timestamp": "2026-02-08T14:29:35.953618"
     },
     {
       "role": "user",
-      "content": "I guess we can try it. But I need to understand how this actually works. What's the mechanism here? How does imagining something different actually affect my brain?",
+      "content": "I always wake up just before being caught.",
       "stage": null,
-      "timestamp": "2026-02-07T14:44:53.716636"
+      "timestamp": "2026-02-08T14:29:38.005163"
     },
     {
       "role": "assistant",
-      "content": "Imagery Rehearsal Therapy is based on the idea that by reimagining and reshaping the narrative of your nightmare, you can rewire your brain's response to the original traumatic or frightening images, reducing their distressing effects over time. By actively changing the scenario in a controlled, imaginative environment, you're essentially teaching your brain that it has the power to alter and manage these frightening experiences, which can lead to a decrease in their intensity and frequency. You mentioned feeling panicked when the footsteps were getting closer - how could you change this situation to make it less frightening or more empowering?",
-      "stage": "rewriting",
-      "timestamp": "2026-02-07T14:44:54.619703"
+      "content": "It sounds like the nightmare ends on a really intense and suspenseful note, with you waking up just before the unknown chaser catches up to you. Now that you've shared your nightmare with me, would you like to proceed with rewriting it according to Imagery Rehearsal Therapy, where we can work together to transform this frightening scenario into a more empowering and positive experience?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T14:29:38.619097"
     },
     {
       "role": "user",
-      "content": "I don't know. Maybe the footsteps could just stop.",
+      "content": "Okay, but how does this actually work? What's the mechanism behind changing a dream by imagining it differently?",
       "stage": null,
-      "timestamp": "2026-02-07T14:44:55.753861"
+      "timestamp": "2026-02-08T14:29:41.236225"
     },
     {
       "role": "assistant",
-      "content": "You mentioned feeling panicked when the footsteps were getting closer. If the footsteps were to stop, how would that change the way you feel in that moment, and what would you do next in the silence that follows?",
-      "stage": "rewriting",
-      "timestamp": "2026-02-07T14:44:56.242043"
+      "content": "You're curious about the process, and that's completely understandable. In Imagery Rehearsal Therapy, the idea is that by reimagining and rehearsing a nightmare in a more controlled and empowering way, you can actually rewire your brain's response to the original traumatic or frightening material. Essentially, you're creating a new narrative that your brain can draw upon, rather than the old, scary one. This can help reduce the frequency and intensity of the nightmares over time. Would you like to start by identifying a specific aspect of the nightmare that you'd like to change or transform, such as the maze, the chaser, or your own actions and feelings?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T14:29:42.012665"
     },
     {
       "role": "user",
-      "content": "I guess I'd feel confused at first. Then maybe I'd stop running. I could look around and see that there's actually an exit door.",
+      "content": "I guess we could start with the maze.",
       "stage": null,
-      "timestamp": "2026-02-07T14:44:57.427434"
+      "timestamp": "2026-02-08T14:29:42.995728"
     },
     {
       "role": "assistant",
-      "content": "You mentioned feeling confused and then maybe stopping to look around. What would you see or experience as you approach this exit door, and how would that make you feel compared to the panic you felt before?",
+      "content": "You mentioned feeling trapped in the endless maze of server rooms. How could you change this environment to make it less overwhelming or more manageable for yourself?",
       "stage": "rewriting",
-      "timestamp": "2026-02-07T14:44:58.066543"
+      "timestamp": "2026-02-08T14:29:43.508408"
     },
     {
       "role": "user",
-      "content": "I'd see the door has a green light above it instead of the red error messages. When I open it, there's just normal office lighting and I can hear normal office sounds. I'd feel relief, I think.",
+      "content": "I don't know. Maybe I could find a way out?",
       "stage": null,
-      "timestamp": "2026-02-07T14:45:01.687268"
+      "timestamp": "2026-02-08T14:29:44.483206"
     },
     {
       "role": "assistant",
-      "content": "You mentioned feeling relief as you open the door and see the normal office lighting and hear the normal office sounds. How could you further enhance this sense of relief, perhaps by noticing specific details in this new environment that make you feel even more calm and in control?",
-      "stage": "rewriting",
-      "timestamp": "2026-02-07T14:45:02.692874"
+      "content": "Finding a way out could be a great starting point. What if, in this reimagined version, you stumble upon a door or a path that you hadn't noticed before, and it leads you to a completely different environment - maybe one that's more peaceful or familiar to you?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T14:29:45.049474"
     },
     {
       "role": "user",
-      "content": "I don't know. Maybe there's a window with sunlight coming through.",
+      "content": "I guess I could find a door that leads outside.",
       "stage": null,
-      "timestamp": "2026-02-07T14:45:07.915067"
+      "timestamp": "2026-02-08T14:29:47.623683"
     },
     {
       "role": "assistant",
-      "content": "You mentioned feeling relief as you step into this new environment with normal office lighting and sounds, and now you've added a window with sunlight coming through. How does the warmth and brightness of the sunlight affect you, and what do you see outside the window that could further enhance your sense of calm and empowerment?",
+      "content": "You mentioned feeling trapped when you were in the maze, but now you've found a door that leads outside. How does the outside environment make you feel, and are there any specific sights, sounds, or sensations that you notice as you step out of the server room?",
       "stage": "rewriting",
-      "timestamp": "2026-02-07T14:45:08.738418"
+      "timestamp": "2026-02-08T14:29:48.250421"
     },
     {
       "role": "user",
-      "content": "I see people walking outside, going about their day. It makes me realize I'm not trapped anymore.",
+      "content": "It's quiet. I can hear birds.",
       "stage": null,
-      "timestamp": "2026-02-07T14:45:09.606965"
+      "timestamp": "2026-02-08T14:29:51.752179"
     },
     {
       "role": "assistant",
-      "content": "You mentioned feeling a sense of realization that you're not trapped anymore as you see people walking outside. How does this newfound sense of freedom and connection to the outside world make you feel, and what would you like to do next in this scenario to further solidify your sense of empowerment?",
+      "content": "That's a lovely contrast to the chaotic server room. You mentioned feeling fear when you heard the footsteps in the original nightmare. How could you change the situation with the chaser to make it less frightening or more manageable for yourself?",
       "stage": "rewriting",
-      "timestamp": "2026-02-07T14:45:10.355444"
+      "timestamp": "2026-02-08T14:29:52.246272"
     },
     {
       "role": "user",
-      "content": "I'd walk over to the window and press my hand against the glass. I'd feel the warmth of the sun on my skin.",
+      "content": "I don't know. Maybe the footsteps stop?",
       "stage": null,
-      "timestamp": "2026-02-07T14:45:11.236109"
+      "timestamp": "2026-02-08T14:29:53.227219"
     }
   ],
   "stages": [
@@ -136,15 +136,15 @@
     "recording",
     "recording",
     "recording",
+    "recording",
+    "recording",
     "rewriting",
-    "rewriting",
-    "rewriting",
-    "rewriting",
+    "recording",
     "rewriting",
     "rewriting"
   ],
   "metadata": {
-    "generated_at": "2026-02-07T14:45:11.242759",
+    "generated_at": "2026-02-08T14:29:53.232434",
     "total_turns": 21,
     "completed": false,
     "max_turns": 20
