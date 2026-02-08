@@ -1,0 +1,178 @@
+{
+  "session_id": "29e5e308-0e06-476e-a947-be81096a32c3",
+  "language": "en",
+  "vignette": "skeptic",
+  "patient_name": "Lara",
+  "messages": [
+    {
+      "role": "user",
+      "content": "I've been having this nightmare. It's about being trapped in a endless maze of server rooms, with error messages flashing everywhere...",
+      "stage": null,
+      "timestamp": "2026-02-08T11:50:56.058055"
+    },
+    {
+      "role": "assistant",
+      "content": "What happens to you as you're trying to navigate through this endless maze of server rooms - do you encounter any specific obstacles, people, or emotions that stand out to you?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T11:50:56.728465"
+    },
+    {
+      "role": "user",
+      "content": "I can hear footsteps behind me but I never see what's chasing me. I just know it's getting closer.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:50:58.247621"
+    },
+    {
+      "role": "assistant",
+      "content": "How do you feel as those footsteps get closer - is it a sense of panic, fear, or something else that takes over, and do you try to do anything to escape or hide from whatever is behind you?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T11:50:58.639908"
+    },
+    {
+      "role": "user",
+      "content": "I just feel this overwhelming panic. I try to run faster but the corridors all look the same and I can't find a way out.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:51:00.574580"
+    },
+    {
+      "role": "assistant",
+      "content": "It sounds like the panic and disorientation are really intensifying the fear in the dream. What's the last thing you remember happening in the dream before you wake up - do you eventually collapse from exhaustion, find a door that might lead out, or does something else happen that jolts you awake?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T11:51:01.122311"
+    },
+    {
+      "role": "user",
+      "content": "I just wake up right before whatever is chasing me catches me. I'm always sweating and my heart is pounding.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:51:02.677684"
+    },
+    {
+      "role": "assistant",
+      "content": "Now that you've shared your nightmare with me, would you like to proceed with rewriting it according to Imagery Rehearsal Therapy, where we can work together to transform this frightening experience into a more empowering and positive one?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T11:51:03.123487"
+    },
+    {
+      "role": "user",
+      "content": "I'm not sure how this actually works. How does imagining something different actually change what happens in my brain when I'm asleep?",
+      "stage": null,
+      "timestamp": "2026-02-08T11:51:04.249615"
+    },
+    {
+      "role": "assistant",
+      "content": "That's a great question. Essentially, when you rehearse a new, empowering version of your nightmare while you're awake, you're creating a new neural pathway in your brain. This new pathway can eventually override the old, frightening one, so that when you're asleep, your brain is more likely to follow the new, more positive script. It's kind of like rewriting a familiar story in your mind, and the more you practice the new version, the more it becomes the default. Would you like me to explain more about how we can start rewriting your nightmare, or is there something specific that's still holding you back from trying it out?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T11:51:05.001826"
+    },
+    {
+      "role": "user",
+      "content": "Okay, I guess that makes sense from a neurological standpoint. But what if I can't think of a good way to change the dream?",
+      "stage": null,
+      "timestamp": "2026-02-08T11:51:06.191002"
+    },
+    {
+      "role": "assistant",
+      "content": "Don't worry, that's completely normal. We can work together to come up with a new version of your dream that feels more empowering and positive. I'll ask you some questions to help spark some ideas. Let's start with this: what would you like to happen instead of waking up in a panic, right before whatever is chasing you catches up? Would you like to find a way out of the maze, confront whatever is behind you, or something entirely different?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T11:51:06.916985"
+    },
+    {
+      "role": "user",
+      "content": "Maybe I could find a door that leads out of the maze?",
+      "stage": null,
+      "timestamp": "2026-02-08T11:51:09.575184"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling panicked when you couldn't find a way out of the maze. How could you change this situation to make it less overwhelming or more hopeful, perhaps by imagining what's behind the door that leads out of the maze?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T11:51:10.087938"
+    },
+    {
+      "role": "user",
+      "content": "I guess it could lead to somewhere peaceful, like a beach or a forest.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:51:11.206088"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling panicked when you couldn't find a way out of the maze. How could you change this situation to make it less overwhelming or more hopeful, perhaps by imagining what you see, hear, or smell as you step through the door into this peaceful place?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T11:51:11.724325"
+    },
+    {
+      "role": "user",
+      "content": "I could see the sun shining, hear the waves crashing, and smell the salty air.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:51:12.953696"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling panicked when you couldn't find a way out of the maze. How could you change this situation to make it less overwhelming or more hopeful, perhaps by imagining how the sensation of the sun's warmth or the feeling of the sand beneath your feet makes you feel as you step into this peaceful place?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T11:51:13.558646"
+    },
+    {
+      "role": "user",
+      "content": "It would feel calming and safe, like a huge relief.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:51:14.628317"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling calm and safe as you step into this peaceful place. How could you further enhance this sense of calm, perhaps by imagining what you do next or what other sensations you experience in this serene environment?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T11:51:15.310081"
+    },
+    {
+      "role": "user",
+      "content": "I could sit on the beach and watch the waves, feeling the sand between my toes.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:51:16.473467"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling calm and safe as you sit on the beach. How could you change the memory of being chased in the maze to make it less distressing or more empowering, perhaps by imagining how this peaceful moment on the beach could be a direct result of overcoming the challenges in the maze?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T11:51:17.049059"
+    },
+    {
+      "role": "user",
+      "content": "I guess I could imagine that finding the door and escaping the maze was a big accomplishment, and now I'm being rewarded with this peaceful moment.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:51:20.112085"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling a sense of accomplishment and being rewarded with this peaceful moment on the beach. How could you change the situation to make this feeling of accomplishment even more satisfying, perhaps by imagining what you learn or discover about yourself as you reflect on overcoming the maze?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T11:51:20.632450"
+    },
+    {
+      "role": "user",
+      "content": "I could realize that I'm stronger and more capable than I thought, and that I can handle challenges better than I believed.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:51:22.587924"
+    }
+  ],
+  "stages": [
+    "recording",
+    "recording",
+    "recording",
+    "recording",
+    "recording",
+    "recording",
+    "rewriting",
+    "rewriting",
+    "rewriting",
+    "rewriting",
+    "rewriting",
+    "rewriting"
+  ],
+  "metadata": {
+    "generated_at": "2026-02-08T11:51:22.593088",
+    "total_turns": 25,
+    "completed": false,
+    "max_turns": 25
+  }
+}

@@ -1,0 +1,178 @@
+{
+  "session_id": "924ee3c5-a808-4c28-90f4-8617564cf8ba",
+  "language": "en",
+  "vignette": "skeptic",
+  "patient_name": "Lara",
+  "messages": [
+    {
+      "role": "user",
+      "content": "I've been having this nightmare. It's about being trapped in a endless maze of server rooms, with error messages flashing everywhere...",
+      "stage": null,
+      "timestamp": "2026-02-08T11:56:48.922943"
+    },
+    {
+      "role": "assistant",
+      "content": "What happens to you as you're trying to navigate through this endless maze of server rooms - do you encounter any obstacles, people, or feelings that stand out to you?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T11:56:49.568843"
+    },
+    {
+      "role": "user",
+      "content": "I hear footsteps behind me. I can never see what's making them, but I know it's getting closer. The error messages are flashing faster and I'm trying to find an exit but there isn't one.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:56:51.368132"
+    },
+    {
+      "role": "assistant",
+      "content": "How do you feel as the footsteps get closer and the error messages flash faster - is it anxiety, fear, panic, or something else that's dominating your emotions in that moment?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T11:56:51.754119"
+    },
+    {
+      "role": "user",
+      "content": "I feel trapped. Like I need to escape but I can't find a way out.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:56:54.235316"
+    },
+    {
+      "role": "assistant",
+      "content": "It sounds like a really intense and overwhelming experience. What's the last thing you remember happening in the nightmare before you wake up - do you wake up suddenly, or is there a specific image or feeling that stays with you as you come out of the dream?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T11:56:54.713559"
+    },
+    {
+      "role": "user",
+      "content": "I wake up just before whatever is chasing me catches me. I can feel it right behind me.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:56:56.084990"
+    },
+    {
+      "role": "assistant",
+      "content": "Now that you've shared your nightmare with me, I think we have a good sense of what's happening in the dream and how it's making you feel. Would you like to proceed with rewriting your dream according to Imagery Rehearsal Therapy, where we can work together to transform this frightening experience into a more empowering and positive one?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T11:56:56.519301"
+    },
+    {
+      "role": "user",
+      "content": "I'm not sure how this actually works. What's the mechanism behind changing a dream by just thinking about it differently?",
+      "stage": null,
+      "timestamp": "2026-02-08T11:56:58.358359"
+    },
+    {
+      "role": "assistant",
+      "content": "That's a great question. The idea behind Imagery Rehearsal Therapy is that by reimagining and rewriting your nightmare in a more positive and empowering way, you can actually rewire your brain to respond differently to the themes and emotions that are present in the dream. It's not just about thinking about the dream differently, but about actively reshaping the narrative and imagery of the dream to create a new, more positive association in your mind. This can help reduce the distress and anxiety associated with the nightmare, and even decrease the frequency of the nightmare itself. Would you like me to explain more about how we can start rewriting your dream, or is there something specific that's still unclear to you about the process?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T11:56:59.081027"
+    },
+    {
+      "role": "user",
+      "content": "Okay, but how do we know this actually works? Is there research showing it's effective?",
+      "stage": null,
+      "timestamp": "2026-02-08T11:57:00.478086"
+    },
+    {
+      "role": "assistant",
+      "content": "There is indeed research supporting the effectiveness of Imagery Rehearsal Therapy in reducing the frequency and distress of nightmares. Studies have shown that this type of therapy can be beneficial for people experiencing recurrent nightmares, including those related to PTSD. The research suggests that by reworking and reshaping the narrative of the nightmare, individuals can gain a sense of control and mastery over the dream content, which can lead to a decrease in nightmare frequency and intensity. Would you like to give it a try and see how it works for you, or are you still unsure about proceeding with rewriting your dream?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T11:57:01.260422"
+    },
+    {
+      "role": "user",
+      "content": "Okay, I guess I can try it. But I need concrete steps. What exactly do we do?",
+      "stage": null,
+      "timestamp": "2026-02-08T11:57:02.480335"
+    },
+    {
+      "role": "assistant",
+      "content": "Now that you're willing to give it a try, let's break it down into concrete steps. The first step is to identify a specific point in your nightmare where you'd like to make a change. This could be a moment where you feel particularly scared, trapped, or helpless. What's one specific moment in your dream that you'd like to change or alter in some way?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T11:57:03.431753"
+    },
+    {
+      "role": "user",
+      "content": "I guess the moment where I'm trapped in the server room and I can hear the footsteps getting closer.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:57:04.508143"
+    },
+    {
+      "role": "assistant",
+      "content": "Let's focus on that moment. Imagine yourself back in the server room, hearing the footsteps getting closer. Now, think about what you would like to happen instead of feeling trapped and scared. What would be a more empowering or positive outcome for you in that situation?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T11:57:05.042236"
+    },
+    {
+      "role": "user",
+      "content": "Maybe the footsteps stop. Or maybe I find a door that leads somewhere else.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:57:06.345172"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling trapped when the footsteps are getting closer. How could you change this situation to make it less frightening or more empowering, perhaps by exploring what's behind the footsteps or what you find when you open that new door?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T11:57:06.883777"
+    },
+    {
+      "role": "user",
+      "content": "I don't know. Maybe the footsteps are just my own echo.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:57:08.495834"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling trapped when the footsteps are getting closer. How could you change this situation to make it less frightening or more empowering, perhaps by exploring what's behind the idea that the footsteps are just your own echo, and what that realization could mean for you in that moment?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T11:57:09.173346"
+    },
+    {
+      "role": "user",
+      "content": "I guess if they're my own footsteps, then I'm not being chased. I'm just walking through the maze.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:57:11.045820"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling trapped when the footsteps are getting closer. How could you change this situation to make it less confining or more liberating, perhaps by imagining what it would be like to walk through the maze without the sense of being pursued, and what sights, sounds, or sensations you might experience in that newfound freedom?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T11:57:12.187050"
+    },
+    {
+      "role": "user",
+      "content": "I could look at the server racks. See what's on the screens instead of just error messages.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:57:13.478007"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling trapped when the error messages are flashing. How could you change this situation to make it less overwhelming or more intriguing, perhaps by exploring what's on those screens and what kind of information or messages you might discover that could help you navigate the maze?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T11:57:14.081944"
+    },
+    {
+      "role": "user",
+      "content": "Maybe the screens show a map of the maze. Or instructions on how to get out.",
+      "stage": null,
+      "timestamp": "2026-02-08T11:57:15.522497"
+    }
+  ],
+  "stages": [
+    "recording",
+    "recording",
+    "recording",
+    "recording",
+    "recording",
+    "recording",
+    "recording",
+    "recording",
+    "rewriting",
+    "rewriting",
+    "rewriting",
+    "rewriting"
+  ],
+  "metadata": {
+    "generated_at": "2026-02-08T11:57:15.525227",
+    "total_turns": 25,
+    "completed": false,
+    "max_turns": 25
+  }
+}

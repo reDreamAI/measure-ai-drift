@@ -111,8 +111,8 @@ class PatientAgent(BaseAgent):
         sample_responses = self.vignette.get("sample_responses", [])
         sample_text = ""
         if sample_responses:
-            sample_text = "\n\n## Sample Response Patterns\n"
-            sample_text += "Use these as inspiration for your communication style:\n"
+            sample_text = "\n\n## How You Talk\n"
+            sample_text += "Your messages should look like these in length, tone, and simplicity. Do not write longer or more elaborate than these:\n"
             for response in sample_responses:
                 sample_text += f"- \"{response}\"\n"
         
@@ -191,16 +191,16 @@ class PatientAgent(BaseAgent):
         traits = self.vignette.get("personality_traits", [])
         
         if "worried" in traits or "anxious" in traits:
-            opener = "I'm not sure where to start... I've been having these awful dreams. "
+            opener = "I've been having these bad dreams. "
         elif "resistant" in traits or "dismissive" in traits:
-            opener = "I don't know if this will help, but... "
+            opener = "I don't really know why I'm here but "
         elif "cooperative" in traits or "engaged" in traits:
             opener = "I'd like to tell you about a recurring dream I've been having. "
         else:
             opener = "I've been having this nightmare. "
         
         # Keep the initial description brief to allow therapist to probe
-        return f"{opener}It's about {first_part.lower()}..."
+        return f"{opener}It's about {first_part.lower()}."
     
     def get_nightmare_content(self) -> str:
         """Get the full nightmare content from the vignette.

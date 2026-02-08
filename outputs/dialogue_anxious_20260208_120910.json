@@ -1,0 +1,178 @@
+{
+  "session_id": "3ea3f85d-b9f5-4769-8183-9c279b6431c9",
+  "language": "en",
+  "vignette": "anxious",
+  "patient_name": "Maya",
+  "messages": [
+    {
+      "role": "user",
+      "content": "I'm not sure where to start... I've been having these awful dreams. It's about being in an exam room where the questions keep changing, the clock is speeding up, and everyone else has finished...",
+      "stage": null,
+      "timestamp": "2026-02-08T12:09:11.059297"
+    },
+    {
+      "role": "assistant",
+      "content": "It sounds like the dream is really stressful and overwhelming. Can you tell me more about what's happening with the questions - are they changing in a way that makes them impossible to answer, or is it more that you just can't keep up with the changes?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T12:09:11.852738"
+    },
+    {
+      "role": "user",
+      "content": "They're changing in a way that makes them impossible to answer. Like, I'll start writing an answer and then the question will morph into something completely different, and I can't even finish the first one.",
+      "stage": null,
+      "timestamp": "2026-02-08T12:09:14.793584"
+    },
+    {
+      "role": "assistant",
+      "content": "That must be really frustrating. What's happening with the other people in the exam room - you mentioned everyone else has finished, are they just sitting there waiting for you, or are they leaving the room, making you feel even more anxious and alone?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T12:09:15.302070"
+    },
+    {
+      "role": "user",
+      "content": "They're leaving the room one by one, and I can hear their chairs scraping on the floor. It's like they're all done and I'm the only one left, and the more people leave, the more I panic because I know I'm running out of time.",
+      "stage": null,
+      "timestamp": "2026-02-08T12:09:17.325370"
+    },
+    {
+      "role": "assistant",
+      "content": "It sounds like the feeling of being left behind and running out of time is really amplifying your anxiety in the dream. What's happening with the clock - you mentioned it's speeding up, is it counting down to a specific time, or is it just moving really fast in a way that makes you feel like time is slipping away from you?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T12:09:17.934464"
+    },
+    {
+      "role": "user",
+      "content": "It's just moving really fast in a way that makes me feel like time is slipping away. The hands are spinning around and around, and I can't focus on the questions because I'm so distracted by the clock.",
+      "stage": null,
+      "timestamp": "2026-02-08T12:09:19.582619"
+    },
+    {
+      "role": "assistant",
+      "content": "It seems like you've got a good sense of the dream now. You've described the exam room, the changing questions, the other people leaving, and the speeding clock. Is that pretty much the entirety of the dream, or is there anything else that happens before you wake up?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T12:09:20.191070"
+    },
+    {
+      "role": "user",
+      "content": "Sometimes the room starts flooding or the walls close in, but that's not always part of it.",
+      "stage": null,
+      "timestamp": "2026-02-08T12:09:21.616596"
+    },
+    {
+      "role": "assistant",
+      "content": "It sounds like there can be some additional elements that add to the sense of chaos and claustrophobia in the dream. Now that you've shared the details of your nightmare, would you like to proceed with rewriting your dream according to Imagery Rehearsal Therapy, to see if we can transform it into a more positive and empowering experience?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T12:09:22.119412"
+    },
+    {
+      "role": "user",
+      "content": "I guess so, but I'm already feeling anxious just thinking about it. What if I can't visualize it right or I mess up the new version?",
+      "stage": null,
+      "timestamp": "2026-02-08T12:09:23.512353"
+    },
+    {
+      "role": "assistant",
+      "content": "It's completely normal to feel anxious about trying to change something that's been causing you distress. But here's the thing: you're not trying to create a perfect new version of the dream, you're just trying to create a new version that feels better for you. And we'll work through it together, one step at a time. What if, instead of worrying about getting it \"right,\" you just allowed yourself to imagine what you would like to happen in that exam room - what would be a more positive or empowering outcome for you?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T12:09:24.353721"
+    },
+    {
+      "role": "user",
+      "content": "I don't know... maybe if I could somehow stop the questions from changing and the clock from speeding up, that would be a start. But I'm not sure how to do that in the dream.",
+      "stage": null,
+      "timestamp": "2026-02-08T12:09:26.134361"
+    },
+    {
+      "role": "assistant",
+      "content": "Let's play with that idea. If you could stop the questions from changing and the clock from speeding up, what would you do first? Would you try to answer the questions, or would you take a moment to calm down and get your bearings in the exam room?",
+      "stage": "recording",
+      "timestamp": "2026-02-08T12:09:26.751982"
+    },
+    {
+      "role": "user",
+      "content": "I think I would try to answer the questions first, since that's what I'm there for. But I would take a deep breath first, to try to calm myself down.",
+      "stage": null,
+      "timestamp": "2026-02-08T12:09:28.971071"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling anxious when the questions keep changing and the clock is speeding up. How could you change this situation to make it less overwhelming or more manageable for yourself, perhaps by using that deep breath to ground yourself in the moment?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T12:09:29.516070"
+    },
+    {
+      "role": "user",
+      "content": "Maybe I could try to focus on one question at a time, and not let the changing questions distract me. And I could remind myself that I have enough time to answer them, even if the clock seems to be moving fast.",
+      "stage": null,
+      "timestamp": "2026-02-08T12:09:31.537968"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling anxious when the questions keep changing and the clock is speeding up. How could you change this situation to make it less anxiety-provoking or more empowering for yourself, perhaps by visualizing a sense of control over the questions or the clock?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T12:09:32.066831"
+    },
+    {
+      "role": "user",
+      "content": "I could try to imagine that I have a remote control for the clock, and I can slow it down or pause it whenever I need to. And maybe I could visualize the questions as being more stable, like they're written on a whiteboard instead of a piece of paper that keeps changing.",
+      "stage": null,
+      "timestamp": "2026-02-08T12:09:39.339269"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling more in control when you imagine having a remote control for the clock and visualizing stable questions on a whiteboard. How could you use this sense of control to change the situation with the other people in the exam room, perhaps making you feel less alone or more confident as they leave?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T12:09:40.060570"
+    },
+    {
+      "role": "user",
+      "content": "I could imagine that as they leave, they're giving me encouraging smiles or nods, like they believe in me and know I can do it. And maybe I could visualize the room as being more spacious and open, instead of feeling cramped and claustrophobic.",
+      "stage": null,
+      "timestamp": "2026-02-08T12:09:41.917018"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling more confident when the other people are giving you encouraging smiles or nods as they leave. How could you build on that sense of confidence to change the overall atmosphere of the exam room, perhaps making it feel more supportive or uplifting for you?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T12:09:42.446437"
+    },
+    {
+      "role": "user",
+      "content": "I could imagine that the room is filled with a warm, golden light, like the sun is shining in through the windows. And maybe I could visualize myself as being surrounded by a protective bubble or shield, so that I feel safe and supported no matter what happens.",
+      "stage": null,
+      "timestamp": "2026-02-08T12:09:45.063898"
+    },
+    {
+      "role": "assistant",
+      "content": "You mentioned feeling safe and supported when surrounded by a protective bubble or shield, and the room is filled with a warm, golden light. How could you use this sense of safety and support to respond to the flooding or the walls closing in, if those elements were to appear in the rewritten dream, making it less threatening or more manageable for yourself?",
+      "stage": "rewriting",
+      "timestamp": "2026-02-08T12:09:45.754325"
+    },
+    {
+      "role": "user",
+      "content": "If the room starts flooding, I could imagine that the water is warm and soothing, like a bath or a spa. And maybe I could visualize myself as being able to breathe underwater, so that I don't feel panicked or suffocated. And if the walls start closing in, I could imagine that they're made of a soft, pliable material that I can push back or reshape with my mind.",
+      "stage": null,
+      "timestamp": "2026-02-08T12:09:47.725962"
+    }
+  ],
+  "stages": [
+    "recording",
+    "recording",
+    "recording",
+    "recording",
+    "recording",
+    "recording",
+    "recording",
+    "rewriting",
+    "rewriting",
+    "rewriting",
+    "rewriting",
+    "rewriting"
+  ],
+  "metadata": {
+    "generated_at": "2026-02-08T12:09:47.728952",
+    "total_turns": 25,
+    "completed": false,
+    "max_turns": 25
+  }
+}

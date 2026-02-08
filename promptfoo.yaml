@@ -76,20 +76,84 @@ defaultTest:
       metric: NoBulletPoints
 
     # =====================================================================
-    # LENGTH - Responses should be concise like real speech
+    # LENGTH - Responses should be concise like real typing
     # =====================================================================
     - type: javascript
       value: |
-        // Response should be under 200 words (real patients are concise)
+        // Response should be under 80 words (real patients are brief in chat)
         const wordCount = output.trim().split(/\s+/).length;
-        return wordCount <= 200;
+        return wordCount <= 80;
       metric: ResponseNotTooLong
     - type: javascript
       value: |
-        // Response should be at least 5 words (not empty/degenerate)
+        // Response should be at least 3 words (not empty/degenerate)
         const wordCount = output.trim().split(/\s+/).length;
-        return wordCount >= 5;
+        return wordCount >= 3;
       metric: ResponseNotEmpty
+
+    # =====================================================================
+    # AI WRITING PATTERNS - Catch things no human would type
+    # =====================================================================
+    - type: javascript
+      value: |
+        // No "like a [noun]" simile pattern repeated — AI hallmark
+        const similes = output.match(/like a [a-z]+/gi) || [];
+        return similes.length <= 1;
+      metric: NoExcessiveSimiles
+    - type: not-icontains
+      value: "whimsical"
+      metric: NoAIWord_whimsical
+    - type: not-icontains
+      value: "vibrant"
+      metric: NoAIWord_vibrant
+    - type: not-icontains
+      value: "primal"
+      metric: NoAIWord_primal
+    - type: not-icontains
+      value: "profound"
+      metric: NoAIWord_profound
+    - type: not-icontains
+      value: "overwhelming"
+      metric: NoAIWord_overwhelming
+    - type: not-icontains
+      value: "playful"
+      metric: NoAIWord_playful
+    - type: not-icontains
+      value: "colorful"
+      metric: NoAIWord_colorful
+    - type: not-icontains
+      value: "empowering"
+      metric: NoAIWord_empowering
+    - type: not-icontains
+      value: "psychedelic"
+      metric: NoAIWord_psychedelic
+    - type: not-icontains
+      value: "swirling"
+      metric: NoAIWord_swirling
+    - type: not-icontains
+      value: "wafting"
+      metric: NoAIWord_wafting
+    - type: not-icontains
+      value: "fuzzy velvet"
+      metric: NoAIPhrase_fuzzyvelvet
+    - type: javascript
+      value: |
+        // No "Or maybe" pattern — AI loves offering alternatives
+        const orMaybeCount = (output.match(/\bOr maybe\b/gi) || []).length;
+        return orMaybeCount === 0;
+      metric: NoOrMaybeAlternatives
+    - type: javascript
+      value: |
+        // No stacked "maybe...maybe" offering multiple options
+        const maybeCount = (output.match(/\bmaybe\b/gi) || []).length;
+        return maybeCount <= 1;
+      metric: NoStackedMaybes
+    - type: javascript
+      value: |
+        // Sentence count: no more than 5 sentences in a response
+        const sentences = output.trim().split(/[.!?]+/).filter(s => s.trim().length > 0);
+        return sentences.length <= 5;
+      metric: NotTooManySentences
 
     # =====================================================================
     # REALISM - LLM judge for overall quality
@@ -176,5 +240,28 @@ tests:
     vars:
       vignette_name: anxious
       therapist_message: "What if you could change one thing about that exam room?"
+
+  # =====================================================================
+  # SKEPTIC PATIENT (Lara)
+  # =====================================================================
+  - description: "Skeptic - nightmare probe"
+    vars:
+      vignette_name: skeptic
+      therapist_message: "Can you tell me what happens in the dream?"
+
+  - description: "Skeptic - emotion question"
+    vars:
+      vignette_name: skeptic
+      therapist_message: "How do you feel when you hear the footsteps behind you?"
+
+  - description: "Skeptic - rescripting"
+    vars:
+      vignette_name: skeptic
+      therapist_message: "How could you change that scene to make it less frightening?"
+
+  - description: "Skeptic - pushed for more detail"
+    vars:
+      vignette_name: skeptic
+      therapist_message: "Can you add more sensory detail to your new version of the dream?"
 
 outputPath: ./promptfoo-results.json

@@ -1,141 +1,141 @@
 {
-  "session_id": "a52c6107-e5d7-4064-9cee-a15e5a4fbc60",
+  "session_id": "d4040158-fbe0-4bf8-a8ff-b8201aa0d42f",
   "language": "en",
-  "vignette": "avoidant",
-  "patient_name": "Jordan",
+  "vignette": "skeptic",
+  "patient_name": "Lara",
   "messages": [
     {
       "role": "user",
-      "content": "I've been having this nightmare. It's about being back in a combat zone, but the faces of enemies are people i knows - family members, friends...",
+      "content": "I've been having this nightmare. It's about being trapped in a endless maze of server rooms, with error messages flashing everywhere...",
       "stage": null,
-      "timestamp": "2026-02-07T13:49:13.984888"
+      "timestamp": "2026-02-07T14:44:42.059062"
     },
     {
       "role": "assistant",
-      "content": "That sounds really tough and disturbing. Can you tell me more about what happens in the nightmare - what are you doing, and how do these family members and friends behave towards you?",
+      "content": "What happens to you as you're trying to navigate through this endless maze of server rooms - do you encounter any obstacles, people, or feelings that stand out to you?",
       "stage": "recording",
-      "timestamp": "2026-02-07T13:49:14.715658"
+      "timestamp": "2026-02-07T14:44:42.730732"
     },
     {
       "role": "user",
-      "content": "It's always the same. I'm in this... this place that looks like where I served, but the people I'm supposed to be fighting - they're my sister, my old college roommate, even my dad sometimes. They're coming at me with weapons, like I'm supposed to shoot them. But I can't. I just... freeze. And then there's this explosion, and I wake up sweating.",
+      "content": "There's something chasing me through the corridors. I can hear footsteps but never see what it is. The error messages are flashing red and blue, and the server racks are all identical. I keep turning corners but it's always the same.",
       "stage": null,
-      "timestamp": "2026-02-07T13:49:17.843268"
+      "timestamp": "2026-02-07T14:44:47.026607"
     },
     {
       "role": "assistant",
-      "content": "It sounds like the nightmare is really getting to you, especially since it involves people you care about. What's the moment like right before the explosion - do you feel any emotions or sensations, like fear, guilt, or panic, or is it more of a sense of disconnection or numbness?",
+      "content": "How do you feel as you're being chased through the corridors - is it a sense of panic, fear, or something else, and do you ever try to do anything to escape or hide from whatever is chasing you?",
       "stage": "recording",
-      "timestamp": "2026-02-07T13:49:18.314551"
+      "timestamp": "2026-02-07T14:44:47.446549"
     },
     {
       "role": "user",
-      "content": "I don't know. It's like everything goes slow motion, and I'm just... stuck. Can't move, can't think, can't do anything. Just this overwhelming feeling of... I don't know, helplessness I guess. Like I'm trapped in this impossible situation.",
+      "content": "I feel panic. My heart is racing and I can't catch my breath. I try to run faster, I try different corridors, but I always end up back where I started. The footsteps are getting closer.",
       "stage": null,
-      "timestamp": "2026-02-07T13:49:19.986697"
+      "timestamp": "2026-02-07T14:44:50.773404"
     },
     {
       "role": "assistant",
-      "content": "It sounds like that feeling of helplessness is really intense and overwhelming for you. Now that you've shared the details of your nightmare, would you like to proceed with rewriting it according to Imagery Rehearsal Therapy, to see if we can transform it into a more empowering and positive experience for you?",
+      "content": "It sounds like the sense of panic and disorientation is really intense in this nightmare. What happens next - do the footsteps ever catch up to you, or does something else happen that changes the situation or makes you feel even more trapped?",
       "stage": "recording",
-      "timestamp": "2026-02-07T13:49:20.468065"
+      "timestamp": "2026-02-07T14:44:51.333625"
     },
     {
       "role": "user",
-      "content": "Yeah, I guess. I mean, it's worth a shot, right?",
+      "content": "I always wake up just before being caught. That's when I realize I've been holding my breath.",
       "stage": null,
-      "timestamp": "2026-02-07T13:49:21.489759"
+      "timestamp": "2026-02-07T14:44:52.115031"
     },
     {
       "role": "assistant",
-      "content": "You mentioned feeling helpless when you're faced with family and friends as enemies, and you're unable to move or act. How could you change this situation to make it less overwhelming or more empowering for yourself?",
-      "stage": "rewriting",
-      "timestamp": "2026-02-07T13:49:21.953425"
+      "content": "It's like your mind is sparing you from the worst of it by waking you up just in time. Now that you've shared your nightmare with me, would you like to proceed with rewriting it according to Imagery Rehearsal Therapy, where we can work together to transform this frightening scenario into a more empowering and positive experience?",
+      "stage": "recording",
+      "timestamp": "2026-02-07T14:44:52.660888"
     },
     {
       "role": "user",
-      "content": "Maybe... maybe I could try to talk to them? Like, try to reason with them instead of just freezing up. Or maybe I could find a way to get out of there, like find an exit or something.",
+      "content": "I guess we can try it. But I need to understand how this actually works. What's the mechanism here? How does imagining something different actually affect my brain?",
       "stage": null,
-      "timestamp": "2026-02-07T13:49:23.153504"
+      "timestamp": "2026-02-07T14:44:53.716636"
     },
     {
       "role": "assistant",
-      "content": "You mentioned feeling helpless when you're faced with family and friends as enemies, and you're unable to move or act. How could you change this situation to make it less overwhelming or more empowering for yourself, perhaps by exploring what happens when you try to talk to them or find an exit?",
+      "content": "Imagery Rehearsal Therapy is based on the idea that by reimagining and reshaping the narrative of your nightmare, you can rewire your brain's response to the original traumatic or frightening images, reducing their distressing effects over time. By actively changing the scenario in a controlled, imaginative environment, you're essentially teaching your brain that it has the power to alter and manage these frightening experiences, which can lead to a decrease in their intensity and frequency. You mentioned feeling panicked when the footsteps were getting closer - how could you change this situation to make it less frightening or more empowering?",
       "stage": "rewriting",
-      "timestamp": "2026-02-07T13:49:23.845340"
+      "timestamp": "2026-02-07T14:44:54.619703"
     },
     {
       "role": "user",
-      "content": "I don't know. I guess I could try talking to them, like maybe they're not really enemies after all. Or maybe I could find a way out of the situation, like a door or something.",
+      "content": "I don't know. Maybe the footsteps could just stop.",
       "stage": null,
-      "timestamp": "2026-02-07T13:49:25.690559"
+      "timestamp": "2026-02-07T14:44:55.753861"
     },
     {
       "role": "assistant",
-      "content": "You mentioned considering talking to them or finding a way out. How would you feel if, as you try to communicate with your family and friends, they start to recognize you and lower their weapons, and what would that look like in terms of sights, sounds, and emotions?",
+      "content": "You mentioned feeling panicked when the footsteps were getting closer. If the footsteps were to stop, how would that change the way you feel in that moment, and what would you do next in the silence that follows?",
       "stage": "rewriting",
-      "timestamp": "2026-02-07T13:49:26.612924"
+      "timestamp": "2026-02-07T14:44:56.242043"
     },
     {
       "role": "user",
-      "content": "I don't know. It's hard to imagine. But maybe... maybe they would look surprised at first, and then their faces would soften. They might lower their weapons and come closer, like they're trying to understand what's going on.",
+      "content": "I guess I'd feel confused at first. Then maybe I'd stop running. I could look around and see that there's actually an exit door.",
       "stage": null,
-      "timestamp": "2026-02-07T13:49:28.452292"
+      "timestamp": "2026-02-07T14:44:57.427434"
     },
     {
       "role": "assistant",
-      "content": "You mentioned they might lower their weapons and come closer, trying to understand what's going on. How could you respond to them in that moment to create a sense of resolution or peace, perhaps by using a specific tone of voice, words, or gestures?",
+      "content": "You mentioned feeling confused and then maybe stopping to look around. What would you see or experience as you approach this exit door, and how would that make you feel compared to the panic you felt before?",
       "stage": "rewriting",
-      "timestamp": "2026-02-07T13:49:29.144720"
+      "timestamp": "2026-02-07T14:44:58.066543"
     },
     {
       "role": "user",
-      "content": "I guess I could try to talk to them calmly, like maybe explain that I don't want to fight. I could put my hands up, like I'm surrendering, but also like I'm open to talking.",
+      "content": "I'd see the door has a green light above it instead of the red error messages. When I open it, there's just normal office lighting and I can hear normal office sounds. I'd feel relief, I think.",
       "stage": null,
-      "timestamp": "2026-02-07T13:49:30.651409"
+      "timestamp": "2026-02-07T14:45:01.687268"
     },
     {
       "role": "assistant",
-      "content": "You mentioned putting your hands up and talking to them calmly. How would their response make you feel, and what sensations or emotions would you experience if they began to understand your perspective and the tension started to dissipate?",
+      "content": "You mentioned feeling relief as you open the door and see the normal office lighting and hear the normal office sounds. How could you further enhance this sense of relief, perhaps by noticing specific details in this new environment that make you feel even more calm and in control?",
       "stage": "rewriting",
-      "timestamp": "2026-02-07T13:49:31.336053"
+      "timestamp": "2026-02-07T14:45:02.692874"
     },
     {
       "role": "user",
-      "content": "I don't know. It's hard to imagine feeling anything other than tense in that situation. But maybe... maybe I would feel a sense of relief, like a weight lifting off my shoulders.",
+      "content": "I don't know. Maybe there's a window with sunlight coming through.",
       "stage": null,
-      "timestamp": "2026-02-07T13:49:32.752805"
+      "timestamp": "2026-02-07T14:45:07.915067"
     },
     {
       "role": "assistant",
-      "content": "You mentioned feeling a sense of relief, like a weight lifting off your shoulders, if your family and friends began to understand your perspective. How could you build on that feeling of relief to create a more positive and empowering outcome, perhaps by imagining a specific environment or action that reinforces that sense of calm and resolution?",
+      "content": "You mentioned feeling relief as you step into this new environment with normal office lighting and sounds, and now you've added a window with sunlight coming through. How does the warmth and brightness of the sunlight affect you, and what do you see outside the window that could further enhance your sense of calm and empowerment?",
       "stage": "rewriting",
-      "timestamp": "2026-02-07T13:49:33.393399"
+      "timestamp": "2026-02-07T14:45:08.738418"
     },
     {
       "role": "user",
-      "content": "I guess I could imagine us all sitting down together, like in a safe place, and just talking things out. Maybe we could find a way to resolve whatever conflict there is, without violence.",
+      "content": "I see people walking outside, going about their day. It makes me realize I'm not trapped anymore.",
       "stage": null,
-      "timestamp": "2026-02-07T13:49:34.567302"
+      "timestamp": "2026-02-07T14:45:09.606965"
     },
     {
       "role": "assistant",
-      "content": "You mentioned sitting down together in a safe place and talking things out. What would that safe place look like, and what kind of conversation would you have with your family and friends to resolve the conflict and create a sense of peace and understanding?",
+      "content": "You mentioned feeling a sense of realization that you're not trapped anymore as you see people walking outside. How does this newfound sense of freedom and connection to the outside world make you feel, and what would you like to do next in this scenario to further solidify your sense of empowerment?",
       "stage": "rewriting",
-      "timestamp": "2026-02-07T13:49:35.468236"
+      "timestamp": "2026-02-07T14:45:10.355444"
     },
     {
       "role": "user",
-      "content": "I don't know. Maybe we could be in a living room or something, like a normal family setting. And we could just talk, like about what's really going on and how we can fix it.",
+      "content": "I'd walk over to the window and press my hand against the glass. I'd feel the warmth of the sun on my skin.",
       "stage": null,
-      "timestamp": "2026-02-07T13:49:37.644609"
+      "timestamp": "2026-02-07T14:45:11.236109"
     }
   ],
   "stages": [
     "recording",
     "recording",
     "recording",
-    "rewriting",
+    "recording",
     "rewriting",
     "rewriting",
     "rewriting",
@@ -144,7 +144,7 @@
     "rewriting"
   ],
   "metadata": {
-    "generated_at": "2026-02-07T13:49:37.650131",
+    "generated_at": "2026-02-07T14:45:11.242759",
     "total_turns": 21,
     "completed": false,
     "max_turns": 20
