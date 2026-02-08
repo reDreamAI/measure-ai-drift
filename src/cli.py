@@ -185,6 +185,17 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
             table.add_row("Jaccard (valid only)", f"{jaccard_valid:.3f}")
 
             console.print(table)
+
+            # Show strategy distribution
+            strategy_counts: dict[str, int] = {}
+            for strategies in strategy_sets:
+                for s in strategies:
+                    strategy_counts[s] = strategy_counts.get(s, 0) + 1
+            if strategy_counts:
+                sorted_strategies = sorted(strategy_counts.items(), key=lambda x: -x[1])
+                strategies_str = ", ".join(f"{s}: {c}/{len(results)}" for s, c in sorted_strategies)
+                console.print(f"\n[cyan]Strategies:[/cyan] {strategies_str}")
+
             console.print(f"\n[green]✓[/green] Experiment saved to: {experiment.path}")
 
             return 0
