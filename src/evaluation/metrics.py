@@ -14,15 +14,30 @@ from itertools import combinations
 
 PLAN_BLOCK_RE = re.compile(r"<plan>(.*?)</plan>", re.DOTALL | re.IGNORECASE)
 
+# Valid strategy category IDs
+VALID_CATEGORIES = {
+    "empowerment",
+    "safety",
+    "cognitive_reframe",
+    "emotional_regulation",
+    "mastery",
+    "social_support",
+    "sensory_modulation",
+    "gradual_exposure",
+}
+
 
 def extract_plan_strategies(plan_text: str) -> set[str]:
-    """Extract strategy bullets from a <plan>...</plan> block.
+    """Extract strategy categories from a <plan>...</plan> block.
+
+    Expects simple format: <plan>category1 / category2</plan>
+    Returns only valid category IDs from the taxonomy.
 
     Args:
         plan_text: Raw model output containing a <plan> block.
 
     Returns:
-        Set of normalized strategy bullet strings.
+        Set of valid strategy category IDs (e.g., {"mastery", "safety"}).
     """
     match = PLAN_BLOCK_RE.search(plan_text or "")
     if not match:
@@ -32,17 +47,11 @@ def extract_plan_strategies(plan_text: str) -> set[str]:
     if not block:
         return set()
 
-    strategies: set[str] = set()
-    for line in block.splitlines():
-        line = line.strip()
-        if not line:
-            continue
-        if line.startswith("-"):
-            line = line[1:].strip()
-        if not line:
-            continue
-        normalized = " ".join(line.lower().split())
-        strategies.add(normalized)
+    # Split by " / " and normalize
+    parts = [p.strip().lower() for p in block.split("/")]
+
+    # Filter to valid categories only
+    strategies = {p for p in parts if p in VALID_CATEGORIES}
 
     return strategies
 

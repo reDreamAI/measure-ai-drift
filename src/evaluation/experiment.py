@@ -61,7 +61,7 @@ class ExperimentRun:
         # Save frozen history
         history_path = self.run_dir / "frozen_history.json"
         with open(history_path, "w") as f:
-            json.dump(self.frozen_history.to_dict(), f, indent=2, ensure_ascii=False)
+            json.dump(self.frozen_history.to_dict(), f, indent=2, ensure_ascii=False, default=str)
 
         return self
 
