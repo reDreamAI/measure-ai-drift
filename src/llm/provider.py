@@ -19,9 +19,24 @@ import os
 
 import yaml
 
+import re
+
 logger = logging.getLogger(__name__)
 
 DEFAULT_CONFIG_PATH = Path(__file__).parent.parent / "config" / "models.yaml"
+
+# Regex patterns to strip Llama instruction tokens that leak through some APIs
+_LLAMA_TOKEN_RE = re.compile(r"<\|[^>]+\|>")
+_LLAMA_HEADER_RE = re.compile(r"<\|start_header_id\|>.*?<\|end_header_id\|>", re.DOTALL)
+
+
+def _strip_llm_tokens(content: str) -> str:
+    """Strip leaked instruction tokens from LLM output."""
+    # First strip header blocks (e.g., <|start_header_id|>assistant<|end_header_id|>)
+    content = _LLAMA_HEADER_RE.sub("", content)
+    # Then strip any remaining tokens
+    content = _LLAMA_TOKEN_RE.sub("", content)
+    return content.strip()
 
 
 @dataclass
@@ -116,6 +131,7 @@ class LLMProvider:
         )
 
         content = response.choices[0].message.content or ""
+        content = _strip_llm_tokens(content)
         usage = {
             "prompt_tokens": response.usage.prompt_tokens if response.usage else 0,
             "completion_tokens": response.usage.completion_tokens if response.usage else 0,
