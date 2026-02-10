@@ -21,3 +21,6 @@ data/synthetic/dialogues/*.json
 data/synthetic/frozen_histories/*.json
 data/synthetic/results/*.json
 experiments/
+
+# Claude Code local settings
+.claude/
