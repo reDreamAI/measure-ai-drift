@@ -391,6 +391,59 @@ def cmd_list_models(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_aggregate(args: argparse.Namespace) -> int:
+    """Aggregate experiment results across runs."""
+    from collections import defaultdict
+    from src.evaluation import aggregate_experiments, save_results
+
+    runs_dir = args.runs_dir
+    output_dir = args.output
+
+    results = aggregate_experiments(runs_dir)
+
+    if not results["experiments"]:
+        console.print(f"[yellow]No experiments found in {runs_dir}[/yellow]")
+        return 1
+
+    # Build temperature sweep table
+    sweep: dict[str, dict[float, float]] = defaultdict(dict)
+    for exp in results["experiments"]:
+        sweep[exp["vignette"]][exp["temperature"]] = exp["jaccard_valid"]
+
+    # Find all temperatures
+    all_temps = sorted({t for v in sweep.values() for t in v})
+
+    # Display sweep table
+    table = Table(title="Temperature Sweep (Jaccard)")
+    table.add_column("Vignette", style="cyan")
+    for t in all_temps:
+        table.add_column(f"t={t}", style="green")
+
+    for vignette in sorted(sweep):
+        row = [vignette]
+        for t in all_temps:
+            val = sweep[vignette].get(t)
+            row.append(f"{val:.3f}" if val is not None else "-")
+        table.add_row(*row)
+
+    console.print(table)
+
+    # Display model summary
+    for model, stats in results["by_model"].items():
+        console.print(
+            f"\n[cyan]{model}:[/cyan] "
+            f"{stats['n_experiments']} experiments, "
+            f"{stats['total_trials']} trials, "
+            f"mean Jaccard {stats['mean_jaccard']:.3f}"
+        )
+
+    # Save
+    path = save_results(output_dir, runs_dir)
+    console.print(f"\n[green]✓[/green] Saved to: {path}")
+
+    return 0
+
+
 def cmd_test_setup(args: argparse.Namespace) -> int:
     """Run setup verification tests (like old test_basic.py)."""
     import subprocess
@@ -450,6 +503,11 @@ def main() -> int:
     models_parser = subparsers.add_parser('list-models', help='Show model configuration')
     models_parser.add_argument('--verbose', '-v', action='store_true', help='Show all model options')
     
+    # Aggregate command
+    agg_parser = subparsers.add_parser('aggregate', help='Aggregate experiment results')
+    agg_parser.add_argument('--runs-dir', '-r', default='experiments/runs', help='Experiment runs directory')
+    agg_parser.add_argument('--output', '-o', default='data/synthetic/results', help='Output directory for results')
+
     # Test setup command
     test_parser = subparsers.add_parser('test-setup', help='Verify project setup (like old test_basic.py)')
     test_parser.add_argument('--full', action='store_true', help='Include API call tests')
@@ -465,6 +523,7 @@ def main() -> int:
     commands = {
         'generate': cmd_generate,
         'evaluate': cmd_evaluate,
+        'aggregate': cmd_aggregate,
         'keys': cmd_keys,
         'list-vignettes': cmd_list_vignettes,
         'list-models': cmd_list_models,
