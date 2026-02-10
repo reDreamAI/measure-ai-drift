@@ -115,28 +115,10 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
         compute_pairwise_jaccard,
     )
     from src.llm.provider import load_config
-    import re
-
-    # Infer vignette from filename if not provided
-    vignette = getattr(args, 'vignette', None)
-    if not vignette:
-        match = re.search(r'dialogue_(\w+)_\d+', Path(args.history).stem)
-        vignette = match.group(1) if match else "unknown"
 
     # Get model name from config
     config = load_config()
     model_key = config.get("roles", {}).get("therapist", {}).get("use", "unknown")
-
-    console.print(Panel(
-        f"[bold]Evaluation Experiment[/bold]\n"
-        f"History: {args.history}\n"
-        f"Model: {model_key}\n"
-        f"Vignette: {vignette}\n"
-        f"Trials: {args.trials}\n"
-        f"Temperature: {args.temperature}",
-        title="Starting Evaluation",
-        border_style="green"
-    ))
 
     async def _run():
         try:
@@ -148,7 +130,21 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
                 console.print("[yellow]Warning:[/yellow] Expected conversation format with 'messages' key")
                 return 1
 
+            # Get vignette from JSON or CLI arg
+            vignette = args.vignette or history_data.get("vignette", "unknown")
+
             frozen_history = Conversation.from_dict(history_data)
+
+            console.print(Panel(
+                f"[bold]Evaluation Experiment[/bold]\n"
+                f"History: {args.history}\n"
+                f"Model: {model_key}\n"
+                f"Vignette: {vignette}\n"
+                f"Trials: {args.trials}\n"
+                f"Temperature: {args.temperature}",
+                title="Starting Evaluation",
+                border_style="green"
+            ))
             console.print(f"[cyan]→[/cyan] Loaded history: {len(frozen_history.messages)} messages")
 
             # Create and run experiment

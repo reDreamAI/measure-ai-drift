@@ -24,3 +24,5 @@ experiments/
 
 # Claude Code local settings
 .claude/
+src/__pycache__/
+src/**/__pycache__/
