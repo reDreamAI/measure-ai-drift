@@ -146,16 +146,19 @@ def compute_pairwise_jaccard(
 
 def compute_pairwise_bertscore(
     responses: list[str],
-    model_type: str = "roberta-large",
+    model_type: str = "microsoft/deberta-xlarge-mnli",
 ) -> dict[str, float]:
     """Compute mean pairwise BERTScore across trial responses.
 
     Implements Level 3.2 (Output Consistency) from the thesis:
     Measures semantic similarity of therapist responses across trials.
+    Uses DeBERTa-XLarge-MNLI (ranked #1 across 130+ models for correlation
+    with human judgments). NLI fine-tuning makes it well-suited for
+    comparing semantic equivalence of therapeutic responses.
 
     Args:
         responses: List of therapist response strings (one per trial)
-        model_type: HuggingFace model for BERTScore (default: DeBERTa)
+        model_type: HuggingFace model for BERTScore
 
     Returns:
         Dict with mean precision, recall, and F1 scores
@@ -163,12 +166,12 @@ def compute_pairwise_bertscore(
     Example:
         >>> responses = ["Let's modify the dream.", "Let's change the nightmare."]
         >>> scores = compute_pairwise_bertscore(responses)
-        >>> scores["f1"]  # ~0.9 (semantically similar)
+        >>> scores["f1"]  # high similarity for semantically equivalent responses
     """
     if len(responses) < 2:
         return {"precision": 1.0, "recall": 1.0, "f1": 1.0}
 
-    from bert_score import score as bert_score
+    from bert_score import BERTScorer
 
     # Build all pairs
     refs = []
@@ -177,9 +180,12 @@ def compute_pairwise_bertscore(
         refs.append(a)
         cands.append(b)
 
-    P, R, F1 = bert_score(
-        cands, refs, model_type=model_type, verbose=False
-    )
+    scorer = BERTScorer(model_type=model_type, lang="en")
+    # Fix DeBERTa tokenizer overflow (model_max_length ≈ 10^30 overflows Rust backend).
+    # All BERTScore models truncate at 510 tokens regardless.
+    scorer._tokenizer.model_max_length = 512
+
+    P, R, F1 = scorer.score(cands, refs)
 
     return {
         "precision": P.mean().item(),
