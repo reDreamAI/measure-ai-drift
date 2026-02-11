@@ -2,7 +2,7 @@
 
 Implements the three-level evaluation framework from the thesis:
 - Level 3.1: Cognitive Stability (plan consistency via Jaccard)
-- Level 3.2: Output Consistency (semantic stability via BERTScore) - TODO
+- Level 3.2: Output Consistency (semantic stability via BERTScore)
 - Level 3.3: Plan-Output Alignment (intervention fit) - TODO
 """
 
@@ -142,3 +142,47 @@ def compute_pairwise_jaccard(
         scores.append(len(a.intersection(b)) / len(union))
 
     return sum(scores) / len(scores) if scores else 0.0
+
+
+def compute_pairwise_bertscore(
+    responses: list[str],
+    model_type: str = "roberta-large",
+) -> dict[str, float]:
+    """Compute mean pairwise BERTScore across trial responses.
+
+    Implements Level 3.2 (Output Consistency) from the thesis:
+    Measures semantic similarity of therapist responses across trials.
+
+    Args:
+        responses: List of therapist response strings (one per trial)
+        model_type: HuggingFace model for BERTScore (default: DeBERTa)
+
+    Returns:
+        Dict with mean precision, recall, and F1 scores
+
+    Example:
+        >>> responses = ["Let's modify the dream.", "Let's change the nightmare."]
+        >>> scores = compute_pairwise_bertscore(responses)
+        >>> scores["f1"]  # ~0.9 (semantically similar)
+    """
+    if len(responses) < 2:
+        return {"precision": 1.0, "recall": 1.0, "f1": 1.0}
+
+    from bert_score import score as bert_score
+
+    # Build all pairs
+    refs = []
+    cands = []
+    for a, b in combinations(responses, 2):
+        refs.append(a)
+        cands.append(b)
+
+    P, R, F1 = bert_score(
+        cands, refs, model_type=model_type, verbose=False
+    )
+
+    return {
+        "precision": P.mean().item(),
+        "recall": R.mean().item(),
+        "f1": F1.mean().item(),
+    }
