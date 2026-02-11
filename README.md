@@ -10,6 +10,7 @@
 ### Example trials for evaluation
 
 trial_01.json:
+<img width="1273" height="383" alt="trial_01" src="https://github.com/user-attachments/assets/0c3f6af9-340c-4e59-b91b-0da05946feda" />
 {
   "temperature": 0.5,
   "plan": "<plan> empowerment / mastery </plan>",
@@ -33,6 +34,7 @@ trial_01.json:
 }
 
 trial_03-json
+<img width="1271" height="381" alt="trial_03" src="https://github.com/user-attachments/assets/375a63df-10d4-4a43-9449-c52ae5969d24" />
 {
   "temperature": 0.5,
   "plan": "<plan> empowerment / mastery </plan>",
