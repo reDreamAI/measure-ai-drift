@@ -72,6 +72,7 @@ class ExperimentRun:
         temperature: float,
         language: str = "en",
         parallel: bool = False,
+        mode: str = "split",
     ) -> list[TrialResult]:
         """Run the experiment and save results."""
         # Store config
@@ -82,6 +83,7 @@ class ExperimentRun:
             "temperature": temperature,
             "language": language,
             "parallel": parallel,
+            "mode": mode,
             "timestamp": self.timestamp,
         }
 
@@ -91,7 +93,7 @@ class ExperimentRun:
             yaml.dump(self._config, f, default_flow_style=False)
 
         # Run trials
-        sampler = Sampler(language=language)
+        sampler = Sampler(language=language, mode=mode)
         self._results = await sampler.run(
             self.frozen_history,
             n_trials=n_trials,

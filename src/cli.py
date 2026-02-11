@@ -141,7 +141,8 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
                 f"Model: {model_key}\n"
                 f"Vignette: {vignette}\n"
                 f"Trials: {args.trials}\n"
-                f"Temperature: {args.temperature}",
+                f"Temperature: {args.temperature}\n"
+                f"Mode: {args.mode}",
                 title="Starting Evaluation",
                 border_style="green"
             ))
@@ -159,6 +160,7 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
                     n_trials=args.trials,
                     temperature=args.temperature,
                     language=args.language,
+                    mode=args.mode,
                 )
 
             console.print(f"[green]✓[/green] Completed {len(results)} trials")
@@ -499,6 +501,7 @@ def main() -> int:
     eval_parser.add_argument('--temperature', '-t', type=float, default=0.7, help='Sampling temperature')
     eval_parser.add_argument('--language', '-l', default='en', choices=['en', 'de'], help='Session language')
     eval_parser.add_argument('--vignette', '-v', help='Vignette name (auto-detected from filename if omitted)')
+    eval_parser.add_argument('--mode', '-m', default='fused', choices=['split', 'fused'], help='Plan-response mode: fused (single CoT call) or split (two independent calls)')
     eval_parser.add_argument('--verbose', action='store_true', help='Show detailed output')
     
     # Keys command

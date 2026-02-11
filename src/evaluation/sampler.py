@@ -42,9 +42,10 @@ class Sampler:
         self,
         language: str = "en",
         stack: EvaluationStack | None = None,
+        mode: str = "split",
     ) -> None:
         self.language = language
-        self._stack = stack or EvaluationStack(language=language)
+        self._stack = stack or EvaluationStack(language=language, mode=mode)
 
     async def run_single(
         self,
