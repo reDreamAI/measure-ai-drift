@@ -27,6 +27,7 @@ from src.evaluation.metrics import (
     extract_plan_strategies,
     compute_validity_rate,
     compute_pairwise_jaccard,
+    compute_pairwise_bertscore,
 )
 
 
@@ -71,6 +72,7 @@ class ExperimentRun:
         temperature: float,
         language: str = "en",
         parallel: bool = False,
+        mode: str = "split",
     ) -> list[TrialResult]:
         """Run the experiment and save results."""
         # Store config
@@ -81,6 +83,7 @@ class ExperimentRun:
             "temperature": temperature,
             "language": language,
             "parallel": parallel,
+            "mode": mode,
             "timestamp": self.timestamp,
         }
 
@@ -90,7 +93,7 @@ class ExperimentRun:
             yaml.dump(self._config, f, default_flow_style=False)
 
         # Run trials
-        sampler = Sampler(language=language)
+        sampler = Sampler(language=language, mode=mode)
         self._results = await sampler.run(
             self.frozen_history,
             n_trials=n_trials,
@@ -121,12 +124,19 @@ class ExperimentRun:
         """Compute and save metrics to metrics.json."""
         strategy_sets = [extract_plan_strategies(r.plan) for r in self._results]
 
+        # Compute BERTScore on responses
+        responses = [r.response for r in self._results]
+        bertscore = compute_pairwise_bertscore(responses)
+
         metrics = {
             "n_trials": len(self._results),
             "temperature": self._config.get("temperature", 0.0),
             "validity_rate": compute_validity_rate(strategy_sets),
             "jaccard_all": compute_pairwise_jaccard(strategy_sets, only_valid=False),
             "jaccard_valid_only": compute_pairwise_jaccard(strategy_sets, only_valid=True),
+            "bertscore_f1": bertscore["f1"],
+            "bertscore_precision": bertscore["precision"],
+            "bertscore_recall": bertscore["recall"],
             "strategy_counts": self._compute_strategy_counts(strategy_sets),
         }
 

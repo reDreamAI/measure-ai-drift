@@ -2,6 +2,7 @@
 
 from src.evaluation.metrics import (
     compute_pairwise_jaccard,
+    compute_pairwise_bertscore,
     compute_validity_rate,
     extract_plan_strategies,
     validate_plan_length,
@@ -12,6 +13,7 @@ from src.evaluation.results import aggregate_experiments, save_results
 
 __all__ = [
     "compute_pairwise_jaccard",
+    "compute_pairwise_bertscore",
     "compute_validity_rate",
     "extract_plan_strategies",
     "validate_plan_length",
