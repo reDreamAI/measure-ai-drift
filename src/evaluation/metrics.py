@@ -168,6 +168,9 @@ def compute_pairwise_bertscore(
         >>> scores = compute_pairwise_bertscore(responses)
         >>> scores["f1"]  # high similarity for semantically equivalent responses
     """
+    # Filter empty responses (empty strings crash DeBERTa tokenizer)
+    responses = [r for r in responses if r and r.strip()]
+
     if len(responses) < 2:
         return {"precision": 1.0, "recall": 1.0, "f1": 1.0}
 

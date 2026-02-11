@@ -501,7 +501,7 @@ def main() -> int:
     eval_parser.add_argument('--temperature', '-t', type=float, default=0.7, help='Sampling temperature')
     eval_parser.add_argument('--language', '-l', default='en', choices=['en', 'de'], help='Session language')
     eval_parser.add_argument('--vignette', '-v', help='Vignette name (auto-detected from filename if omitted)')
-    eval_parser.add_argument('--mode', '-m', default='fused', choices=['split', 'fused'], help='Plan-response mode: fused (single CoT call) or split (two independent calls)')
+    eval_parser.add_argument('--mode', '-m', default='fused', choices=['fused', 'chained'], help='Plan-response mode: fused (single CoT call) or chained (plan injected into response call)')
     eval_parser.add_argument('--verbose', action='store_true', help='Show detailed output')
     
     # Keys command

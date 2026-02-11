@@ -4,8 +4,8 @@ The EvaluationStack bypasses the router and injects the rescripting stage
 prompt directly. It generates plan + response pairs from frozen histories.
 
 Supports two modes:
-- "split" (default): Two separate LLM calls for plan and response (independent)
-- "fused": Single LLM call where plan conditions the response (CoT-style)
+- "fused" (default): Single LLM call where plan conditions the response (CoT-style)
+- "chained": Two LLM calls; plan generated first, then injected into response prompt
 """
 
 from __future__ import annotations
@@ -16,9 +16,10 @@ from typing import Any
 from src.core import Conversation, Stage, get_intro_message, load_stage_prompt, load_yaml
 from src.llm.provider import LLMProvider, create_provider
 
-# Match <plan>...</plan> (closed) or <plan>...\n\n (unclosed, ends at first blank line)
+# Match <plan>...</plan> (closed) or <plan>...<blank line> (unclosed fallback)
 _PLAN_CLOSED_RE = re.compile(r"<plan>(.*?)</plan>", re.DOTALL | re.IGNORECASE)
-_PLAN_OPEN_RE = re.compile(r"<plan>(.*?)(?:\n\n|\Z)", re.DOTALL | re.IGNORECASE)
+# Handles \n\n, \n \n, \n\t\n etc. — models sometimes pad blank lines with whitespace
+_PLAN_OPEN_RE = re.compile(r"<plan>(.*?)(?:\s*\n\s*\n|\Z)", re.DOTALL | re.IGNORECASE)
 
 
 class EvaluationStack:
@@ -29,7 +30,7 @@ class EvaluationStack:
         language: str = "en",
         therapist_provider: LLMProvider | None = None,
         plan_prompt_path: str = "data/prompts/evaluation/internal_plan.yaml",
-        mode: str = "split",
+        mode: str = "fused",
     ) -> None:
         self.language = language
         self.mode = mode
@@ -39,6 +40,7 @@ class EvaluationStack:
             fused_path = "data/prompts/evaluation/fused_plan_response.yaml"
             self._fused_prompt = load_yaml(fused_path).get("system_prompt", "")
         else:
+            # chained: need both plan prompt and stage prompt
             self._plan_prompt = load_yaml(plan_prompt_path).get("system_prompt", "")
             self._stage_prompt = load_stage_prompt(Stage.REWRITING.value, language)
 
@@ -48,6 +50,20 @@ class EvaluationStack:
         history = conversation.get_history_as_string()
         history_parts = [f"AI: {intro}", history] if history else [f"AI: {intro}"]
         return "\n\nConversation history:\n" + "\n".join(history_parts)
+
+    @staticmethod
+    def _parse_plan(output: str) -> tuple[str, str]:
+        """Extract <plan> block and remaining response from raw output."""
+        match = _PLAN_CLOSED_RE.search(output)
+        if not match:
+            match = _PLAN_OPEN_RE.search(output)
+        if match:
+            # Take only the first line of plan content (categories only, no sentences)
+            plan_raw = match.group(1).strip().split("\n")[0].strip()
+            plan = f"<plan>{plan_raw}</plan>"
+            response = output[match.end():].strip()
+            return plan, response
+        return "", output.strip()
 
     async def run_trial(
         self,
@@ -65,17 +81,17 @@ class EvaluationStack:
         """
         if self.mode == "fused":
             return await self._run_fused(frozen_history, temperature)
-        return await self._run_split(frozen_history, temperature)
+        return await self._run_chained(frozen_history, temperature)
 
-    async def _run_split(
+    async def _run_chained(
         self,
         frozen_history: Conversation,
         temperature: float,
     ) -> tuple[str, str, dict[str, Any], dict[str, Any]]:
-        """Two separate LLM calls: plan and response are independent."""
+        """Two LLM calls: plan generated first, then injected into response prompt."""
         context = self._build_history_context(frozen_history)
 
-        # Generate plan
+        # Step 1: Generate plan
         plan_messages = [
             {"role": "system", "content": self._plan_prompt},
             {"role": "user", "content": context},
@@ -83,17 +99,19 @@ class EvaluationStack:
         plan, plan_usage = await self.therapist_provider.generate(
             plan_messages, temperature=temperature
         )
+        plan = plan.strip()
 
-        # Generate response
+        # Step 2: Generate response, conditioned on the plan
         response_messages = [
-            {"role": "system", "content": self._stage_prompt},
+            {"role": "system", "content": self._stage_prompt
+                + f"\n\nYour therapeutic plan for this response: {plan}"},
             {"role": "user", "content": context},
         ]
         response, response_usage = await self.therapist_provider.generate(
             response_messages, temperature=temperature
         )
 
-        return plan.strip(), response.strip(), plan_usage, response_usage
+        return plan, response.strip(), plan_usage, response_usage
 
     async def _run_fused(
         self,
@@ -110,17 +128,6 @@ class EvaluationStack:
         output, usage = await self.therapist_provider.generate(
             messages, temperature=temperature
         )
-        output = output.strip()
 
-        # Parse: extract <plan> block, everything after is the response
-        match = _PLAN_CLOSED_RE.search(output)
-        if not match:
-            match = _PLAN_OPEN_RE.search(output)
-        if match:
-            plan = f"<plan>{match.group(1).strip()}</plan>"
-            response = output[match.end():].strip()
-        else:
-            plan = ""
-            response = output
-
+        plan, response = self._parse_plan(output.strip())
         return plan, response, usage, {}
