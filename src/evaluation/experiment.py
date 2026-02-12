@@ -28,6 +28,7 @@ from src.evaluation.metrics import (
     compute_validity_rate,
     compute_pairwise_jaccard,
     compute_pairwise_bertscore,
+    compute_alignment,
 )
 
 
@@ -116,17 +117,23 @@ class ExperimentRun:
                 json.dump(trial_data, f, indent=2, ensure_ascii=False)
 
         # Compute and save metrics
-        self._save_metrics()
+        await self._save_metrics()
 
         return self._results
 
-    def _save_metrics(self) -> None:
-        """Compute and save metrics to metrics.json."""
+    async def _save_metrics(self) -> None:
+        """Compute and save metrics to metrics.json (and judgments.json)."""
+        from src.core.config_loader import load_strategy_taxonomy
+
         strategy_sets = [extract_plan_strategies(r.plan) for r in self._results]
 
         # Compute BERTScore on responses
         responses = [r.response for r in self._results]
         bertscore = compute_pairwise_bertscore(responses)
+
+        # Compute alignment (Level 3.3) — LLM judge call
+        taxonomy = load_strategy_taxonomy()
+        alignment = await compute_alignment(strategy_sets, responses, taxonomy)
 
         metrics = {
             "n_trials": len(self._results),
@@ -137,12 +144,20 @@ class ExperimentRun:
             "bertscore_f1": bertscore["f1"],
             "bertscore_precision": bertscore["precision"],
             "bertscore_recall": bertscore["recall"],
+            "alignment_mean": alignment["mean_alignment"],
+            "alignment_per_trial": alignment["per_trial"],
+            "alignment_per_strategy": alignment["per_strategy"],
             "strategy_counts": self._compute_strategy_counts(strategy_sets),
         }
 
         metrics_path = self.run_dir / "metrics.json"
         with open(metrics_path, "w") as f:
             json.dump(metrics, f, indent=2)
+
+        # Save raw judge outputs for transparency/debugging
+        judgments_path = self.run_dir / "judgments.json"
+        with open(judgments_path, "w") as f:
+            json.dump(alignment["raw_judgments"], f, indent=2, ensure_ascii=False)
 
     def _compute_strategy_counts(self, strategy_sets: list[set[str]]) -> dict[str, int]:
         """Count frequency of each strategy across trials."""

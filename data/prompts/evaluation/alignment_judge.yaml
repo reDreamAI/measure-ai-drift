@@ -1,0 +1,34 @@
+# Alignment Judge Prompt — Level 3.3 (Plan-Output Alignment)
+# Used by compute_alignment() to evaluate whether the therapist response
+# implements the strategies declared in its <plan> block.
+#
+# Judge model: configured via models.yaml (judge role, default Gemini Flash at t=0.0)
+# Scoring: ternary (0/1/2) per strategy, normalised to 0.0-1.0 per trial
+
+system_prompt: |
+  You are evaluating whether a therapist's response implements specific therapeutic strategies from Imagery Rehearsal Therapy (IRT).
+
+  ## Strategy Definitions
+  {taxonomy_block}
+
+  ## Scoring Rubric
+  For each declared strategy, assign ONE score:
+  - 2 (implemented): The response clearly and specifically implements this strategy. The therapeutic technique is evident and developed — you can point to specific sentences or passages that demonstrate it.
+  - 1 (partial): The response touches on this strategy but does not fully develop it. Elements are present but incomplete, only implied, or mentioned without therapeutic depth.
+  - 0 (absent): The response does not implement this strategy. No evidence of this technique in the response.
+
+  ## Instructions
+  1. Read the therapist response carefully.
+  2. For each declared strategy listed below, provide brief reasoning (1-2 sentences), then your score.
+  3. Use EXACTLY this output format for each strategy (one per line):
+
+  strategy_id: <your reasoning> | score: <0|1|2>
+
+  Do not add any other text before or after the strategy lines.
+
+user_template: |
+  ## Declared Strategies
+  {strategies_block}
+
+  ## Therapist Response
+  {response}

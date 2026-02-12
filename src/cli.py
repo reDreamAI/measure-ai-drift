@@ -171,12 +171,13 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
             jaccard_all = compute_pairwise_jaccard(strategy_sets, only_valid=False)
             jaccard_valid = compute_pairwise_jaccard(strategy_sets, only_valid=True)
 
-            # BERTScore is computed and saved by ExperimentRun._save_metrics()
-            # Read it back for display
+            # BERTScore + alignment are computed and saved by ExperimentRun._save_metrics()
+            # Read them back for display
             import json as _json
             with open(experiment.path / "metrics.json") as f:
                 saved_metrics = _json.load(f)
             bert_f1 = saved_metrics.get("bertscore_f1", 0.0)
+            alignment_mean = saved_metrics.get("alignment_mean", 0.0)
 
             # Display metrics
             table = Table(title="Evaluation Metrics")
@@ -189,6 +190,7 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
             table.add_row("Jaccard (all)", f"{jaccard_all:.3f}")
             table.add_row("Jaccard (valid only)", f"{jaccard_valid:.3f}")
             table.add_row("BERTScore F1", f"{bert_f1:.3f}")
+            table.add_row("Alignment (3.3)", f"{alignment_mean:.3f}")
 
             console.print(table)
 
