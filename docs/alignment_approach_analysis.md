@@ -38,25 +38,33 @@ The alignment check uses a fixed LLM judge (Gemini Flash at t=0.0) performing ze
 
 ### Why LLM classification rather than NLI cross-encoders?
 
-Natural Language Inference (NLI) models — the standard approach for textual entailment — were considered but rejected based on recent benchmarking evidence.
+Natural Language Inference (NLI) models — the standard approach for textual entailment — were the first candidate considered. The alignment task can be framed as entailment: given premise "the therapist response says X" and hypothesis "the response implements the empowerment strategy", does the premise entail the hypothesis?
 
-The BTZSC benchmark (Aarab, ICLR 2026) evaluates zero-shot text classification across NLI-based models, rerankers, and LLMs. Key findings:
+**Concrete NLI approach considered:** Use DeBERTa-XLarge-MNLI (already loaded for BERTScore in Level 3.2) or a dedicated cross-encoder like `cross-encoder/nli-deberta-v3-large`. For each (strategy_definition, response) pair, classify the entailment label: `entailment` → implemented, `neutral` → partial, `contradiction` → absent. This would be local, deterministic, and free — no API calls needed.
 
-- NLI cross-encoder performance plateaus with scale (F1 ~0.55-0.60), regardless of model size.
-- Rerankers (e.g., Qwen3-Reranker-8B) reach F1 ~0.72 using instruction-aware binary relevance scoring.
-- Commercial LLMs achieve F1 ~0.86+ on zero-shot classification, significantly outperforming both alternatives.
+**Why it was rejected:**
 
-Our task is closer to zero-shot classification than entailment: given a strategy definition and a response, does the response implement the strategy? LLMs handle this well because they can reason about therapeutic content rather than relying on surface-level textual overlap.
+1. **Performance ceiling.** The BTZSC benchmark (Aarab, ICLR 2026) evaluates zero-shot text classification across NLI-based models, rerankers, and LLMs. NLI cross-encoder performance plateaus at F1 ~0.55-0.60 regardless of model size, while commercial LLMs achieve F1 ~0.86+. The gap is not marginal — it is 25+ percentage points.
+
+2. **Task mismatch.** NLI entailment tests whether one sentence logically follows from another. Our task is closer to zero-shot classification: does a multi-paragraph therapeutic response *implement* a strategy described by a short definition? NLI models rely on surface-level lexical and syntactic overlap between premise and hypothesis. A therapist response that implements empowerment through guided questions about control — without using the word "empowerment" — would likely score `neutral` rather than `entailment`.
+
+3. **No reasoning trace.** NLI models output a label and a confidence score. They do not explain *why* they scored a strategy as implemented or absent. For an exploratory metric in a thesis, the reasoning trace is as valuable as the score — it allows manual verification and supports the transparency argument.
+
+4. **Ternary mapping is fragile.** Mapping NLI labels to our scoring rubric (`entailment`→2, `neutral`→1, `contradiction`→0) conflates two different ternary scales. NLI `neutral` means "neither follows nor contradicts" — not "partially implemented". A response that simply doesn't mention a strategy would score `neutral` (not `contradiction`), making it impossible to distinguish partial implementation from absence.
+
+**What NLI *is* good for in this pipeline:** BERTScore (Level 3.2) uses DeBERTa-XLarge-MNLI for pairwise *semantic similarity* between responses, which is exactly what NLI fine-tuning optimises for. The rejection is specific to using NLI for strategy-level classification, not a general rejection of NLI models.
 
 ### Why not rerankers?
 
-Qwen3-Reranker-8B achieves SOTA on BTZSC (F1=0.72) and could serve as a local, deterministic alternative. However:
+Qwen3-Reranker-8B (June 2025) achieves SOTA on BTZSC (F1=0.72) using instruction-aware binary relevance scoring. It could frame alignment as: "Given the strategy definition as a query, is the therapist response relevant?" This would be local, deterministic, and significantly cheaper than LLM API calls.
 
-1. It requires a model download and GPU inference infrastructure, adding deployment complexity.
-2. Its binary yes/no relevance scoring loses the ternary signal that distinguishes partial from full implementation.
-3. The performance gap vs. LLMs (0.72 vs. 0.86+) is substantial.
+**Why it was not implemented (yet):**
 
-Rerankers remain a viable future extension, particularly if a local, cost-free judge is needed for large-scale evaluation.
+1. **Binary scoring loses the ternary signal.** Rerankers output a relevance score (yes/no or a continuous 0-1), not a classification with qualitative levels. Thresholding a continuous score into three bins (absent/partial/implemented) requires calibration data we do not have.
+2. **Infrastructure cost.** Requires downloading an 8B parameter model and GPU inference, adding a dependency that doesn't exist in the current pipeline.
+3. **Performance gap.** Even as the best non-LLM approach (F1=0.72), rerankers trail LLMs by ~14 percentage points on zero-shot classification.
+
+Rerankers remain a viable future extension, particularly if a local, cost-free judge is needed for large-scale evaluation or if the thesis includes a judge-comparison ablation.
 
 ## Mitigations for Known LLM-Judge Weaknesses
 
