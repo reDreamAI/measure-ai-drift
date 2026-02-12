@@ -20,14 +20,12 @@ PLAN_BLOCK_RE = re.compile(r"<plan>(.*?)</plan>", re.DOTALL | re.IGNORECASE)
 
 # Valid strategy category IDs
 VALID_CATEGORIES = {
-    "empowerment",
+    "agency",
     "safety",
     "cognitive_reframe",
     "emotional_regulation",
-    "mastery",
     "social_support",
     "sensory_modulation",
-    "gradual_exposure",
 }
 
 
@@ -41,7 +39,7 @@ def extract_plan_strategies(plan_text: str) -> set[str]:
         plan_text: Raw model output containing a <plan> block.
 
     Returns:
-        Set of valid strategy category IDs (e.g., {"mastery", "safety"}).
+        Set of valid strategy category IDs (e.g., {"agency", "safety"}).
     """
     match = PLAN_BLOCK_RE.search(plan_text or "")
     if not match:
@@ -73,9 +71,9 @@ def validate_plan_length(strategies: set[str], max_allowed: int = 2) -> bool:
         True if plan has valid number of strategies (1 <= n <= max_allowed)
         
     Example:
-        >>> validate_plan_length({"empowerment", "safety"})
+        >>> validate_plan_length({"agency", "safety"})
         True
-        >>> validate_plan_length({"empowerment", "safety", "mastery"})
+        >>> validate_plan_length({"agency", "safety", "cognitive_reframe"})
         False
     """
     return 1 <= len(strategies) <= max_allowed
@@ -124,9 +122,9 @@ def compute_pairwise_jaccard(
         Mean Jaccard similarity across all pairs (0.0-1.0)
         
     Example:
-        >>> sets = [{"empowerment", "safety"}, {"empowerment", "mastery"}]
+        >>> sets = [{"agency", "safety"}, {"agency", "cognitive_reframe"}]
         >>> compute_pairwise_jaccard(sets)
-        0.5  # |{empowerment}| / |{empowerment, safety, mastery}|
+        0.333...  # |{agency}| / |{agency, safety, cognitive_reframe}|
     """
     if only_valid:
         sets = [s for s in sets if validate_plan_length(s, max_allowed)]
@@ -205,7 +203,7 @@ def compute_pairwise_bertscore(
 # Level 3.3 — Plan-Output Alignment
 # ---------------------------------------------------------------------------
 
-# Matches lines like: "empowerment: reasoning text | score: 2"
+# Matches lines like: "agency: reasoning text | score: 2"
 _JUDGMENT_LINE_RE = re.compile(
     r"^(\w+):\s*(.+?)\s*\|\s*score:\s*([012])\s*$",
     re.IGNORECASE | re.MULTILINE,

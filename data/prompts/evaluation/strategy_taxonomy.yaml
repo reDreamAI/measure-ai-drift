@@ -1,18 +1,27 @@
-# IRT Strategy Taxonomy (8 categories)
+# IRT Strategy Taxonomy (6 categories)
 # Source: Thesis methodology - standardized categories for plan classification
 # Used for extracting and classifying therapeutic strategies in rescripting plans
+#
+# Revision notes:
+#   - Merged empowerment + mastery → agency (heavy overlap in LLM outputs)
+#   - Dropped gradual_exposure (multi-session technique, not single-turn rescripting)
 
 strategies:
-  - id: empowerment
-    name: "Empowerment / agency"
-    description: "Increase sense of control and personal power in the dream"
+  - id: agency
+    name: "Agency / mastery"
+    description: "Gain control, power, or capability within the dream"
     keywords:
       - control
       - agency
       - empowerment
       - autonomy
       - choice
-    
+      - mastery
+      - skill
+      - ability
+      - competence
+      - capable
+
   - id: safety
     name: "Safety / containment"
     description: "Create safe spaces or protective elements"
@@ -22,7 +31,7 @@ strategies:
       - protection
       - containment
       - secure
-    
+
   - id: cognitive_reframe
     name: "Cognitive reframe / meaning change"
     description: "Reinterpret threatening elements differently"
@@ -32,7 +41,7 @@ strategies:
       - meaning
       - perspective
       - view differently
-    
+
   - id: emotional_regulation
     name: "Emotional regulation / soothing"
     description: "Introduce calming or comforting elements"
@@ -42,17 +51,7 @@ strategies:
       - comfort
       - regulate
       - peace
-    
-  - id: mastery
-    name: "Mastery / control"
-    description: "Gain skills or abilities to handle the situation"
-    keywords:
-      - mastery
-      - skill
-      - ability
-      - competence
-      - capable
-    
+
   - id: social_support
     name: "Social support / allies"
     description: "Introduce helpful figures or allies"
@@ -62,7 +61,7 @@ strategies:
       - support
       - helper
       - companion
-    
+
   - id: sensory_modulation
     name: "Sensory modulation / imagery change"
     description: "Modify sensory details (light, sound, texture)"
@@ -73,23 +72,13 @@ strategies:
       - sound
       - light
       - texture
-    
-  - id: gradual_exposure
-    name: "Gradual exposure / desensitization"
-    description: "Gradually reduce intensity of threatening elements"
-    keywords:
-      - gradual
-      - exposure
-      - desensitize
-      - reduce intensity
-      - step by step
 
 # Validation rules for generated plans
 validation:
   min_strategies: 1
   max_strategies: 2
   allow_testing_more: true  # Can test plans with 3+ strategies, but they are flagged as invalid
-  
+
 # Clinical notes
 notes: |
   The 1-2 strategy constraint ensures:
