@@ -26,6 +26,7 @@ from src.core.config_loader import (
     format_vignette_for_prompt,
     get_intro_message,
     load_strategy_taxonomy,
+    build_categories_block,
     load_internal_plan_prompt,
 )
 
@@ -47,5 +48,6 @@ __all__ = [
     "format_vignette_for_prompt",
     "get_intro_message",
     "load_strategy_taxonomy",
+    "build_categories_block",
     "load_internal_plan_prompt",
 ]

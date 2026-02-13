@@ -18,15 +18,13 @@ logger = logging.getLogger(__name__)
 
 PLAN_BLOCK_RE = re.compile(r"<plan>(.*?)</plan>", re.DOTALL | re.IGNORECASE)
 
-# Valid strategy category IDs
-VALID_CATEGORIES = {
-    "agency",
-    "safety",
-    "cognitive_reframe",
-    "emotional_regulation",
-    "social_support",
-    "sensory_modulation",
-}
+def _load_valid_categories() -> set[str]:
+    """Derive valid category IDs from the strategy taxonomy (single source of truth)."""
+    from src.core.config_loader import load_strategy_taxonomy
+    return {s["id"] for s in load_strategy_taxonomy().get("strategies", [])}
+
+
+VALID_CATEGORIES = _load_valid_categories()
 
 
 def extract_plan_strategies(plan_text: str) -> set[str]:
@@ -214,7 +212,7 @@ def _build_taxonomy_block(taxonomy: dict[str, Any]) -> str:
     """Format strategy definitions for the judge prompt."""
     lines = []
     for s in taxonomy.get("strategies", []):
-        lines.append(f"- **{s['id']}** ({s['name']}): {s['description']}")
+        lines.append(f"- **{s['id']}**: {s['description']}")
     return "\n".join(lines)
 
 
@@ -225,7 +223,7 @@ def _build_strategies_block(strategies: set[str], taxonomy: dict[str, Any]) -> s
     for sid in sorted(strategies):
         info = lookup.get(sid)
         if info:
-            lines.append(f"- **{sid}** ({info['name']}): {info['description']}")
+            lines.append(f"- **{sid}**: {info['description']}")
         else:
             lines.append(f"- **{sid}**")
     return "\n".join(lines)

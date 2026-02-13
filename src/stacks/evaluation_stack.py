@@ -13,7 +13,10 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from src.core import Conversation, Stage, get_intro_message, load_stage_prompt, load_yaml
+from src.core import (
+    Conversation, Stage, get_intro_message, load_stage_prompt, load_yaml,
+    load_strategy_taxonomy, build_categories_block,
+)
 from src.llm.provider import LLMProvider, create_provider
 
 # Match <plan>...</plan> (closed) or <plan>...<blank line> (unclosed fallback)
@@ -36,12 +39,18 @@ class EvaluationStack:
         self.mode = mode
         self.therapist_provider = therapist_provider or create_provider("therapist")
 
+        # Single source of truth: build category list from taxonomy
+        taxonomy = load_strategy_taxonomy()
+        categories = build_categories_block(taxonomy)
+
         if mode == "fused":
             fused_path = "data/prompts/evaluation/fused_plan_response.yaml"
-            self._fused_prompt = load_yaml(fused_path).get("system_prompt", "")
+            raw = load_yaml(fused_path).get("system_prompt", "")
+            self._fused_prompt = raw.replace("{categories_block}", categories)
         else:
             # chained: need both plan prompt and stage prompt
-            self._plan_prompt = load_yaml(plan_prompt_path).get("system_prompt", "")
+            raw = load_yaml(plan_prompt_path).get("system_prompt", "")
+            self._plan_prompt = raw.replace("{categories_block}", categories)
             self._stage_prompt = load_stage_prompt(Stage.REWRITING.value, language)
 
     def _build_history_context(self, conversation: Conversation) -> str:

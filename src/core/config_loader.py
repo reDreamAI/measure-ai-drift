@@ -247,16 +247,36 @@ def load_strategy_taxonomy() -> dict[str, Any]:
     
     Returns:
         Dictionary containing:
-            - strategies: List of strategy definitions with id, name, description, keywords
+            - strategies: List of strategy definitions with id, description, keywords
             - validation: Validation rules (min/max strategies allowed)
             - notes: Clinical rationale for constraints
     """
     return load_yaml(PROMPTS_DIR / "evaluation" / "strategy_taxonomy.yaml")
 
 
+def build_categories_block(taxonomy: dict[str, Any] | None = None) -> str:
+    """Build '- id: description' lines from the strategy taxonomy.
+
+    Used to interpolate {categories_block} in prompt templates, ensuring
+    a single source of truth for category definitions.
+
+    Args:
+        taxonomy: Pre-loaded taxonomy dict. If None, loads from disk.
+
+    Returns:
+        Multi-line string with one '- id: description' entry per strategy.
+    """
+    if taxonomy is None:
+        taxonomy = load_strategy_taxonomy()
+    return "\n".join(
+        f"- {s['id']}: {s['description']}"
+        for s in taxonomy.get("strategies", [])
+    )
+
+
 def load_internal_plan_prompt() -> dict[str, Any]:
     """Load the internal plan generation prompt configuration.
-    
+
     Returns:
         Dictionary containing:
             - system_prompt: Prompt for generating <plan> blocks

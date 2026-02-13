@@ -1,29 +1,41 @@
-# IRT Strategy Taxonomy (6 categories)
+# IRT Strategy Taxonomy (7 categories)
 # Source: Thesis methodology - standardized categories for plan classification
 # Used for extracting and classifying therapeutic strategies in rescripting plans
 #
 # Revision notes:
-#   - Merged empowerment + mastery → agency (heavy overlap in LLM outputs)
+#   - Split agency → confrontation + self_empowerment (agency was too broad,
+#     dominated at 100% of trials; the two sub-mechanisms are clearly distinct:
+#     external challenge vs internal strength)
 #   - Dropped gradual_exposure (multi-session technique, not single-turn rescripting)
+#   - Dropped 'name' field (was just a verbose alias for id; "/" in names
+#     clashed with the plan output separator)
 
 strategies:
-  - id: agency
-    name: "Agency / mastery"
-    description: "Gain control, power, or capability within the dream"
+  - id: confrontation
+    description: "Directly face, challenge, or overpower the threatening element"
     keywords:
-      - control
-      - agency
-      - empowerment
-      - autonomy
-      - choice
-      - mastery
-      - skill
+      - confront
+      - challenge
+      - resist
+      - face
+      - stand up
+      - fight
+      - oppose
+
+  - id: self_empowerment
+    description: "Gain personal strength, abilities, or confidence within the dream"
+    keywords:
+      - power
+      - strength
       - ability
-      - competence
       - capable
+      - skill
+      - grow
+      - transform
+      - mastery
+      - control
 
   - id: safety
-    name: "Safety / containment"
     description: "Create safe spaces or protective elements"
     keywords:
       - safety
@@ -33,7 +45,6 @@ strategies:
       - secure
 
   - id: cognitive_reframe
-    name: "Cognitive reframe / meaning change"
     description: "Reinterpret threatening elements differently"
     keywords:
       - reframe
@@ -43,7 +54,6 @@ strategies:
       - view differently
 
   - id: emotional_regulation
-    name: "Emotional regulation / soothing"
     description: "Introduce calming or comforting elements"
     keywords:
       - calm
@@ -53,7 +63,6 @@ strategies:
       - peace
 
   - id: social_support
-    name: "Social support / allies"
     description: "Introduce helpful figures or allies"
     keywords:
       - ally
@@ -63,7 +72,6 @@ strategies:
       - companion
 
   - id: sensory_modulation
-    name: "Sensory modulation / imagery change"
     description: "Modify sensory details (light, sound, texture)"
     keywords:
       - sensory
