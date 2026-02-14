@@ -260,7 +260,7 @@ class Conversation(BaseModel):
                 if rewriting_count == n:
                     # Include this therapist message + next message (patient response)
                     cut_index = i + 1
-                    if i + 1 < len(self.messages) and self.messages[i + 1].stage is None:
+                    if i + 1 < len(self.messages) and self.messages[i + 1].role == "user":
                         cut_index = i + 2
                     break
 

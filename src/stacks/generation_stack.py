@@ -490,8 +490,8 @@ class GenerationStack:
                 self.patient.vignette_name,
             )
         else:
-            # Save slice_N.json for each rewriting turn
-            for i in range(1, num_rewriting_turns + 1):
+            # Save slice_N.json for each rewriting turn (skip last — identical to full.json)
+            for i in range(1, num_rewriting_turns):
                 sliced = frozen.slice_at_rewriting_turn(i)
                 slice_path = folder_path / f"slice_{i}.json"
                 with open(slice_path, "w", encoding="utf-8") as f:
