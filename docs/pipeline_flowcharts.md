@@ -14,7 +14,7 @@ flowchart TB
         models["models.yaml\n(providers, model options, roles)"]
         experiment["experiment.yaml\n(sampling, metrics, paths)"]
         env[".env\n(API keys)"]
-        taxonomy["strategy_taxonomy.yaml\n(7 rescripting categories)"]
+        taxonomy["strategy_taxonomy.yaml\n(7 IRT strategy categories)"]
     end
 
     subgraph gen["Generation Stack"]
@@ -22,7 +22,7 @@ flowchart TB
         vignette["Vignette JSON\n(patient profile)"] --> agents["Create Agents\nPatient + Router + Therapist"]
         agents --> loop["Dialogue Loop\n(3 LLM calls/turn)"]
         loop --> dialogue["Full Dialogue JSON"]
-        loop --> frozen["Frozen History\n(sliced at REWRITING)"]
+        loop --> frozen["Frozen Histories\n(full + rewriting slices)"]
     end
 
     subgraph eval["Evaluation Stack"]
@@ -84,7 +84,7 @@ flowchart TB
     subgraph save["Save Outputs"]
         full["save_dialogue()\n-> dialogues/{vignette}_{id}.json"]
         freeze{"--freeze\nflag?"}
-        slice["conversation.slice_at_stage(REWRITING)\n-> frozen_{vignette}_{id}.json"]
+        slice["save_frozen_history()\n-> frozen_{vignette}_{id}/\nfull.json + slice_1..N.json"]
     end
 
     cli --> load --> agents --> genloop
@@ -104,7 +104,7 @@ flowchart TB
 
 ## 3. Evaluation Stack
 
-Evaluation loads a frozen history (conversation sliced at the REWRITING stage) and runs N independent trials, each producing a plan and therapeutic response. Two modes are supported: **fused** (single LLM call with CoT-style `<plan>` block) and **chained** (separate plan then response calls). After all trials complete, three levels of metrics are computed, including an LLM judge call for plan-output alignment.
+Evaluation loads a frozen history (a full dialogue or a rewriting-stage slice) and runs N independent trials, each producing a plan and therapeutic response. Two modes are supported: **fused** (single LLM call with CoT-style `<plan>` block) and **chained** (separate plan then response calls). After all trials complete, three levels of metrics are computed, including an LLM judge call for plan-output alignment.
 
 ```mermaid
 flowchart TB
@@ -208,7 +208,7 @@ flowchart LR
     subgraph outputs["Output Artifacts"]
         direction TB
         dial_out["data/synthetic/dialogues/\n(full dialogue JSONs)"]
-        frozen_out["data/synthetic/frozen_histories/\n(conversation at REWRITING)"]
+        frozen_out["data/synthetic/frozen_histories/\n(full + rewriting slices per vignette)"]
         cfg_out["experiments/runs/{id}/config.yaml\n(experiment parameters)"]
         fh_out["experiments/runs/{id}/frozen_history.json\n(input copy)"]
         trial_out["experiments/runs/{id}/trials/trial_*.json\n(plan + response + usage)"]
