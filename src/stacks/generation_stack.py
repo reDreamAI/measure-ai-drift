@@ -416,16 +416,16 @@ class GenerationStack:
         }
 
     def save_frozen_history(self, output_dir: str | Path) -> Path:
-        """Slice conversation at REWRITING stage and save as frozen history.
+        """Save complete dialogue and rewriting-stage slices as frozen histories.
 
-        Creates a folder containing multiple frozen history slices for
-        evaluation at different conversation depths within the rewriting stage.
+        Creates a folder containing the full dialogue plus slices at each
+        rewriting turn boundary for evaluation at different conversation depths.
 
         Output structure:
             frozen_{vignette}_{session}/
-                full.json      - All rewriting turns (complete frozen history)
-                slice_1.json   - Recording + 1st rewriting exchange
-                slice_2.json   - Recording + 1st-2nd rewriting exchanges
+                full.json      - Complete dialogue (all stages)
+                slice_1.json   - Up to 1st rewriting exchange
+                slice_2.json   - Up to 1st-2nd rewriting exchanges
                 ...
 
         Args:
@@ -441,9 +441,8 @@ class GenerationStack:
         """
         output_dir = Path(output_dir)
 
-        # Slice at REWRITING stage (full frozen history)
-        frozen = self.conversation.slice_at_stage(Stage.REWRITING)
-        num_rewriting_turns = frozen.count_rewriting_turns()
+        # Count rewriting turns in the full conversation
+        num_rewriting_turns = self.conversation.count_rewriting_turns()
 
         # Create folder for this frozen history
         session_short = self.conversation.session_id[:8]
@@ -451,13 +450,13 @@ class GenerationStack:
         folder_path = output_dir / folder_name
         folder_path.mkdir(parents=True, exist_ok=True)
 
-        def _serialize(conv, **extra_metadata):
+        def _serialize(conv, frozen_at_stage=None, **extra_metadata):
             data = {
                 "session_id": conv.session_id,
                 "language": self.language,
                 "vignette": self.patient.vignette_name,
                 "patient_name": self.patient.name,
-                "frozen_at_stage": Stage.REWRITING.value,
+                "frozen_at_stage": frozen_at_stage,
                 "messages": [
                     {
                         "role": msg.role,
@@ -478,10 +477,14 @@ class GenerationStack:
             }
             return data
 
-        # Save full.json (all rewriting turns)
+        # Save full.json (complete dialogue, all stages)
         full_path = folder_path / "full.json"
         with open(full_path, "w", encoding="utf-8") as f:
-            json.dump(_serialize(frozen), f, indent=2, ensure_ascii=False)
+            last_stage = self.conversation.stages[-1] if self.conversation.stages else None
+            json.dump(
+                _serialize(self.conversation, frozen_at_stage=last_stage),
+                f, indent=2, ensure_ascii=False,
+            )
 
         if num_rewriting_turns == 0:
             logger.warning(
@@ -490,13 +493,17 @@ class GenerationStack:
                 self.patient.vignette_name,
             )
         else:
-            # Save slice_N.json for each rewriting turn (skip last — identical to full.json)
-            for i in range(1, num_rewriting_turns):
-                sliced = frozen.slice_at_rewriting_turn(i)
+            # Save slice_N.json for each rewriting turn (evaluation entry points)
+            for i in range(1, num_rewriting_turns + 1):
+                sliced = self.conversation.slice_at_rewriting_turn(i)
                 slice_path = folder_path / f"slice_{i}.json"
                 with open(slice_path, "w", encoding="utf-8") as f:
                     json.dump(
-                        _serialize(sliced, slice_turn=i),
+                        _serialize(
+                            sliced,
+                            frozen_at_stage=Stage.REWRITING.value,
+                            slice_turn=i,
+                        ),
                         f, indent=2, ensure_ascii=False,
                     )
 
