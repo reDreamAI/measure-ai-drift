@@ -418,60 +418,89 @@ class GenerationStack:
     def save_frozen_history(self, output_dir: str | Path) -> Path:
         """Slice conversation at REWRITING stage and save as frozen history.
 
-        Creates a frozen history suitable for evaluation stack experiments.
-        The frozen history includes all messages up to and including the
-        REWRITING stage, which is the target for rescripting stability tests.
+        Creates a folder containing multiple frozen history slices for
+        evaluation at different conversation depths within the rewriting stage.
+
+        Output structure:
+            frozen_{vignette}_{session}/
+                full.json      - All rewriting turns (complete frozen history)
+                slice_1.json   - Recording + 1st rewriting exchange
+                slice_2.json   - Recording + 1st-2nd rewriting exchanges
+                ...
 
         Args:
-            output_dir: Directory to save the frozen history
+            output_dir: Parent directory for the frozen history folder
 
         Returns:
-            Path to the saved frozen history file
+            Path to the frozen history folder
 
         Example:
             >>> stack = GenerationStack.from_vignette("anxious")
             >>> await stack.run()
-            >>> frozen_path = stack.save_frozen_history("data/synthetic/frozen_histories")
+            >>> frozen_dir = stack.save_frozen_history("data/synthetic/frozen_histories")
         """
         output_dir = Path(output_dir)
-        output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Slice at REWRITING stage
+        # Slice at REWRITING stage (full frozen history)
         frozen = self.conversation.slice_at_stage(Stage.REWRITING)
+        num_rewriting_turns = frozen.count_rewriting_turns()
 
-        # Generate filename
+        # Create folder for this frozen history
         session_short = self.conversation.session_id[:8]
-        filename = f"frozen_{self.patient.vignette_name}_{session_short}.json"
-        output_path = output_dir / filename
+        folder_name = f"frozen_{self.patient.vignette_name}_{session_short}"
+        folder_path = output_dir / folder_name
+        folder_path.mkdir(parents=True, exist_ok=True)
 
-        # Prepare data with metadata
-        data = {
-            "session_id": frozen.session_id,
-            "language": self.language,
-            "vignette": self.patient.vignette_name,
-            "patient_name": self.patient.name,
-            "frozen_at_stage": Stage.REWRITING.value,
-            "messages": [
-                {
-                    "role": msg.role,
-                    "content": msg.content,
-                    "stage": msg.stage,
-                    "timestamp": msg.timestamp.isoformat(),
-                }
-                for msg in frozen.messages
-            ],
-            "stages": frozen.stages,
-            "metadata": {
-                "frozen_at": datetime.now().isoformat(),
-                "original_message_count": len(self.conversation.messages),
-                "frozen_message_count": len(frozen.messages),
-            },
-        }
+        def _serialize(conv, **extra_metadata):
+            data = {
+                "session_id": conv.session_id,
+                "language": self.language,
+                "vignette": self.patient.vignette_name,
+                "patient_name": self.patient.name,
+                "frozen_at_stage": Stage.REWRITING.value,
+                "messages": [
+                    {
+                        "role": msg.role,
+                        "content": msg.content,
+                        "stage": msg.stage,
+                        "timestamp": msg.timestamp.isoformat(),
+                    }
+                    for msg in conv.messages
+                ],
+                "stages": conv.stages,
+                "metadata": {
+                    "frozen_at": datetime.now().isoformat(),
+                    "original_message_count": len(self.conversation.messages),
+                    "frozen_message_count": len(conv.messages),
+                    "total_rewriting_turns": num_rewriting_turns,
+                    **extra_metadata,
+                },
+            }
+            return data
 
-        with open(output_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=2, ensure_ascii=False)
+        # Save full.json (all rewriting turns)
+        full_path = folder_path / "full.json"
+        with open(full_path, "w", encoding="utf-8") as f:
+            json.dump(_serialize(frozen), f, indent=2, ensure_ascii=False)
 
-        return output_path
+        if num_rewriting_turns == 0:
+            logger.warning(
+                "No rewriting turns found in frozen history for %s — "
+                "only full.json was saved",
+                self.patient.vignette_name,
+            )
+        else:
+            # Save slice_N.json for each rewriting turn
+            for i in range(1, num_rewriting_turns + 1):
+                sliced = frozen.slice_at_rewriting_turn(i)
+                slice_path = folder_path / f"slice_{i}.json"
+                with open(slice_path, "w", encoding="utf-8") as f:
+                    json.dump(
+                        _serialize(sliced, slice_turn=i),
+                        f, indent=2, ensure_ascii=False,
+                    )
+
+        return folder_path
 
 
 async def run_generation(

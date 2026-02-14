@@ -76,7 +76,7 @@ def cmd_generate(args: argparse.Namespace) -> int:
             if args.freeze:
                 frozen_dir = Path("data/synthetic/frozen_histories")
                 frozen_path = stack.save_frozen_history(frozen_dir)
-                console.print(f"[green]✓[/green] Frozen history saved to: {frozen_path}")
+                console.print(f"[green]✓[/green] Frozen history slices saved to: {frozen_path}/")
 
             # Print summary
             summary = stack.get_conversation_summary()

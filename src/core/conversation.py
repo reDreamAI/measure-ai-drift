@@ -218,6 +218,70 @@ class Conversation(BaseModel):
             return None
         return Language(self.language)
     
+    def count_rewriting_turns(self) -> int:
+        """Count the number of therapist rewriting turns in the conversation.
+
+        Only assistant messages with stage="rewriting" are counted,
+        since patient responses carry stage=None.
+
+        Returns:
+            Number of rewriting therapist turns
+        """
+        return sum(
+            1 for msg in self.messages
+            if msg.stage == "rewriting" and msg.role == "assistant"
+        )
+
+    def slice_at_rewriting_turn(self, n: int) -> "Conversation":
+        """Slice conversation after the Nth rewriting exchange.
+
+        A rewriting exchange is a therapist message (stage=rewriting) followed
+        by the patient response (stage=None). This creates evaluation entry
+        points at different conversation depths within the rewriting stage.
+
+        Args:
+            n: 1-indexed rewriting turn to slice after
+
+        Returns:
+            New Conversation with messages up through the Nth rewriting exchange
+
+        Raises:
+            ValueError: If n is less than 1 or exceeds available rewriting turns
+        """
+        if n < 1:
+            raise ValueError(f"n must be >= 1, got {n}")
+
+        rewriting_count = 0
+        cut_index = len(self.messages)  # default: include all
+
+        for i, msg in enumerate(self.messages):
+            if msg.stage == "rewriting" and msg.role == "assistant":
+                rewriting_count += 1
+                if rewriting_count == n:
+                    # Include this therapist message + next message (patient response)
+                    cut_index = i + 1
+                    if i + 1 < len(self.messages) and self.messages[i + 1].stage is None:
+                        cut_index = i + 2
+                    break
+
+        if rewriting_count < n:
+            raise ValueError(
+                f"Requested rewriting turn {n} but only {rewriting_count} found"
+            )
+
+        sliced_messages = [msg.model_copy() for msg in self.messages[:cut_index]]
+        sliced_stages = list(dict.fromkeys(
+            msg.stage for msg in sliced_messages if msg.stage
+        ))
+
+        return Conversation(
+            session_id=self.session_id,
+            user_id=self.user_id,
+            messages=sliced_messages,
+            stages=sliced_stages,
+            language=self.language,
+        )
+
     def slice_at_stage(self, target_stage: Stage | str) -> "Conversation":
         """Create a new conversation sliced up to and including the target stage.
         
