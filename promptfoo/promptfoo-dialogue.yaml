@@ -7,8 +7,8 @@
 #   - Role adherence (patient stays patient, no AI patterns)
 #
 # Run with:
-#   npx promptfoo eval -c promptfoo-dialogue.yaml
-#   npx promptfoo view  (to inspect results)
+#   cd promptfoo && npx promptfoo eval -c promptfoo-dialogue.yaml
+#   npx promptfoo view  (to inspect results in browser)
 #
 # Each test runs a full multi-turn dialogue (~16 turns, ~48 LLM calls).
 
@@ -19,7 +19,7 @@ prompts:
   - "Run dialogue for vignette={{vignette_name}} max_turns={{max_turns}}"
 
 providers:
-  - id: "python:prompts/dialogue_provider.py"
+  - id: "python:providers/dialogue_provider.py"
 
 defaultTest:
   assert:

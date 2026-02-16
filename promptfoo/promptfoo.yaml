@@ -9,7 +9,7 @@ prompts:
   - "Generate patient response for vignette={{vignette_name}}"
 
 providers:
-  - id: "python:prompts/patient_provider.py"
+  - id: "python:providers/patient_provider.py"
 
 defaultTest:
   assert:
