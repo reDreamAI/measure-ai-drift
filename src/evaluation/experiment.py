@@ -74,6 +74,7 @@ class ExperimentRun:
         language: str = "en",
         parallel: bool = False,
         mode: str = "split",
+        therapist_provider: Any = None,
     ) -> list[TrialResult]:
         """Run the experiment and save results."""
         # Store config
@@ -94,7 +95,9 @@ class ExperimentRun:
             yaml.dump(self._config, f, default_flow_style=False)
 
         # Run trials
-        sampler = Sampler(language=language, mode=mode)
+        from src.stacks.evaluation_stack import EvaluationStack
+        stack = EvaluationStack(language=language, therapist_provider=therapist_provider, mode=mode)
+        sampler = Sampler(language=language, stack=stack, mode=mode)
         self._results = await sampler.run(
             self.frozen_history,
             n_trials=n_trials,

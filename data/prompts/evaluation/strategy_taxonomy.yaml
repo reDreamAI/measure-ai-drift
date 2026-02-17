@@ -12,7 +12,7 @@
 
 strategies:
   - id: confrontation
-    description: "Directly face, challenge, or overpower the threatening element"
+    description: "Directly face, challenge, or overpower the threatening element (not avoid or escape it)"
     keywords:
       - confront
       - challenge
