@@ -138,3 +138,4 @@ evaluation_models:
   - name: gemini_flash
     provider: gemini
     model: gemini-2.5-flash
+    max_tokens: 8192  # Gemini 2.5 thinking tokens count against max_tokens
