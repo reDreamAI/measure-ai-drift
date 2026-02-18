@@ -254,3 +254,63 @@ flowchart LR
     style components fill:#f0fff0,stroke:#2d8a4e
     style outputs fill:#fff8f0,stroke:#c47a2a
 ```
+
+---
+
+## 5. Data Creation & Slicing (3-Slice View)
+
+End-to-end flow from patient profile to evaluation-ready conversation slices.
+
+```mermaid
+flowchart TD
+    V["Vignette JSON<br/><i>patient profile + nightmare</i>"]
+    V --> GS
+
+    subgraph GS ["Generation Loop"]
+        direction LR
+        P["Patient"] -->|speaks| R["Router"]
+        R -->|classifies stage| T["Therapist"]
+        T -.->|responds| P
+    end
+
+    GS -->|"recording → rewriting →<br/>summary → rehearsal → final"| D["Complete Dialogue"]
+    D -->|"--freeze flag"| FH["save_frozen_history()"]
+
+    FH --> full["full.json<br/><i>all stages</i>"]
+    FH --> S1["slice_1.json"]
+    FH --> S2["slice_2.json"]
+    FH --> S3["slice_3.json"]
+
+    S3 -->|"evaluate -i slice_3.json<br/>--model X -n 10 -t 0.7"| EV["10 Trials → Metrics"]
+
+    style GS fill:#f0fff0,stroke:#2d8a4e
+    style V fill:#f0f4ff,stroke:#4a6fa5
+    style EV fill:#fff8f0,stroke:#c47a2a
+```
+
+### How slicing works
+
+Each **slice** is a prefix of the dialogue cut after the *N*-th rewriting exchange.
+A rewriting exchange = one therapist rewriting turn + the patient reply that follows it.
+
+| Msg | Role | Stage | slice_1 | slice_2 | slice_3 |
+|:---:|------|-------|:-------:|:-------:|:-------:|
+| 1 | Patient | — | ✓ | ✓ | ✓ |
+| 2 | Therapist | recording | ✓ | ✓ | ✓ |
+| 3 | Patient | — | ✓ | ✓ | ✓ |
+| … | … | recording | ✓ | ✓ | ✓ |
+| **N** | **Therapist** | **rewriting** | **✓** | **✓** | **✓** |
+| N+1 | Patient | — | **✓** | **✓** | **✓** |
+| | | | ✂️ cut | | |
+| **N+2** | **Therapist** | **rewriting** | | **✓** | **✓** |
+| N+3 | Patient | — | | **✓** | **✓** |
+| | | | | ✂️ cut | |
+| **N+4** | **Therapist** | **rewriting** | | | **✓** |
+| N+5 | Patient | — | | | **✓** |
+| | | | | | ✂️ cut |
+| N+6 | Therapist | summary | | | |
+| … | … | rehearsal / final | | | |
+
+> **Key rule**: Only therapist (assistant) messages carry stage tags.
+> Patient messages always have `stage = None`. The slicer counts assistant
+> messages with `stage = "rewriting"` and includes the patient reply after each.
