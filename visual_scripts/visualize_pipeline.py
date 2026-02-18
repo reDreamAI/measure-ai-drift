@@ -313,8 +313,8 @@ ax.text(9.0, 10.75, "Measure-AI-Drift  —  Data Creation & Slicing Pipeline",
         fontsize=16, color=C["text"], ha="center", fontweight="bold", zorder=10)
 
 plt.tight_layout(pad=0.5)
-plt.savefig("docs/pipeline_data_flow.png", dpi=200, bbox_inches="tight",
+plt.savefig("visualizations/pipeline_data_flow.png", dpi=200, bbox_inches="tight",
             facecolor=C["bg"], edgecolor="none")
-plt.savefig("docs/pipeline_data_flow.svg", bbox_inches="tight",
+plt.savefig("visualizations/pipeline_data_flow.svg", bbox_inches="tight",
             facecolor=C["bg"], edgecolor="none")
-print("Saved docs/pipeline_data_flow.png + .svg")
+print("Saved visualizations/pipeline_data_flow.png + .svg")
