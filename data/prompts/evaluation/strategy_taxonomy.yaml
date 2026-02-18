@@ -9,10 +9,12 @@
 #   - Dropped gradual_exposure (multi-session technique, not single-turn rescripting)
 #   - Dropped 'name' field (was just a verbose alias for id; "/" in names
 #     clashed with the plan output separator)
+#   - v3: Sharpened descriptions to focus on mechanism (HOW the change works),
+#     not outcome (what it achieves). Added NOT-examples to reduce overlap.
 
 strategies:
   - id: confrontation
-    description: "Directly face, challenge, or overpower the threatening element"
+    description: "The dreamer directly faces, fights, or stands up to the threat itself (NOT avoiding, escaping, or gaining general confidence)"
     keywords:
       - confront
       - challenge
@@ -23,7 +25,7 @@ strategies:
       - oppose
 
   - id: self_empowerment
-    description: "Gain personal strength, abilities, or confidence within the dream"
+    description: "The dreamer gains a new ability, skill, or inner strength they lacked before (NOT reinterpreting what already exists)"
     keywords:
       - power
       - strength
@@ -36,43 +38,51 @@ strategies:
       - control
 
   - id: safety
-    description: "Create safe spaces or protective elements"
+    description: "A physical barrier, shelter, or protective figure is added to shield the dreamer (e.g. walls, locked doors, a guardian — NOT just feeling calm or changing the scene)"
     keywords:
-      - safety
-      - safe
+      - barrier
+      - shelter
+      - shield
       - protection
-      - containment
+      - guardian
+      - wall
+      - locked
       - secure
 
   - id: cognitive_reframe
-    description: "Reinterpret threatening elements differently"
+    description: "The meaning or identity of existing dream elements changes (e.g. a monster becomes harmless, an enemy becomes a friend — the element stays but is seen differently)"
     keywords:
       - reframe
       - reinterpret
       - meaning
       - perspective
       - view differently
+      - becomes
 
   - id: emotional_regulation
-    description: "Introduce calming or comforting elements"
+    description: "The dreamer's internal emotional state shifts through breathing, self-talk, or felt calmness (NOT by changing external sensory details)"
     keywords:
       - calm
       - soothing
       - comfort
       - regulate
       - peace
+      - breathing
+      - self-talk
 
   - id: social_support
-    description: "Introduce helpful figures or allies"
+    description: "A new person, companion, or ally is introduced into the dream to help or accompany the dreamer"
     keywords:
       - ally
       - allies
       - support
       - helper
       - companion
+      - friend
+      - together
 
   - id: sensory_modulation
-    description: "Modify sensory details (light, sound, texture)"
+    description: "External sensory details of the dream environment change — what is seen, heard, or felt physically shifts (e.g. darkness becomes light, harsh sounds become soft music)"
     keywords:
       - sensory
       - imagery
@@ -80,6 +90,9 @@ strategies:
       - sound
       - light
       - texture
+      - brighter
+      - quieter
+      - softer
 
 # Validation rules for generated plans
 validation:

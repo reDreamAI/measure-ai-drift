@@ -12,7 +12,10 @@ src/core/config_loader.py
 src/core/conversation.py
 src/core/stages.py
 src/evaluation/__init__.py
+src/evaluation/experiment.py
 src/evaluation/metrics.py
+src/evaluation/results.py
+src/evaluation/sampler.py
 src/llm/__init__.py
 src/llm/provider.py
 src/measure_ai_drift.egg-info/PKG-INFO
@@ -25,3 +28,4 @@ src/stacks/__init__.py
 src/stacks/evaluation_stack.py
 src/stacks/generation_stack.py
 tests/test_evaluation_pipeline.py
+tests/test_setup.py

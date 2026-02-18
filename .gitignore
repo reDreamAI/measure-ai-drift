@@ -6,8 +6,9 @@
 # Ignore markdown files in root directory only (keep docs/*.md, etc.)
 /*.md
 
-# Ignore node modules
-node_modules
+# Promptfoo (node_modules + result files)
+promptfoo/node_modules/
+promptfoo/*-results.json
 
 # ignore temporary data files
 .DS_Store
@@ -18,7 +19,7 @@ __pycache__/
 
 # Generated test data
 data/synthetic/dialogues/*.json
-data/synthetic/frozen_histories/*.json
+data/synthetic/frozen_histories/
 data/synthetic/results/*.json
 experiments/
 

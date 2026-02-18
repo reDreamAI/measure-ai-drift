@@ -114,11 +114,16 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
         compute_validity_rate,
         compute_pairwise_jaccard,
     )
-    from src.llm.provider import load_config
+    from src.llm.provider import load_config, create_provider
 
-    # Get model name from config
+    # Resolve model: CLI override or default from config
     config = load_config()
-    model_key = config.get("roles", {}).get("therapist", {}).get("use", "unknown")
+    if args.model:
+        model_key = args.model
+        therapist_provider = create_provider(args.model)
+    else:
+        model_key = config.get("roles", {}).get("therapist", {}).get("use", "unknown")
+        therapist_provider = None  # let EvaluationStack use default
 
     async def _run():
         try:
@@ -161,6 +166,7 @@ def cmd_evaluate(args: argparse.Namespace) -> int:
                     temperature=args.temperature,
                     language=args.language,
                     mode=args.mode,
+                    therapist_provider=therapist_provider,
                 )
 
             console.print(f"[green]✓[/green] Completed {len(results)} trials")
@@ -504,6 +510,7 @@ def main() -> int:
     eval_parser.add_argument('--language', '-l', default='en', choices=['en', 'de'], help='Session language')
     eval_parser.add_argument('--vignette', '-v', help='Vignette name (auto-detected from filename if omitted)')
     eval_parser.add_argument('--mode', '-m', default='fused', choices=['fused', 'chained'], help='Plan-response mode: fused (single CoT call) or chained (plan injected into response call)')
+    eval_parser.add_argument('--model', default=None, help='Override therapist model (evaluation_models name from models.yaml, e.g. mistral_small, llama70b, gemini_flash)')
     eval_parser.add_argument('--verbose', action='store_true', help='Show detailed output')
     
     # Keys command

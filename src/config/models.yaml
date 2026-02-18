@@ -46,7 +46,7 @@ model_options:
       notes: "Same as router for consistency"
     mistral_sovereign:
       provider: scaleway
-      model: mistral-small-3.2-24b-instruct
+      model: mistral-small-3.2-24b-instruct-2506
       notes: "Sovereign EU option"
     groq_oss:
       provider: groq
@@ -129,7 +129,7 @@ roles:
 evaluation_models:
   - name: mistral_small
     provider: scaleway
-    model: mistral-small-3.2-24b-instruct
+    model: mistral-small-3.2-24b-instruct-2506
 
   - name: llama70b
     provider: groq
@@ -138,3 +138,4 @@ evaluation_models:
   - name: gemini_flash
     provider: gemini
     model: gemini-2.5-flash
+    max_tokens: 8192  # Gemini 2.5 thinking tokens count against max_tokens
