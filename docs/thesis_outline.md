@@ -16,24 +16,20 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 - IRT as gold-standard: structured protocol with rescripting at its core
 - Clinician shortage → scalable AI interventions as potential solution
 
-### 1.2 AI-Assisted Psychotherapy and the reDreamAI Context
-- LLM-based therapeutic delivery
+### 1.2 AI-Assisted Psychotherapy
+- LLM-based therapeutic delivery (reDreamAI project as applied context)
 - Distinction: general-purpose conversational AI vs. protocol-driven therapeutic agents
+- EU regulatory context favours sovereign, self-hostable models — but their therapeutic reliability is unvalidated
 
-### 1.3 The Sovereignty Problem
-- EU data protection, AI Act, regulatory constraints for clinical deployment
-- Proprietary models (GPT-5) vs. EU-sovereign/self-hostable models (Mistral Small 3.2)
-- Central tension: regulatory compliance vs. validated clinical capability
-
-### 1.4 The Evaluation Gap
+### 1.3 The Evaluation Gap
 - Standard NLP benchmarks do not assess therapeutic reliability
 - Missing: intent stability under stochastic variation, protocol adherence, consistent persona
 - Need for domain-specific in silico clinical trials
 
-### 1.5 Research Objectives
-- RQ: How consistent is the clinical reasoning of sovereign LLMs compared to proprietary baselines in a structured therapeutic protocol?
+### 1.4 Research Objectives
+- RQ: How consistent is LLM clinical reasoning across stochastic runs in a structured therapeutic protocol?
 - Contribution 1: Three-level hierarchical evaluation framework for therapeutic AI stability
-- Contribution 2: Quantitative comparison of sovereign vs. proprietary models on IRT rescripting
+- Contribution 2: Quantitative comparison across model classes (sovereign, proprietary, open-weight)
 - Scope: isolated rescripting phase (cognitive core of IRT)
 
 ---
@@ -128,9 +124,11 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 - Mitigations: cross-model judging, CoT justification, deterministic decoding, transparent rubric
 - Measures: does the model's response implement its declared therapeutic plan?
 
-### 3.8 Models Under Evaluation
+### 3.8 Model Selection
+- EU sovereignty as selection criterion: data protection, AI Act, self-hostability requirements
 - Primary subject: Mistral Small 3.2 (24B) — EU-sovereign, self-hostable
-- Baselines: GPT-5, Llama 3.3 70B, Qwen 3 32B, Gemma 3 27B
+- Proprietary baseline: GPT-5
+- Open-weight comparisons: Llama 3.3 70B, Qwen 3 32B, Gemma 3 27B
 - Selection rationale: size class diversity, provider diversity, sovereignty status
 
 ### 3.9 Experimental Conditions
@@ -190,10 +188,10 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 
 ## 6 Discussion
 
-### 6.1 Sovereign vs. Proprietary Model Performance
+### 6.1 Cross-Model Comparison
 - Mistral Small 3.2 performance relative to GPT-5 and size-class peers
-- Practical implications for EU-sovereign clinical deployment
-- Where sovereign models match, where they fall short
+- Sovereignty dimension: does self-hostability come at a stability cost?
+- Size-class effects: 24B vs. 32B vs. 70B vs. frontier
 
 ### 6.2 Temperature and Therapeutic Stability
 - Greedy decoding as a clinical deployment baseline
