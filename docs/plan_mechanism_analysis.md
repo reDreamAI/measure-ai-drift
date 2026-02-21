@@ -2,7 +2,7 @@
 
 ## Why a Structured Plan?
 
-The evaluation framework introduces a `<plan>` step where the therapist model declares 1-2 strategies from an 8-category IRT taxonomy before responding. The original motivation was twofold: improve response quality through structured reasoning (similar to Chain-of-Thought), and create a transparent, auditable trace of the model's intended therapeutic approach.
+The evaluation framework introduces a `<plan>` step where the therapist model declares 1-2 strategies from the IRT strategy taxonomy (now 7 categories; see `strategy_taxonomy_evolution.md`) before responding. The original motivation was twofold: improve response quality through structured reasoning (similar to Chain-of-Thought), and create a transparent, auditable trace of the model's intended therapeutic approach.
 
 However, framing this as "explainability" raises concerns. Recent work on CoT faithfulness (Turpin et al., 2023; Lanham et al., 2023) has shown that language model explanations do not necessarily reflect internal reasoning — they can be post-hoc rationalizations that look plausible but are not causally connected to the model's actual decision process. When the model outputs `<plan>empowerment / mastery</plan>`, there is no guarantee this represents genuine therapeutic intent rather than token-level pattern completion.
 
