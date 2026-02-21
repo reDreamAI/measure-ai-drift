@@ -14,12 +14,12 @@ from matplotlib.patches import FancyBboxPatch
 C = {
     "trial":      "#E67E22",   # orange — matches pipeline eval section
     "plan":       "#F0B27A",   # light orange — matches pipeline trial
-    "resp":       "#E59866",   # medium orange
-    "extract":    "#78909C",   # blue-grey — neutral processing
-    "taxonomy":   "#17A589",   # teal — reference data
-    "l31":        "#6C5CE7",   # indigo — unique to eval levels
-    "l32":        "#00B894",   # emerald — unique to eval levels
-    "l33":        "#E84393",   # hot pink — unique to eval levels
+    "resp":       "#F1948A",   # soft red — matches Method 2
+    "extract":    "#E67E22",   # orange — feeds Method 1
+    "taxonomy":   "#E84393",   # hot pink — feeds Method 3
+    "l31":        "#E67E22",   # orange — Method 1
+    "l32":        "#F1948A",   # soft red — Method 2
+    "l33":        "#E84393",   # hot pink — Method 3
     "output":     "#34495E",   # dark slate
     "bg":         "#FAFBFC",
     "text":       "#2C3E50",
@@ -27,11 +27,11 @@ C = {
     "label":      "#566573",
 }
 
-fig, ax = plt.subplots(figsize=(18, 12))
+fig, ax = plt.subplots(figsize=(18, 13.5))
 fig.patch.set_facecolor(C["bg"])
 ax.set_facecolor(C["bg"])
 ax.set_xlim(0, 18)
-ax.set_ylim(0, 12)
+ax.set_ylim(0, 13.5)
 ax.axis("off")
 
 # ── helpers ──────────────────────────────────────────────────────────────────
@@ -99,61 +99,71 @@ def section_label(x, y, text, color, fontsize=11):
 # TITLE
 # ═══════════════════════════════════════════════════════════════════════════════
 
-ax.text(9.0, 11.7, "Evaluation Methods — Three-Level Stability Framework",
+ax.text(9.0, 13.2, "Evaluation Methods — Three-Level Stability Framework",
         fontsize=16, color=C["text"], ha="center", fontweight="bold", zorder=10)
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# TOP: Trial Output + Extraction + Taxonomy
+# BANNER: Trial setup context
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# --- Trial output ---
-section_bg(0.3, 9.2, 5.0, 2.0, C["trial"])
-section_label(0.6, 11.0, "TRIAL OUTPUT (x10)", C["trial"])
+box(0.5, 11.95, 17.0, 0.85, "#E74C3C", "", bold=False, alpha=0.12)
 
-box(0.6, 9.5, 2.1, 1.3, C["plan"], "<plan>",
-    sublabel="cat1 / cat2", fontsize=9)
-box(2.9, 9.5, 2.1, 1.3, C["resp"], "Response",
-    sublabel="1-3 sentences", fontsize=9)
+ax.text(9.0, 12.55, "TRIAL OUTPUT",
+        fontsize=13, color=C["text"], ha="center", fontweight="bold", zorder=5)
 
-ax.text(2.65, 9.3, "evaluation_stack.py:run_trial()",
+ax.text(9.0, 12.2,
+        "10 trials per slice  ·  3 slices per vignette  ·  6 vignettes  ·  "
+        "per model & temperature",
+        fontsize=9.5, color=C["text"], ha="center", zorder=5)
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# TOP: Plan Extraction | Response Texts | Judge Inputs
+# ═══════════════════════════════════════════════════════════════════════════════
+
+# --- Left: Plan + Extraction (feeds Method 1) — aligned with METHOD 1 ---
+section_bg(0.3, 9.4, 5.3, 2.1, C["extract"])
+section_label(0.6, 11.3, "PLAN EXTRACTION", C["extract"])
+
+box(0.6, 10.35, 4.7, 0.7, C["extract"],
+    "extract_plan_strategies()", fontsize=9)
+
+box(0.6, 9.55, 2.05, 0.45, C["extract"],
+    "10 strategy sets", fontsize=7.5, alpha=0.6)
+
+box(3.0, 9.55, 2.25, 0.45, C["extract"],
+    "Validity Rate (1-2?)", fontsize=7.5, alpha=0.6)
+
+ax.text(2.95, 9.42, "from <plan> block per trial",
         fontsize=6.5, color=C["label"], ha="center", family="monospace",
         style="italic")
 
-# --- Extraction ---
-section_bg(5.6, 9.2, 5.8, 2.0, C["extract"])
-section_label(5.9, 11.0, "PLAN PARSING", C["extract"])
+# --- Center: Response Texts (feeds Method 2) — aligned with METHOD 2 ---
+section_bg(5.9, 9.4, 5.6, 2.1, C["resp"])
+section_label(6.2, 11.3, "RESPONSE TEXTS", C["resp"])
 
-box(5.9, 10.0, 5.2, 0.75, C["extract"],
-    "extract_plan_strategies()", fontsize=9)
+box(6.2, 9.7, 2.4, 1.3, C["plan"], "<plan>",
+    sublabel="cat1 / cat2", fontsize=9)
+box(8.8, 9.7, 2.4, 1.3, C["resp"], "Response",
+    sublabel="1-3 sentences", fontsize=9)
 
-box(5.9, 9.4, 2.4, 0.5, C["extract"],
-    "10 strategy sets", fontsize=8, alpha=0.6)
+ax.text(8.7, 9.5, "10 response texts for pairwise comparison",
+        fontsize=6.5, color=C["label"], ha="center", family="monospace",
+        style="italic")
 
-box(8.5, 9.4, 2.6, 0.5, C["extract"],
-    "Validity Rate (1-2?)", fontsize=8, alpha=0.6)
+# --- Right: Judge Inputs (feeds Method 3) — aligned with METHOD 3 ---
+section_bg(11.8, 9.4, 5.9, 2.1, C["taxonomy"])
+section_label(12.1, 11.3, "JUDGE INPUTS", C["taxonomy"])
 
-# (plan → extraction connection implied by layout)
+box(12.1, 10.35, 5.3, 0.7, C["taxonomy"],
+    "Strategy Taxonomy", sublabel="7 categories", fontsize=9)
 
-# --- Strategy Taxonomy ---
-section_bg(11.7, 9.2, 5.8, 2.0, C["taxonomy"])
-section_label(12.0, 11.0, "STRATEGY TAXONOMY", C["taxonomy"])
+box(12.1, 9.55, 2.35, 0.45, C["taxonomy"],
+    "extracted strategies", fontsize=7, alpha=0.6)
 
-strategies = [
-    "confrontation", "self_empowerment", "safety",
-    "cognitive_reframe", "emotional_regulation",
-    "social_support", "sensory_modulation",
-]
-for i, s in enumerate(strategies):
-    col = i % 3
-    row = i // 3
-    fx = 12.0 + col * 1.9
-    fy = 10.2 - row * 0.45
-    if i == 6:
-        fx = 12.0
-        fy = 10.2 - 2 * 0.45
-    file_box(fx, fy, 1.75, 0.35, C["taxonomy"], s, fontsize=6)
+box(14.8, 9.55, 2.55, 0.45, C["taxonomy"],
+    "response texts", fontsize=8, alpha=0.6)
 
-ax.text(14.6, 9.3, "strategy_taxonomy.yaml",
+ax.text(14.85, 9.42, "strategy_taxonomy.yaml",
         fontsize=6.5, color=C["label"], ha="center", family="monospace",
         style="italic")
 
@@ -164,7 +174,7 @@ ax.text(14.6, 9.3, "strategy_taxonomy.yaml",
 # --- Level 3.1: Cognitive Stability ---
 c1x, c1w = 0.3, 5.3
 section_bg(c1x, 2.3, c1w, 6.5, C["l31"])
-section_label(c1x + 0.3, 8.5, "LEVEL 3.1", C["l31"], fontsize=13)
+section_label(c1x + 0.3, 8.5, "METHOD 1", C["l31"], fontsize=13)
 
 box(c1x + 0.3, 7.4, c1w - 0.6, 0.85, C["l31"],
     "Cognitive Stability",
@@ -207,7 +217,7 @@ ax.text(c1x + c1w / 2, 2.6,
 # --- Level 3.2: Output Consistency ---
 c2x, c2w = 5.9, 5.6
 section_bg(c2x, 2.3, c2w, 6.5, C["l32"])
-section_label(c2x + 0.3, 8.5, "LEVEL 3.2", C["l32"], fontsize=13)
+section_label(c2x + 0.3, 8.5, "METHOD 2", C["l32"], fontsize=13)
 
 box(c2x + 0.3, 7.4, c2w - 0.6, 0.85, C["l32"],
     "Output Consistency",
@@ -249,7 +259,7 @@ ax.text(c2x + c2w / 2, 2.6,
 # --- Level 3.3: Plan-Output Alignment ---
 c3x, c3w = 11.8, 5.9
 section_bg(c3x, 2.3, c3w, 6.5, C["l33"])
-section_label(c3x + 0.3, 8.5, "LEVEL 3.3", C["l33"], fontsize=13)
+section_label(c3x + 0.3, 8.5, "METHOD 3", C["l33"], fontsize=13)
 
 box(c3x + 0.3, 7.4, c3w - 0.6, 0.85, C["l33"],
     "Plan-Output Alignment",
@@ -268,7 +278,7 @@ ax.text(c3x + c3w / 2, 5.5,
         fontsize=9, color=C["l33"], ha="center", fontweight="bold")
 
 score_labels = [
-    ("0", "absent", "#F1948A"),
+    ("0", "absent", "#E74C3C"),
     ("1", "partial", "#F5B041"),
     ("2", "implemented", "#58D68D"),
 ]
