@@ -19,7 +19,7 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 ### 1.2 AI-Assisted Psychotherapy
 - LLM-based therapeutic delivery (reDreamAI project as applied context)
 - Distinction: general-purpose conversational AI vs. protocol-driven therapeutic agents
-- EU regulatory context favours sovereign, self-hostable models — but their therapeutic reliability is unvalidated
+- Deployment in clinical settings introduces regulatory constraints (EU AI Act, data sovereignty)
 
 ### 1.3 The Evaluation Gap
 - Standard NLP benchmarks do not assess therapeutic reliability
