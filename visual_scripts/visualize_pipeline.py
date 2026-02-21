@@ -8,7 +8,7 @@ import numpy as np
 # ── colours ──────────────────────────────────────────────────────────────────
 C = {
     "vignette":   "#5B8DEE",   # blue
-    "gen":        "#34A853",   # green
+    "gen":        "#6C5CE7",   # indigo — matches eval L3.1
     "frozen":     "#8E44AD",   # purple
     "slice":      "#AF7AC5",   # light purple
     "eval":       "#E67E22",   # orange
@@ -17,7 +17,7 @@ C = {
     "result":     "#F1948A",   # light red
     "bg":         "#FAFBFC",   # near-white
     "text":       "#2C3E50",   # dark slate
-    "arrow":      "#7F8C8D",   # gray
+    "arrow":      "#4A4A4A",   # dark grey
     "label":      "#566573",   # medium gray
 }
 
@@ -112,16 +112,16 @@ ax.text(2.0, 8.22, "data/prompts/patients/vignettes/",
         fontsize=7.5, color=C["label"], ha="center", family="monospace", style="italic")
 
 # ── Section 2: Generation ────────────────────────────────────────────────────
-section_bg(4.3, 8.0, 3.0, 2.6, C["gen"])
-section_label(4.6, 10.3, "2  GENERATE", C["gen"])
+section_bg(3.8, 8.0, 3.2, 2.6, C["gen"])
+section_label(4.1, 10.3, "2  GENERATE", C["gen"])
 
-box(4.6, 9.0, 2.5, 1.1, C["gen"], "Generation Stack",
+box(4.3, 8.65, 2.5, 1.1, C["gen"], "Generation Stack",
     sublabel="Patient ↔ Router ↔ Therapist")
 
-ax.text(5.85, 8.35, "python -m src generate --freeze",
+ax.text(5.4, 8.2, "python -m src generate --freeze",
         fontsize=7, color=C["label"], ha="center", family="monospace", style="italic")
 
-arrow(3.7, 9.5, 4.6, 9.5, color=C["vignette"], lw=2.5)
+arrow(3.7, 9.1, 4.15, 9.1, lw=2.5)
 
 # ── Section 3: Frozen Histories ──────────────────────────────────────────────
 section_bg(0.3, 3.8, 7.0, 3.8, C["frozen"])
@@ -137,57 +137,60 @@ folders = [
     ("frozen_trauma_260c754c", False),
 ]
 
-# Expanded folder (anxious)
-box(0.6, 4.55, 3.8, 2.5, C["frozen"], "", bold=False, alpha=0.25)
-ax.text(2.5, 6.82, "frozen_anxious_54cf714f/",
+# Other folders (compact) — LEFT side
+for i, (fname, _) in enumerate(folders[1:]):
+    short = fname.split("_")[1]  # just the vignette name
+    file_box(0.6, 6.55 - i * 0.45, 2.3, 0.35, C["frozen"],
+             f"frozen_{short}_*/", fontsize=7.5)
+
+# Expanded folder (anxious) — RIGHT side
+box(3.2, 4.55, 3.8, 2.5, C["frozen"], "", bold=False, alpha=0.25)
+ax.text(5.1, 6.82, "frozen_anxious_54cf714f/",
         fontsize=8.5, color=C["frozen"], ha="center", fontweight="bold",
         family="monospace", zorder=5)
 
 slice_files = ["full.json", "slice_1.json", "slice_2.json", "slice_3.json"]
 slice_colors = [C["frozen"], C["slice"], C["slice"], C["slice"]]
 for i, (sf, sc) in enumerate(zip(slice_files, slice_colors)):
-    file_box(0.85 + (i % 2) * 1.85, 5.85 - (i // 2) * 0.55, 1.65, 0.4, sc, sf, fontsize=8)
-
-# Show "... + slice_4..6" hint
-ax.text(2.5, 4.78, "+ slice_4 .. slice_6",
-        fontsize=7, color=C["label"], ha="center", style="italic")
-
-# Other folders (compact)
-for i, (fname, _) in enumerate(folders[1:]):
-    short = fname.split("_")[1]  # just the vignette name
-    file_box(4.7, 6.55 - i * 0.45, 2.3, 0.35, C["frozen"],
-             f"frozen_{short}_*/", fontsize=7.5)
+    file_box(3.45 + (i % 2) * 1.85, 5.85 - (i // 2) * 0.55, 1.65, 0.4, sc, sf, fontsize=8)
 
 ax.text(3.65, 4.05, "data/synthetic/frozen_histories/",
         fontsize=7.5, color=C["label"], ha="center", family="monospace", style="italic")
 
-# Arrow from generation to frozen
-arrow(5.85, 9.0, 5.85, 7.6, color=C["gen"], lw=2.5)
-# Also arrow to the expanded folder
-arrow(5.85, 7.6, 3.0, 7.1, color=C["gen"], lw=2)
+# Arrow from generation to frozen (single arrow)
+arrow(5.4, 8.55, 5.1, 7.1, lw=2.5)
 
 # ── Section 4: Evaluation ────────────────────────────────────────────────────
 section_bg(8.0, 3.8, 5.2, 6.8, C["eval"])
 section_label(8.3, 10.3, "4  EVALUATE", C["eval"])
 
-# Show the evaluate command
-box(8.4, 9.0, 4.5, 1.1, C["eval"], "Evaluation Stack",
-    sublabel="fused mode · 10 trials · T=0.0 / 0.7")
-
-ax.text(10.65, 8.35, "python -m src evaluate -i slice_3.json --model X",
+ax.text(10.65, 9.95, "python -m src evaluate -i slice_3.json --model X",
         fontsize=6.5, color=C["label"], ha="center", family="monospace", style="italic")
 
-# Arrow from frozen slice to eval
-arrow(4.4, 5.85, 8.4, 9.3, color=C["slice"], lw=2.5, style="-|>")
-ax.text(6.0, 7.8, "slice_3.json", fontsize=8, color=C["slice"],
-        fontweight="bold", rotation=30, family="monospace", zorder=5)
+# Step 1: Rescripting prompt injected directly (no router needed)
+box(8.5, 9.05, 4.3, 0.75, C["eval"], "Rescripting Prompt",
+    sublabel="no router — stage is known", fontsize=9)
+
+# Arrow down to Therapist LLM
+arrow(10.65, 9.05, 10.65, 8.8, lw=2)
+
+# Step 2: Therapist LLM produces one rescripting message per trial
+box(8.5, 8.0, 4.3, 0.75, C["eval"], "Therapist LLM",
+    sublabel="fused CoT · x10 trials · T=0.0 / 0.7", fontsize=9)
+
+# Arrow down to experiment folder + annotation
+arrow(10.65, 8.0, 10.65, 7.5, lw=2)
+ax.text(12.15, 7.65, "plan + response",
+        fontsize=7.5, color=C["eval"], ha="left", style="italic", zorder=5)
+
+# Arrow from frozen slice to eval (enters the rescripting prompt box)
+arrow(7.0, 5.5, 8.5, 9.4, lw=2.5, style="-|>")
 
 # Experiment run folder
-box(8.4, 5.2, 4.5, 3.4, C["eval"], "", bold=False, alpha=0.2)
-ax.text(10.65, 8.4, "", fontsize=8, color=C["eval"], ha="center")
+box(8.4, 4.2, 4.5, 3.15, C["eval"], "", bold=False, alpha=0.2)
 
 # Run folder header
-ax.text(10.65, 8.0, "20260217_152151_llama70b_anxious/",
+ax.text(10.65, 7.1, "20260217_152151_llama70b_anxious/",
         fontsize=8, color=C["eval"], ha="center", fontweight="bold",
         family="monospace", zorder=5)
 
@@ -201,41 +204,38 @@ run_files = [
 for fname, i in run_files:
     col = i % 2
     row = i // 2
-    file_box(8.65 + col * 2.15, 7.15 - row * 0.5, 1.95, 0.38, C["eval"], fname, fontsize=7.5)
+    file_box(8.65 + col * 2.15, 6.3 - row * 0.5, 1.95, 0.38, C["eval"], fname, fontsize=7.5)
 
 # Trials subfolder
-box(8.65, 5.5, 4.0, 1.0, C["trial"], "", bold=False, alpha=0.5)
-ax.text(10.65, 6.3, "trials/", fontsize=8.5, color="white",
+box(8.65, 4.5, 4.0, 1.0, C["trial"], "", bold=False, alpha=0.5)
+ax.text(10.65, 5.3, "trials/", fontsize=8.5, color="white",
         ha="center", fontweight="bold", family="monospace", zorder=5)
 trial_names = ["trial_01", "trial_02", "trial_03", "...", "trial_10"]
 for i, tn in enumerate(trial_names):
-    file_box(8.8 + i * 0.78, 5.6, 0.7, 0.32, C["trial"], tn, fontsize=6)
+    file_box(8.8 + i * 0.78, 4.6, 0.7, 0.32, C["trial"], tn, fontsize=6)
 
-ax.text(10.65, 4.1, "experiments/runs/{timestamp}_{model}_{vignette}/",
+ax.text(10.65, 4.0, "experiments/runs/{timestamp}_{model}_{vignette}/",
         fontsize=7, color=C["label"], ha="center", family="monospace", style="italic")
-
-# Arrow from eval stack to run folder
-arrow(10.65, 9.0, 10.65, 8.15, color=C["eval"], lw=2)
 
 # ── Section 5: Aggregation ───────────────────────────────────────────────────
 section_bg(13.8, 3.8, 3.9, 6.8, C["agg"])
 section_label(14.1, 10.3, "5  AGGREGATE", C["agg"])
 
-box(14.1, 9.0, 3.3, 1.1, C["agg"], "Aggregation",
+box(14.1, 8.75, 3.3, 1.1, C["agg"], "Aggregation",
     sublabel="across 36 experiment runs")
 
-ax.text(15.75, 8.35, "python -m src aggregate",
+ax.text(15.75, 9.95, "python -m src aggregate",
         fontsize=7, color=C["label"], ha="center", family="monospace", style="italic")
 
 # Arrow from eval to aggregate
-arrow(12.9, 9.5, 14.1, 9.5, color=C["eval"], lw=2.5)
+arrow(12.9, 9.5, 14.1, 9.5, lw=2.5)
 
 # Result files
 result_files = ["stability.json", "semantic_consistency.json", "alignment.json"]
 for i, rf in enumerate(result_files):
     file_box(14.3, 7.2 - i * 0.55, 3.0, 0.42, C["result"], rf, fontsize=8.5)
 
-arrow(15.75, 9.0, 15.75, 7.7, color=C["agg"], lw=2)
+arrow(15.75, 9.0, 15.75, 7.7, lw=2)
 
 ax.text(15.8, 5.55, "data/synthetic/results/",
         fontsize=7.5, color=C["label"], ha="center", family="monospace", style="italic")
@@ -287,7 +287,7 @@ for i, (role, stage, color) in enumerate(msg_data):
 cuts = [
     (7, "slice_1", C["slice"]),
     (9, "slice_2", C["slice"]),
-    (11, "slice_3", C["eval"]),
+    (11, "slice_3", C["slice"]),
 ]
 for msg_idx, label, color in cuts:
     x = bx + msg_idx * (bw + gap) - gap / 2
