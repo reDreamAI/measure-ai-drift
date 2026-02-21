@@ -2,7 +2,7 @@
 
 **Measuring Drift in Therapeutic AI: A Stability-Based Evaluation of Sovereign LLMs in Nightmare Therapy**
 
-Daniel Menzel — Institute of Cognitive Science, University of Osnabruck
+Daniel Menzel, Institute of Cognitive Science, University of Osnabruck
 Supervisors: Moritz Hartstang, Sebastian Musslick
 
 ---
@@ -95,20 +95,20 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 
 ### 3.6 Strategy Taxonomy Development
 \- Initial 8-category taxonomy: severe distribution skew (empowerment/mastery = 87.7%)
-\- Revision 1 — merge to agency: failed (100% dominance, goal vs. mechanism confusion)
-\- Revision 2 — mechanism-specific split: confrontation (external action) vs. self_empowerment (internal transformation)
+\- Revision 1, merge to agency: failed (100% dominance, goal vs. mechanism confusion)
+\- Revision 2, mechanism-specific split: confrontation (external action) vs. self_empowerment (internal transformation)
 \- Final 7 categories: confrontation, self_empowerment, safety, cognitive_reframe, emotional_regulation, social_support, sensory_modulation
 \- Prompt-level steering for category diversity
 
 ### 3.7 Evaluation Metrics
 
-#### 3.7.1 Method 1 — Cognitive Stability (Plan Consistency)
+#### 3.7.1 Method 1 - Cognitive Stability (Plan Consistency)
 \- Pairwise Jaccard similarity over strategy sets: J(A,B) = |A ∩ B| / |A ∪ B|
 \- Mean over C(10,2) = 45 trial pairs
-\- Strategy extraction from `<plan>` blocks; validity rate as quality gate
+\- Strategy extraction from `<plan>` blocks. Validity rate as quality gate
 \- Measures: do stochastic runs produce the same therapeutic decisions?
 
-#### 3.7.2 Method 2 — Output Consistency (Semantic Stability)
+#### 3.7.2 Method 2 - Output Consistency (Semantic Stability)
 \- Pairwise BERTScore F1 over response texts, mean over 45 pairs
 \- Embedding model: DeBERTa-XLarge-MNLI (He et al., 2021)
   \- NLI fine-tuning aligns with semantic comparison task
@@ -116,7 +116,7 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
   \- Disentangled attention handles surface-form variation in therapeutic language
 \- Measures: do stochastic runs produce therapeutically equivalent responses?
 
-#### 3.7.3 Method 3 — Plan-Output Alignment (Exploratory)
+#### 3.7.3 Method 3 - Plan-Output Alignment (Exploratory)
 \- LLM judge (Gemini Flash, T=0.0) with ternary scoring per declared strategy
   \- 0 = absent, 1 = partial, 2 = implemented
 \- Ternary scale grounded in clinical fidelity literature (ENACT, NIH BCC)
@@ -126,7 +126,7 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 
 ### 3.8 Model Selection
 \- EU sovereignty as selection criterion: data protection, AI Act, self-hostability requirements
-\- Primary subject: Mistral Small 3.2 (24B) — EU-sovereign, self-hostable
+\- Primary subject: Mistral Small 3.2 (24B), EU-sovereign, self-hostable
 \- Proprietary baseline: GPT-5
 \- Open-weight comparisons: Llama 3.3 70B, Qwen 3 32B, Gemma 3 27B
 \- Selection rationale: size class diversity, provider diversity, sovereignty status

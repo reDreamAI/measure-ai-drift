@@ -36,7 +36,7 @@ Two categories consumed 87.7% of all picks. Three categories were never selected
 
 1. **empowerment vs mastery overlap**: Both describe gaining control/capability in the dream. The model treats them as near-synonyms and alternates between them without meaningful clinical distinction.
 
-2. **gradual_exposure inapplicable**: This is a multi-session technique (progressive desensitization over time). Single-turn rescripting cannot implement it — the model correctly avoids it but gets no guidance toward alternatives.
+2. **gradual_exposure inapplicable**: This is a multi-session technique (progressive desensitization over time). Single-turn rescripting cannot implement it, and the model correctly avoids it but gets no guidance toward alternatives.
 
 3. **Plan prompts listed bare IDs**: The model saw `sensory_modulation` with no description and defaulted to familiar labels like `empowerment`.
 
@@ -62,7 +62,7 @@ Positive signal: `emotional_regulation` appeared (was 1% pre-revision), suggesti
 
 ### Analysis
 
-The core issue is that `agency` describes a therapeutic **goal** (feel more in control) rather than a specific **mechanism** of change. Every nightmare rescripting intervention serves agency in some way — it's a super-category that overlaps with everything.
+The core issue is that `agency` describes a therapeutic **goal** (feel more in control) rather than a specific **mechanism** of change. Every nightmare rescripting intervention serves agency in some way, making it a super-category that overlaps with everything.
 
 The tail categories work better because they describe concrete mechanisms:
 - cognitive_reframe: the mechanism is *reinterpretation*
@@ -108,7 +108,7 @@ social_support:       Introduce helpful figures or allies
 sensory_modulation:   Modify sensory details (light, sound, texture)
 ```
 
-### Expected vignette–strategy mapping
+### Expected vignette-strategy mapping
 
 | Vignette | Primary nightmare content | Expected strategies |
 |----------|--------------------------|---------------------|

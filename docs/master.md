@@ -1,4 +1,4 @@
-# Measure-AI-Drift — Project Master Document
+# Measure-AI-Drift - Project Master Document
 
 > Single source of truth for thesis scope, architecture, design decisions, and model selection.
 > For chapter structure, see [thesis_outline.md](thesis_outline.md).
@@ -12,18 +12,18 @@
 
 **Research question:** How consistent is LLM clinical reasoning across stochastic runs in a structured therapeutic protocol?
 
-**Core idea:** LLMs used in therapy must produce stable, protocol-adherent responses — not just plausible ones. This thesis builds a three-level evaluation framework to measure that stability and applies it to compare an EU-sovereign therapy model against proprietary and open-weight baselines.
+**Core idea:** LLMs used in therapy must produce stable, protocol-adherent responses, not just plausible ones. This thesis builds a three-level evaluation framework to measure that stability and applies it to compare an EU-sovereign therapy model against proprietary and open-weight baselines.
 
 **Scope boundaries:**
 - Isolated to the **rescripting phase** of Imagery Rehearsal Therapy (the cognitive core)
 - Synthetic patients (BDI-profiled vignettes), not real clinical interactions
-- **Fused mode** only (plan + response in a single CoT call) — chained mode was explored early on but fused is the production approach
+- **Fused mode** only (plan + response in a single CoT call). Chained mode was explored early on but fused is the production approach
 - Stability measurement, not therapeutic efficacy
 
 **What this thesis is NOT:**
 - Not a clinical trial (no real patients)
 - Not a benchmark paper (the framework is the contribution, not a leaderboard)
-- Not about sovereignty per se — sovereignty motivates the choice of primary subject, but the evaluation framework applies to any LLM
+- Not about sovereignty per se: sovereignty motivates the choice of primary subject, but the evaluation framework applies to any LLM
 
 ---
 
@@ -35,15 +35,15 @@ The system separates dialogue creation from stability measurement:
 
 **Generation Stack** (`src/stacks/generation_stack.py`):
 Three-agent loop that produces synthetic therapy sessions.
-- **Patient Agent** — simulates responses based on a BDI-profiled vignette
-- **Router Agent** — classifies current IRT stage from conversation history
-- **Therapist Agent** — generates stage-appropriate therapeutic responses
+- **Patient Agent**: simulates responses based on a BDI-profiled vignette
+- **Router Agent**: classifies current IRT stage from conversation history
+- **Therapist Agent**: generates stage-appropriate therapeutic responses
 - Traverses the 5-stage IRT protocol: recording → rewriting → summary → rehearsal → final
 - `save_frozen_history()` exports the full dialogue plus slices at rewriting-turn boundaries
 
 **Evaluation Stack** (`src/stacks/evaluation_stack.py`):
 Runs stability tests on frozen conversation histories.
-- Bypasses the router — the rescripting prompt is injected directly (stage is known a priori)
+- Bypasses the router → the rescripting prompt is injected directly (stage is known a priori)
 - Fused CoT generation: `<plan>` block declares 1–2 strategies, then the therapeutic response follows
 - Runs N independent trials per condition (default: 10)
 - Computes three evaluation metrics per experiment run
@@ -70,13 +70,13 @@ Results: stability, semantic consistency, alignment scores
 
 ### 2.3 Frozen History Design
 
-Frozen histories are deterministic evaluation entry points — every trial receives identical context.
+Frozen histories are deterministic evaluation entry points: every trial receives identical context.
 
 Each vignette produces one folder with four files:
-- `full.json` — complete dialogue (all stages)
-- `slice_1.json` — prefix up to and including the 1st rewriting exchange
-- `slice_2.json` — prefix up to and including the 2nd rewriting exchange
-- `slice_3.json` — prefix up to and including the 3rd rewriting exchange
+- `full.json`: complete dialogue (all stages)
+- `slice_1.json`: prefix up to and including the 1st rewriting exchange
+- `slice_2.json`: prefix up to and including the 2nd rewriting exchange
+- `slice_3.json`: prefix up to and including the 3rd rewriting exchange
 
 Slicing uses `slice_at_rewriting_turn(n)`, which cuts after the Nth therapist rewriting message. Patient messages have `stage=None` (only therapist messages carry stage tags), so this method correctly excludes post-slice patient responses.
 
@@ -96,11 +96,11 @@ Slicing uses `slice_at_rewriting_turn(n)`, which cuts after the Nth therapist re
 
 ### 2.5 Design Patterns
 
-- **Async-first** — all LLM calls use `asyncio`
-- **Config-driven** — models and prompts loaded from YAML; swap without code changes
-- **Pydantic models** — type-safe data flow; `extra="ignore"` silently drops unknown JSON fields
-- **Provider abstraction** — single `LLMProvider` class for all backends via OpenAI-compatible API
-- **Frozen histories** — serialised conversation snapshots for deterministic evaluation
+- **Async-first**: all LLM calls use `asyncio`
+- **Config-driven**: models and prompts loaded from YAML, swap without code changes
+- **Pydantic models**: type-safe data flow. `extra="ignore"` silently drops unknown JSON fields
+- **Provider abstraction**: single `LLMProvider` class for all backends via OpenAI-compatible API
+- **Frozen histories**: serialised conversation snapshots for deterministic evaluation
 
 > For the full file tree, see [architecture_plan.md](architecture_plan.md).
 
@@ -110,7 +110,7 @@ Slicing uses `slice_at_rewriting_turn(n)`, which cuts after the Nth therapist re
 
 Three levels, each measuring a distinct property:
 
-### 3.1 Method 1 — Cognitive Stability (Plan Consistency)
+### 3.1 Method 1 - Cognitive Stability (Plan Consistency)
 
 **Question:** Do stochastic runs produce the same therapeutic decisions?
 
@@ -118,21 +118,21 @@ Three levels, each measuring a distinct property:
 
 **Input:** Strategy sets extracted from `<plan>` blocks via `extract_plan_strategies()`.
 
-**Quality gate:** Plan validity rate — percentage of trials where the `<plan>` block parses correctly.
+**Quality gate:** Plan validity rate, i.e. percentage of trials where the `<plan>` block parses correctly.
 
-### 3.2 Method 2 — Output Consistency (Semantic Stability)
+### 3.2 Method 2 - Output Consistency (Semantic Stability)
 
 **Question:** Do stochastic runs produce therapeutically equivalent responses?
 
 **Metric:** Mean pairwise BERTScore F1 across 45 trial pairs.
 
-**Embedding model:** DeBERTa-XLarge-MNLI (He et al., 2021) — ranked #1 of 130+ models on WMT16 human correlation (r = 0.778). NLI fine-tuning aligns with the semantic comparison task.
+**Embedding model:** DeBERTa-XLarge-MNLI (He et al., 2021), ranked #1 of 130+ models on WMT16 human correlation (r = 0.778). NLI fine-tuning aligns with the semantic comparison task.
 
 **Input:** Response texts only (plan blocks excluded).
 
 > For model selection rationale, see [bertscore_model_selection.md](bertscore_model_selection.md).
 
-### 3.3 Method 3 — Plan-Output Alignment (Exploratory)
+### 3.3 Method 3 - Plan-Output Alignment (Exploratory)
 
 **Question:** Does the model's response implement its declared therapeutic plan?
 
@@ -168,7 +168,7 @@ In fused mode, the model produces `<plan>strategy_1 / strategy_2</plan>` followe
 - Clinical oversight (reviewable summary of intended approach)
 - Taxonomic constraint (keeps responses within the IRT framework)
 
-**What the plan does NOT claim:** faithfulness to internal reasoning. The CoT faithfulness debate (Turpin et al., 2023; Lanham et al., 2023) is acknowledged but sidestepped — the measurement framework works regardless of whether the plan reflects genuine reasoning.
+**What the plan does NOT claim:** faithfulness to internal reasoning. The CoT faithfulness debate (Turpin et al., 2023; Lanham et al., 2023) is acknowledged but sidestepped: the measurement framework works regardless of whether the plan reflects genuine reasoning.
 
 > For the full analysis including fused vs. chained comparison, see [plan_mechanism_analysis.md](plan_mechanism_analysis.md). Note: that document was written during early exploration when chained mode showed higher empirical stability. The thesis uses fused mode because the plan conditioning the response tokens is the more natural CoT framing, and the chained comparison data predates the current 7-category taxonomy.
 
@@ -198,9 +198,9 @@ The taxonomy evolved through three iterations (8 → 6 → 7) to resolve a sever
 
 ### 6.1 Sovereignty Scope
 
-Sovereignty is relevant **only for the primary therapy model** — Mistral Small 3.2 on Scaleway. It is the EU-sovereign, self-hostable model being evaluated against baselines.
+Sovereignty is relevant **only for the primary therapy model**: Mistral Small 3.2 on Scaleway. It is the EU-sovereign, self-hostable model being evaluated against baselines.
 
-All other roles (patient, router, judge) and all other evaluation targets have **no sovereignty requirement**. The thesis question is: "does this sovereign model hold up against others?" — not "are all models sovereign?"
+All other roles (patient, router, judge) and all other evaluation targets have **no sovereignty requirement**. The thesis question is "does this sovereign model hold up against others?", not "are all models sovereign?"
 
 ### 6.2 Evaluation Targets (Therapist Role)
 
@@ -220,11 +220,11 @@ Selection rationale: size-class diversity (24B / 27-32B / 70B / frontier), provi
 
 ### 6.3 Supporting Roles
 
-These models are NOT being evaluated — they serve infrastructure roles:
+These models are NOT being evaluated. They serve infrastructure roles:
 
 | Role | Current model | Purpose |
 |------|--------------|---------|
-| **Patient** | Arcee Trinity Large Preview (OpenRouter, free) | Simulates patient responses; good roleplay capability. Planned switch to Dolphin Mistral Venice 24B (uncensored, better for nightmare/trauma content) |
+| **Patient** | Arcee Trinity Large Preview (OpenRouter, free) | Simulates patient responses with good roleplay capability. Planned switch to Dolphin Mistral Venice 24B (uncensored, better for nightmare/trauma content) |
 | **Router** | Mistral Nemo / Llama 70B | Classifies IRT stage during generation |
 | **Judge** | Gemini Flash (T=0.0) | Scores plan-output alignment (Method 3) |
 
@@ -241,7 +241,7 @@ These models are NOT being evaluated — they serve infrastructure roles:
 ### 6.5 OpenRouter Free Tier Constraints
 
 Free models (`:free` suffix) have rate limits:
-- **50 req/day** without credits; **1000 req/day** with $10+ credits purchased
+- **50 req/day** without credits, **1000 req/day** with $10+ credits purchased
 - **20 RPM** (some Venice-hosted models: 8 RPM)
 - Per experiment: 6 vignettes × 3 slices × 10 trials = 180 calls per temperature → 360 calls per model for both T=0.0 and T=0.7
 
@@ -267,18 +267,18 @@ Total across all models: 360 × 5 = **1,800 trials**
 Each experiment run produces:
 ```
 experiments/runs/{timestamp}_{model}_{vignette}/
-    config.yaml          — run parameters
-    frozen_history.json   — input conversation
+    config.yaml           # run parameters
+    frozen_history.json    # input conversation
     trials/
-        trial_01.json ... trial_10.json  — plan + response + usage + strategies
-    metrics.json          — Jaccard, BERTScore, validity, alignment
-    judgments.json         — raw LLM judge outputs with reasoning
+        trial_01.json ... trial_10.json  # plan + response + usage + strategies
+    metrics.json           # Jaccard, BERTScore, validity, alignment
+    judgments.json          # raw LLM judge outputs with reasoning
 ```
 
 ### 7.3 Configuration Files
 
-- `src/config/models.yaml` — provider endpoints, model options, active role assignments, evaluation targets
-- `src/config/experiment.yaml` — trial count, temperatures, tag formats, metric selection, output paths
+- `src/config/models.yaml`: provider endpoints, model options, active role assignments, evaluation targets
+- `src/config/experiment.yaml`: trial count, temperatures, tag formats, metric selection, output paths
 
 ---
 
@@ -290,7 +290,8 @@ experiments/runs/{timestamp}_{model}_{vignette}/
 | [thesis_proposal.md](thesis_proposal.md) | Original research proposal (Jan 2026) |
 | [architecture_plan.md](architecture_plan.md) | Full project file tree |
 | [strategy_taxonomy_evolution.md](strategy_taxonomy_evolution.md) | Taxonomy journey: 8 → 6 → 7 categories |
-| [plan_mechanism_analysis.md](plan_mechanism_analysis.md) | Plan as declared intent; fused vs. chained comparison |
-| [alignment_approach_analysis.md](alignment_approach_analysis.md) | LLM judge vs. NLI rationale; ternary scoring design |
+| [plan_mechanism_analysis.md](plan_mechanism_analysis.md) | Plan as declared intent, fused vs. chained comparison |
+| [alignment_approach_analysis.md](alignment_approach_analysis.md) | LLM judge vs. NLI rationale, ternary scoring design |
 | [bertscore_model_selection.md](bertscore_model_selection.md) | DeBERTa-XLarge-MNLI selection rationale |
 | [pipeline_flowcharts.md](pipeline_flowcharts.md) | Mermaid diagrams of full architecture |
+| [STYLE.md](STYLE.md) | Writing style rules for all markdown files |

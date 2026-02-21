@@ -4,7 +4,7 @@
 
 Level 3.3 of the evaluation framework measures whether the therapist model's response actually implements the strategies it declared in its `<plan>` block. Where Level 3.1 (Jaccard) measures plan consistency and Level 3.2 (BERTScore) measures response consistency, Level 3.3 closes the loop: does the model do what it said it would?
 
-This is an exploratory metric. The thesis proposal frames it as "intervention fit" — a measure of instruction adherence rather than self-awareness. The plan is a declared intent mechanism (see `plan_mechanism_analysis.md`), and alignment scoring tests whether the model follows its own declared intent when generating a therapeutic response.
+This is an exploratory metric. The thesis proposal frames it as "intervention fit", a measure of instruction adherence rather than self-awareness. The plan is a declared intent mechanism (see `plan_mechanism_analysis.md`), and alignment scoring tests whether the model follows its own declared intent when generating a therapeutic response.
 
 ## Scoring Scale: Ternary (0 / 1 / 2)
 
@@ -14,13 +14,13 @@ Binary (yes/no) scoring discards quality information. A response that mentions e
 
 ### Why not 5- or 7-point?
 
-The Cognitive Therapy Rating Scale (CTRS) uses 7-point scales but requires expert raters with extensive training. For non-specialist raters — and by extension, for LLM judges — finer scales introduce noise without adding reliable signal. The ENACT scale (Enhancing Assessment of Common Therapeutic Factors), designed specifically for non-specialist treatment fidelity rating, uses a 3-point scale.
+The Cognitive Therapy Rating Scale (CTRS) uses 7-point scales but requires expert raters with extensive training. For non-specialist raters, and by extension for LLM judges, finer scales introduce noise without adding reliable signal. The ENACT scale (Enhancing Assessment of Common Therapeutic Factors), designed specifically for non-specialist treatment fidelity rating, uses a 3-point scale.
 
 ### The ternary scale
 
 The scoring rubric uses three levels with concrete anchoring:
 
-- **2 (implemented)**: The response clearly and specifically implements this strategy. The therapeutic technique is evident and developed — specific sentences or passages demonstrate it.
+- **2 (implemented)**: The response clearly and specifically implements this strategy. The therapeutic technique is evident and developed, with specific sentences or passages demonstrating it.
 - **1 (partial)**: The response touches on this strategy but does not fully develop it. Elements are present but incomplete, only implied, or mentioned without therapeutic depth.
 - **0 (absent)**: The response does not implement this strategy. No evidence of this technique in the response.
 
@@ -28,7 +28,7 @@ Per-trial alignment is computed as the mean score across declared strategies, no
 
 ### Clinical literature supporting ternary scales
 
-- **ENACT** (Kohrt et al., 2015): 3-point scale for non-specialist treatment fidelity assessment — "needs improvement" / "done partially" / "done well". Designed for contexts where expert raters are unavailable.
+- **ENACT** (Kohrt et al., 2015): 3-point scale for non-specialist treatment fidelity assessment: "needs improvement" / "done partially" / "done well". Designed for contexts where expert raters are unavailable.
 - **NIH Behavioral Change Consortium** (Bellg et al., 2004): Treatment fidelity framework recommending ternary assessment for intervention delivery components.
 - **Likert or Not** (arXiv:2505.19334): Binary scoring significantly underperforms ordinal scales in LLM evaluation tasks. Named categories with clear qualitative descriptions produce more stable ratings than numeric ranges.
 
@@ -38,19 +38,19 @@ The alignment check uses a fixed LLM judge (Gemini Flash at t=0.0) performing ze
 
 ### Why LLM classification rather than NLI cross-encoders?
 
-Natural Language Inference (NLI) models — the standard approach for textual entailment — were the first candidate considered. The alignment task can be framed as entailment: given premise "the therapist response says X" and hypothesis "the response implements the empowerment strategy", does the premise entail the hypothesis?
+Natural Language Inference (NLI) models, the standard approach for textual entailment, were the first candidate considered. The alignment task can be framed as entailment: given premise "the therapist response says X" and hypothesis "the response implements the empowerment strategy", does the premise entail the hypothesis?
 
-**Concrete NLI approach considered:** Use DeBERTa-XLarge-MNLI (already loaded for BERTScore in Level 3.2) or a dedicated cross-encoder like `cross-encoder/nli-deberta-v3-large`. For each (strategy_definition, response) pair, classify the entailment label: `entailment` → implemented, `neutral` → partial, `contradiction` → absent. This would be local, deterministic, and free — no API calls needed.
+**Concrete NLI approach considered:** Use DeBERTa-XLarge-MNLI (already loaded for BERTScore in Level 3.2) or a dedicated cross-encoder like `cross-encoder/nli-deberta-v3-large`. For each (strategy_definition, response) pair, classify the entailment label: `entailment` → implemented, `neutral` → partial, `contradiction` → absent. This would be local, deterministic, and free, requiring no API calls.
 
 **Why it was rejected:**
 
-1. **Performance ceiling.** The BTZSC benchmark (Aarab, ICLR 2026) evaluates zero-shot text classification across NLI-based models, rerankers, and LLMs. NLI cross-encoder performance plateaus at F1 ~0.55-0.60 regardless of model size, while commercial LLMs achieve F1 ~0.86+. The gap is not marginal — it is 25+ percentage points.
+1. **Performance ceiling.** The BTZSC benchmark (Aarab, ICLR 2026) evaluates zero-shot text classification across NLI-based models, rerankers, and LLMs. NLI cross-encoder performance plateaus at F1 ~0.55-0.60 regardless of model size, while commercial LLMs achieve F1 ~0.86+. The gap is not marginal: it is 25+ percentage points.
 
-2. **Task mismatch.** NLI entailment tests whether one sentence logically follows from another. Our task is closer to zero-shot classification: does a multi-paragraph therapeutic response *implement* a strategy described by a short definition? NLI models rely on surface-level lexical and syntactic overlap between premise and hypothesis. A therapist response that implements empowerment through guided questions about control — without using the word "empowerment" — would likely score `neutral` rather than `entailment`.
+2. **Task mismatch.** NLI entailment tests whether one sentence logically follows from another. Our task is closer to zero-shot classification: does a multi-paragraph therapeutic response *implement* a strategy described by a short definition? NLI models rely on surface-level lexical and syntactic overlap between premise and hypothesis. A therapist response that implements empowerment through guided questions about control, without using the word "empowerment", would likely score `neutral` rather than `entailment`.
 
-3. **No reasoning trace.** NLI models output a label and a confidence score. They do not explain *why* they scored a strategy as implemented or absent. For an exploratory metric in a thesis, the reasoning trace is as valuable as the score — it allows manual verification and supports the transparency argument.
+3. **No reasoning trace.** NLI models output a label and a confidence score. They do not explain *why* they scored a strategy as implemented or absent. For an exploratory metric in a thesis, the reasoning trace is as valuable as the score, allowing manual verification and supporting the transparency argument.
 
-4. **Ternary mapping is fragile.** Mapping NLI labels to our scoring rubric (`entailment`→2, `neutral`→1, `contradiction`→0) conflates two different ternary scales. NLI `neutral` means "neither follows nor contradicts" — not "partially implemented". A response that simply doesn't mention a strategy would score `neutral` (not `contradiction`), making it impossible to distinguish partial implementation from absence.
+4. **Ternary mapping is fragile.** Mapping NLI labels to our scoring rubric (`entailment`→2, `neutral`→1, `contradiction`→0) conflates two different ternary scales. NLI `neutral` means "neither follows nor contradicts", not "partially implemented". A response that simply doesn't mention a strategy would score `neutral` (not `contradiction`), making it impossible to distinguish partial implementation from absence.
 
 **What NLI *is* good for in this pipeline:** BERTScore (Level 3.2) uses DeBERTa-XLarge-MNLI for pairwise *semantic similarity* between responses, which is exactly what NLI fine-tuning optimises for. The rejection is specific to using NLI for strategy-level classification, not a general rejection of NLI models.
 
@@ -72,7 +72,7 @@ LLM-as-judge approaches have well-documented failure modes. The design incorpora
 
 ### 1. Cross-model evaluation
 
-Generation uses Llama 70B (via Groq), judgment uses Gemini Flash (via Google AI Studio). Using different model families avoids self-preference bias — the tendency for models to rate their own outputs higher (Panickssery et al., EMNLP 2025).
+Generation uses Llama 70B (via Groq), judgment uses Gemini Flash (via Google AI Studio). Using different model families avoids self-preference bias, the tendency for models to rate their own outputs higher (Panickssery et al., EMNLP 2025).
 
 ### 2. Chain-of-thought justification
 
