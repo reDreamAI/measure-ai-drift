@@ -1,4 +1,4 @@
-# Thesis — Table of Contents
+# Thesis: Table of Contents
 
 **Measuring Drift in Therapeutic AI: A Stability-Based Evaluation of Sovereign LLMs in Nightmare Therapy**
 
