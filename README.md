@@ -7,9 +7,14 @@
 ![Pipeline Data Flow](visualizations/pipeline_data_flow.svg)
 
 ### Evaluation of llm therapist consistency by vignette and fused vs chained output (plan and output_message in one prompt vs split in two)
+
+
+#### Complete Pipeline
+<img width="1065" height="29" alt="plan_example" src="https://github.com/user-attachments/assets/b96405b3-dbb1-4098-84b3-4f1fda21d21e" />
+
+#### Three Level Evaluation
 <img width="602" height="283" alt="dialogue_test_evaluation" src="https://github.com/user-attachments/assets/fd494f0a-2ac8-470d-8884-06be2c89a893" />
 
-<img width="1065" height="29" alt="plan_example" src="https://github.com/user-attachments/assets/b96405b3-dbb1-4098-84b3-4f1fda21d21e" />
 
 
 ### Evaluation by model (not the final ones) for Jaccard, BERTScore and Plan-output alignment for the fused mode - plan and output_message in one
