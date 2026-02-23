@@ -2,6 +2,10 @@
 
 ## This project aims at testing souvereign LLMs in therapeutic context against propietary systems focusing on stochastic drift and consistency.
 
+![Evaluation Methods](visualizations/evaluation_methods.svg)
+
+![Pipeline Data Flow](visualizations/pipeline_data_flow.svg)
+
 ### Evaluation of llm therapist consistency by vignette and fused vs chained output (plan and output_message in one prompt vs split in two)
 <img width="602" height="283" alt="dialogue_test_evaluation" src="https://github.com/user-attachments/assets/fd494f0a-2ac8-470d-8884-06be2c89a893" />
 
