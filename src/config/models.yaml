@@ -30,6 +30,11 @@ providers:
     base_url: https://generativelanguage.googleapis.com/v1beta/openai/
     api_key_env: GOOGLE_AI_STUDIO_API_KEY
 
+  mistral:
+    type: openai_compatible
+    base_url: https://api.mistral.ai/v1
+    api_key_env: MISTRAL_API_KEY
+
   openrouter:
     type: openai_compatible
     base_url: https://openrouter.ai/api/v1
@@ -78,6 +83,10 @@ model_options:
       provider: openrouter
       model: arcee-ai/trinity-large-preview:free
       notes: "Free tier, good roleplay, fast"
+    openrouter_venice:
+      provider: openrouter
+      model: cognitivecomputations/dolphin-mistral-24b-venice-edition:free
+      notes: "Uncensored Mistral fine-tune, good for nightmare/trauma roleplay"
 
   router:
     mistral_nemo:
@@ -109,7 +118,7 @@ roles:
     max_tokens: 1024
 
   patient:
-    use: openrouter_trinity
+    use: openrouter_venice
     temperature: 0.7
     max_tokens: 512
 
@@ -126,16 +135,49 @@ roles:
 # =============================================================================
 # EVALUATION TARGETS - Models to compare in experiments
 # =============================================================================
-evaluation_models:
+evaluation_targets:
+  # --- Primary subject (EU-sovereign) ---
   - name: mistral_small
     provider: scaleway
     model: mistral-small-3.2-24b-instruct-2506
 
+  # --- Small class (24-32B comparators) ---
+  - name: qwen3_32b
+    provider: groq
+    model: qwen/qwen3-32b
+    notes: "Benchmark leader at 32B. Apache 2.0. ~535 tok/s on Groq"
+
+  - name: olmo3_32b
+    provider: openrouter
+    model: allenai/olmo-3.1-32b-instruct
+    notes: "Fully open (weights + training data + code). Best provenance for thesis"
+
+  # --- Mid class (70B + Mistral scaling) ---
   - name: llama70b
     provider: groq
     model: llama-3.3-70b-versatile
+    notes: "Original efficacy study model. Continuity with prior work"
 
+  - name: mistral_medium
+    provider: openrouter  # Direct: mistral / mistral-medium-3-1-25-08
+    model: mistralai/mistral-medium-3.1
+    notes: "EU-origin, Mistral vertical scaling. Closed weights, API-only"
+
+  # --- Large class (EU flagship) ---
+  - name: mistral_large
+    provider: openrouter  # Direct: mistral / mistral-large-2512
+    model: mistralai/mistral-large-2512
+    notes: "EU-origin, Apache 2.0. 675B MoE (41B active). 256K context"
+
+  # --- Proprietary ceiling ---
+  - name: gemini3_pro
+    provider: gemini
+    model: gemini-3-pro-preview
+    notes: "Proprietary ceiling. Free credits. Upgrade to gemini-3.1-pro-preview when available"
+
+  # --- Pipeline testing ---
   - name: gemini_flash
     provider: gemini
     model: gemini-2.5-flash
     max_tokens: 8192  # Gemini 2.5 thinking tokens count against max_tokens
+    notes: "Lightweight proprietary reference. Pipeline testing"

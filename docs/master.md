@@ -204,19 +204,46 @@ All other roles (patient, router, judge) and all other evaluation targets have *
 
 ### 6.2 Evaluation Targets (Therapist Role)
 
-These are the models being compared on the three evaluation metrics:
+These are the models being compared on the three evaluation metrics, organized by size class.
 
-| Model | Size | Provider | Role in comparison | Config status |
-|-------|------|----------|--------------------|---------------|
-| **Mistral Small 3.2** | 24B | Scaleway | Primary subject (EU-sovereign) | configured |
-| **Llama 3.3 70B** | 70B | Groq / OpenRouter (free) | Open-weight, larger size class | configured |
-| **GPT-5** | frontier | OpenAI | Proprietary ceiling baseline | planned |
-| **Qwen 3 32B** | 32B | Groq | Open-weight, similar size class | planned |
-| **Gemma 3 27B** | 27B | OpenRouter (free) | Open-weight, similar size class | planned |
+**Primary subject:**
 
-Selection rationale: size-class diversity (24B / 27-32B / 70B / frontier), provider diversity, sovereignty status for primary subject.
+| Model | Size | Provider | Notes | Config status |
+|-------|------|----------|-------|---------------|
+| **Mistral Small 3.2** | 24B dense | Scaleway | EU-sovereign, self-hostable. The model this thesis evaluates | configured |
 
-> **Note:** `models.yaml` currently defines three `evaluation_models` entries (Mistral Small, Llama 70B, and Gemini 2.5 Flash for testing). GPT-5, Qwen 32B, and Gemma 27B need to be added before running the full experiment matrix.
+**Open-weight comparators (by size class):**
+
+| Class | Model | Size | Provider | Why this model | Config status |
+|-------|-------|------|----------|----------------|---------------|
+| Small | **Qwen 3 32B** | 32B | Groq | Benchmark leader at this size class. Apache 2.0. Strongest open-weight comparator for raw performance | planned |
+| Small | **OLMo 3.1 Instruct** | 32B | OpenRouter (DeepInfra) | Fully open (weights + training data + code). Best provenance story for a thesis | planned |
+| Mid | **Llama 3.3 70B** | 70B | Groq / OpenRouter (free) | Original model from the efficacy study that motivated this thesis. Provides continuity with prior work | configured |
+| Mid | **Mistral Medium 3** | undisclosed | Mistral API | EU-origin, same Mistral family as primary subject. Closed weights, API-only. Shows scaling within the Mistral line | planned |
+| Large | **Mistral Large 3** | 675B MoE (41B active) | Mistral API | EU-origin, Apache 2.0. Top EU model. Tests whether the sovereign vendor's flagship closes the gap to proprietary | planned |
+
+**Proprietary adversary:**
+
+| Model | Provider | Why this model | Config status |
+|-------|----------|----------------|---------------|
+| **Gemini 3 Pro** | Google | Proprietary ceiling with free credits available. Upgrade to Gemini 3.1 Pro when released | planned |
+| **Gemini 2.5 Flash** | Google | Fast, cheap. Currently used for pipeline testing, may stay as lightweight proprietary reference | configured |
+
+**Selection rationale:**
+- Size-class ladder: 24B (subject) → 32B (benchmark leader + provenance baseline) → 70B (efficacy study) → mid (Mistral scaling) → 675B MoE (large EU) → frontier (proprietary ceiling)
+- Small class has three models: Mistral Small (subject), Qwen 3 (benchmark leader), OLMo 3.1 (full data provenance)
+- Llama 3.3 70B stays because it was the model used in the original efficacy study, providing direct continuity
+- Mistral Medium + Large test vertical scaling within the same EU vendor
+- OLMo 3.1 has fully transparent training data (Dolma 3 corpus), making it the most defensible open-weight comparator for an academic thesis
+- Qwen 3 32B is the strongest open-weight model at this size class (Apache 2.0, 535 tok/s on Groq). Chinese origin with opaque training data, but included for raw performance comparison
+- Gemini 3 Pro replaces GPT-5 as proprietary ceiling due to free credits. Switch to 3.1 Pro when available
+- K2-V2 Instruct (70B, fully open) would be ideal but has no hosted inference as of Feb 2026, only self-host
+
+**Dropped from earlier plans:**
+- GPT-5: replaced by Gemini 3 Pro (free credits available)
+- Gemma 3 27B: no unique angle that OLMo 3.1 doesn't cover better (OLMo has full data provenance)
+
+> **Note:** `models.yaml` currently only has Mistral Small, Llama 70B, and Gemini Flash configured. The new targets (Qwen 3 32B, OLMo 3.1, Mistral Medium 3, Mistral Large 3, Gemini 3 Pro) need to be added before running the full experiment matrix. See [SOTA_LLMs.md](SOTA_LLMs.md) for current availability and pricing.
 
 ### 6.3 Supporting Roles
 
@@ -224,7 +251,7 @@ These models are NOT being evaluated. They serve infrastructure roles:
 
 | Role | Current model | Purpose |
 |------|--------------|---------|
-| **Patient** | Arcee Trinity Large Preview (OpenRouter, free) | Simulates patient responses with good roleplay capability. Planned switch to Dolphin Mistral Venice 24B (uncensored, better for nightmare/trauma content) |
+| **Patient** | Dolphin Mistral Venice 24B (OpenRouter, free) | Uncensored Mistral fine-tune, good for nightmare/trauma roleplay without safety refusals |
 | **Router** | Mistral Nemo / Llama 70B | Classifies IRT stage during generation |
 | **Judge** | Gemini Flash (T=0.0) | Scores plan-output alignment (Method 3) |
 
@@ -233,10 +260,10 @@ These models are NOT being evaluated. They serve infrastructure roles:
 | Provider | Base URL | Used for |
 |----------|----------|----------|
 | Scaleway | `api.scaleway.ai/v1` | Mistral Small 3.2 (sovereign) |
-| Groq | `api.groq.com/openai/v1` | Llama 70B, Qwen 32B |
-| OpenAI | `api.openai.com/v1` | GPT-5 |
-| OpenRouter | `openrouter.ai/api/v1` | Patient (Venice), Gemma 27B, free-tier eval models |
-| Gemini | `generativelanguage.googleapis.com/v1beta/openai/` | Judge (Gemini Flash) |
+| Mistral API | `api.mistral.ai/v1` | Mistral Medium 3, Mistral Large 3 (eval targets) |
+| Groq | `api.groq.com/openai/v1` | Llama 3.3 70B (eval target), Router |
+| OpenRouter | `openrouter.ai/api/v1` | OLMo 3.1 (eval target via DeepInfra), Patient (Venice) |
+| Gemini | `generativelanguage.googleapis.com/v1beta/openai/` | Gemini 3 Pro (eval target), Judge (Gemini Flash), pipeline testing |
 
 ### 6.5 OpenRouter Free Tier Constraints
 
@@ -295,3 +322,4 @@ experiments/runs/{timestamp}_{model}_{vignette}/
 | [bertscore_model_selection.md](bertscore_model_selection.md) | DeBERTa-XLarge-MNLI selection rationale |
 | [pipeline_flowcharts.md](pipeline_flowcharts.md) | Mermaid diagrams of full architecture |
 | [STYLE.md](STYLE.md) | Writing style rules for all markdown files |
+| [SOTA_LLMs.md](SOTA_LLMs.md) | Living reference for current model landscape (overrides LLM training data) |

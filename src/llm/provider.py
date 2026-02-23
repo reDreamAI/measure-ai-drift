@@ -192,9 +192,9 @@ def create_provider(role: str, config_path: str | Path | None = None) -> LLMProv
             provider_name = role_config.get("provider", "")
             model_name = role_config.get("model", "")
 
-    # Check evaluation_models
-    elif "evaluation_models" in config:
-        eval_model = next((m for m in config["evaluation_models"] if m.get("name") == role), None)
+    # Check evaluation_targets
+    elif "evaluation_targets" in config:
+        eval_model = next((m for m in config["evaluation_targets"] if m.get("name") == role), None)
         if eval_model:
             role_config = eval_model
             provider_name = eval_model["provider"]
