@@ -96,7 +96,7 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 ### 3.6 Strategy Taxonomy Development
 \- Initial 8-category taxonomy: severe distribution skew (empowerment/mastery = 87.7%)
 \- Revision 1, merge to agency: failed (100% dominance, goal vs. mechanism confusion)
-\- Revision 2, mechanism-specific split: confrontation (external action) vs. self_empowerment (internal transformation)
+\- Revision 2, mechanism-specific split: confrontation (external action) vs. self_empowerment (internal transformation) -> Revision 3?
 \- Final 7 categories: confrontation, self_empowerment, safety, cognitive_reframe, emotional_regulation, social_support, sensory_modulation
 \- Prompt-level steering for category diversity
 
@@ -117,7 +117,7 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 \- Measures: do stochastic runs produce therapeutically equivalent responses?
 
 #### 3.7.3 Method 3 - Plan-Output Alignment (Exploratory)
-\- LLM judge (Gemini Flash, T=0.0) with ternary scoring per declared strategy
+\- LLM judge (Gemini Pro, T=0.0) with ternary scoring per declared strategy
   \- 0 = absent, 1 = partial, 2 = implemented
 \- Ternary scale grounded in clinical fidelity literature (ENACT, NIH BCC)
 \- Rejected alternatives: NLI cross-encoders (F1 ceiling ~0.55, task mismatch, no reasoning trace)
@@ -143,7 +143,7 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 ### 4.1 Software Architecture
 \- Python async-first pipeline, config-driven via YAML
 \- Pydantic models for type-safe data flow
-\- Multi-provider LLM abstraction (Groq, OpenAI, Scaleway, Gemini, OpenRouter)
+\- Multi-provider LLM abstraction (Groq, OpenAI, Scaleway, Gemini, OpenRouter) -> reduce to only OpenRouter and Google
 
 ### 4.2 Experiment Execution
 \- ExperimentRun orchestration with structured output
@@ -189,7 +189,7 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 ## 6 Discussion
 
 ### 6.1 Cross-Model Comparison
-\- Mistral Small 3.2 performance relative to GPT-5 and size-class peers
+\- Mistral against GPT and size-class peers
 \- Sovereignty dimension: does self-hostability come at a stability cost?
 \- Size-class effects: 24B vs. 32B vs. 70B vs. frontier
 
@@ -227,17 +227,19 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 \- Synthetic patient simulation vs. real clinical interaction
 \- LLM-judge reliability (exploratory status of Method 3)
 \- Fixed taxonomy constraining measured strategy space
+\- ...
 
 ### 7.3 Future Work
-\- Extension to full IRT protocol (all five stages)
+\- Extension to other therapy methods
 \- Longitudinal drift: stability across model versions over time
-\- Local alignment alternatives (reranker-based judging)
 \- Multi-language evaluation (German therapeutic context)
 \- Clinical validation with human therapist ratings
+\- Combination with RAG Guardrail systems for dangerous content and better general alignment
 
 ---
 
 ## References
+...
 
 ---
 
@@ -252,9 +254,7 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 \- Patient vignette summaries
 
 ### C Architecture Diagrams
-\- Pipeline data flow diagram
-\- Evaluation methods diagram
+\- ...
 
 ### D Supplementary Results
 \- Full per-experiment metric tables
-\- Example trial outputs with judge reasoning
