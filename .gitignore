@@ -5,6 +5,7 @@
 
 # Ignore markdown files in root directory only (keep docs/*.md, etc.)
 /*.md
+!/CLAUDE.md
 
 # Promptfoo (node_modules + result files)
 promptfoo/node_modules/
