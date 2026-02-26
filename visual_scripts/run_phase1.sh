@@ -5,7 +5,7 @@ set -e
 
 FROZEN_DIR="data/synthetic/frozen_histories"
 VIGNETTES=(anxious avoidant cooperative resistant skeptic trauma)
-MODELS=(llama70b mistral_small gemini_flash)
+MODELS=(llama70b mistral_large gemini_flash)
 TEMPS=(0.0 0.7)
 TRIALS=10
 SLICE=slice_3

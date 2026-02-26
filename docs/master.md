@@ -198,9 +198,9 @@ The taxonomy evolved through three iterations (8 → 6 → 7) to resolve a sever
 
 ### 6.1 Sovereignty Scope
 
-Sovereignty is relevant **only for the primary therapy model**: Mistral Small 3.2 on Scaleway. It is the EU-sovereign, self-hostable model being evaluated against baselines.
+Sovereignty is relevant **only for the primary therapy model**: Mistral Large 3 via Mistral API. It is the EU-sovereign, Apache 2.0 flagship being evaluated against baselines.
 
-All other roles (patient, router, judge) and all other evaluation targets have **no sovereignty requirement**. The thesis question is "does this sovereign model hold up against others?", not "are all models sovereign?"
+All other roles (patient, router, judge) and all other evaluation targets have **no sovereignty requirement**. The thesis question is "does the EU flagship match proprietary frontier?", not "are all models sovereign?"
 
 ### 6.2 Evaluation Targets (Therapist Role)
 
@@ -210,17 +210,17 @@ These are the models being compared on the three evaluation metrics, organized b
 
 | Model | Size | Provider | Notes | Config status |
 |-------|------|----------|-------|---------------|
-| **Mistral Small 3.2** | 24B dense | Scaleway | EU-sovereign, self-hostable. The model this thesis evaluates | configured |
+| **Mistral Large 3** | 675B MoE (41B active) | Mistral API | EU-sovereign, Apache 2.0. The EU flagship this thesis evaluates | planned |
 
 **Open-weight comparators (by size class):**
 
 | Class | Model | Size | Provider | Why this model | Config status |
 |-------|-------|------|----------|----------------|---------------|
+| Small | **Mistral Small 3.2** | 24B dense | Scaleway | EU-origin, Apache 2.0. Tests how far the small EU model falls behind the flagship | configured |
 | Small | **Qwen 3 32B** | 32B | Groq | Benchmark leader at this size class. Apache 2.0. Strongest open-weight comparator for raw performance | planned |
 | Small | **OLMo 3.1 Instruct** | 32B | OpenRouter (DeepInfra) | Fully open (weights + training data + code). Best provenance story for a thesis | planned |
 | Mid | **Llama 3.3 70B** | 70B | Groq / OpenRouter (free) | Original model from the efficacy study that motivated this thesis. Provides continuity with prior work | configured |
 | Mid | **Mistral Medium 3** | undisclosed | Mistral API | EU-origin, same Mistral family as primary subject. Closed weights, API-only. Shows scaling within the Mistral line | planned |
-| Large | **Mistral Large 3** | 675B MoE (41B active) | Mistral API | EU-origin, Apache 2.0. Top EU model. Tests whether the sovereign vendor's flagship closes the gap to proprietary | planned |
 
 **Proprietary adversary:**
 
@@ -230,10 +230,10 @@ These are the models being compared on the three evaluation metrics, organized b
 | **Gemini 2.5 Flash** | Google | Fast, cheap. Currently used for pipeline testing, may stay as lightweight proprietary reference | configured |
 
 **Selection rationale:**
-- Size-class ladder: 24B (subject) → 32B (benchmark leader + provenance baseline) → 70B (efficacy study) → mid (Mistral scaling) → 675B MoE (large EU) → frontier (proprietary ceiling)
-- Small class has three models: Mistral Small (subject), Qwen 3 (benchmark leader), OLMo 3.1 (full data provenance)
+- Size-class ladder: 24B (small EU) → 32B (benchmark leader + provenance baseline) → 70B (efficacy study) → mid (Mistral scaling) → 675B MoE (subject, EU flagship) → frontier (proprietary ceiling)
+- Small class has three models: Mistral Small (EU baseline), Qwen 3 (benchmark leader), OLMo 3.1 (full data provenance)
 - Llama 3.3 70B stays because it was the model used in the original efficacy study, providing direct continuity
-- Mistral Medium + Large test vertical scaling within the same EU vendor
+- Mistral Small + Medium test vertical scaling within the same EU vendor below the flagship
 - OLMo 3.1 has fully transparent training data (Dolma 3 corpus), making it the most defensible open-weight comparator for an academic thesis
 - Qwen 3 32B is the strongest open-weight model at this size class (Apache 2.0, 535 tok/s on Groq). Chinese origin with opaque training data, but included for raw performance comparison
 - Gemini 3 Pro replaces GPT-5 as proprietary ceiling due to free credits. Switch to 3.1 Pro when available
@@ -243,7 +243,7 @@ These are the models being compared on the three evaluation metrics, organized b
 - GPT-5: replaced by Gemini 3 Pro (free credits available)
 - Gemma 3 27B: no unique angle that OLMo 3.1 doesn't cover better (OLMo has full data provenance)
 
-> **Note:** `models.yaml` currently only has Mistral Small, Llama 70B, and Gemini Flash configured. The new targets (Qwen 3 32B, OLMo 3.1, Mistral Medium 3, Mistral Large 3, Gemini 3 Pro) need to be added before running the full experiment matrix. See [SOTA_LLMs.md](SOTA_LLMs.md) for current availability and pricing.
+> **Note:** `models.yaml` currently has Mistral Small, Llama 70B, and Gemini Flash configured as evaluation targets. Mistral Large 3 (primary subject) and the remaining targets (Qwen 3 32B, OLMo 3.1, Mistral Medium 3, Gemini 3 Pro) need to be added before running the full experiment matrix. See [SOTA_LLMs.md](SOTA_LLMs.md) for current availability and pricing.
 
 ### 6.3 Supporting Roles
 
@@ -259,8 +259,8 @@ These models are NOT being evaluated. They serve infrastructure roles:
 
 | Provider | Base URL | Used for |
 |----------|----------|----------|
-| Scaleway | `api.scaleway.ai/v1` | Mistral Small 3.2 (sovereign) |
-| Mistral API | `api.mistral.ai/v1` | Mistral Medium 3, Mistral Large 3 (eval targets) |
+| Mistral API | `api.mistral.ai/v1` | Mistral Large 3 (primary subject), Mistral Medium 3 (eval target) |
+| Scaleway | `api.scaleway.ai/v1` | Mistral Small 3.2 (eval target) |
 | Groq | `api.groq.com/openai/v1` | Llama 3.3 70B (eval target), Router |
 | OpenRouter | `openrouter.ai/api/v1` | OLMo 3.1 (eval target via DeepInfra), Patient (Venice) |
 | Gemini | `generativelanguage.googleapis.com/v1beta/openai/` | Gemini 3 Pro (eval target), Judge (Gemini Flash), pipeline testing |
@@ -322,4 +322,5 @@ experiments/runs/{timestamp}_{model}_{vignette}/
 | [bertscore_model_selection.md](bertscore_model_selection.md) | DeBERTa-XLarge-MNLI selection rationale |
 | [pipeline_flowcharts.md](pipeline_flowcharts.md) | Mermaid diagrams of full architecture |
 | [STYLE.md](STYLE.md) | Writing style rules for all markdown files |
+| [thesis_models.md](thesis_models.md) | Current LLM role assignments and evaluation targets |
 | [SOTA_LLMs.md](SOTA_LLMs.md) | Living reference for current model landscape (overrides LLM training data) |

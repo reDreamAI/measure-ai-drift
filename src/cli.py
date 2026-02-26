@@ -510,7 +510,7 @@ def main() -> int:
     eval_parser.add_argument('--language', '-l', default='en', choices=['en', 'de'], help='Session language')
     eval_parser.add_argument('--vignette', '-v', help='Vignette name (auto-detected from filename if omitted)')
     eval_parser.add_argument('--mode', '-m', default='fused', choices=['fused', 'chained'], help='Plan-response mode: fused (single CoT call) or chained (plan injected into response call)')
-    eval_parser.add_argument('--model', default=None, help='Override therapist model (evaluation_targets name from models.yaml, e.g. mistral_small, llama70b, gemini_flash)')
+    eval_parser.add_argument('--model', default=None, help='Override therapist model (evaluation_targets name from models.yaml, e.g. mistral_large, llama70b, gemini_flash)')
     eval_parser.add_argument('--verbose', action='store_true', help='Show detailed output')
     
     # Keys command

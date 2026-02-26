@@ -30,8 +30,8 @@ For a therapy thesis, both legal usability and data provenance matter. Models wi
 
 | Model | EU-Legal? | Training Data Transparency | Risk Notes |
 |---|---|---|---|
-| **Mistral Small 3.2** | Yes (EU company) | Undisclosed, but EU-origin likely compliant | Lowest risk. Primary therapy subject |
-| **Mistral Large 3** | Yes (EU company) | Undisclosed, but EU-origin likely compliant | Low risk. Apache 2.0, 675B MoE |
+| **Mistral Small 3.2** | Yes (EU company) | Undisclosed, but EU-origin likely compliant | Low risk. Small-class comparator |
+| **Mistral Large 3** | Yes (EU company) | Undisclosed, but EU-origin likely compliant | Lowest risk. Primary therapy subject. Apache 2.0, 675B MoE |
 | **K2-V2 Instruct** | Yes (Apache 2.0) | **Fully open** - 12T tokens from TxT360, all mixtures published | Lowest risk. Best provenance story |
 | **OLMo 3.1 Instruct** | Yes (Apache 2.0) | **Fully open** - 9.3T token Dolma 3 corpus, all sources documented | Lowest risk. Allen AI nonprofit |
 | **Qwen 3 / 3.5** | Yes if self-hosted (Apache 2.0) | High-level disclosure (36T tokens), but no detailed source list. No EU GDPR representative | Medium. Chinese origin, opaque data details |
@@ -53,12 +53,12 @@ For a therapy thesis, both legal usability and data provenance matter. Models wi
 
 | Model | Params | Provider | Notes |
 |---|---|---|---|
-| **Mistral Small 3.2** | 24B dense | Scaleway (EU) | Current primary therapy subject. Apache 2.0 |
-| **Mistral Large 3** | 675B (41B active, MoE) | Mistral API / self-host | Released Dec 2025. Apache 2.0. Top EU-origin model. 256K context. Multi-GPU required |
+| **Mistral Small 3.2** | 24B dense | Scaleway (EU) | Small-class comparator. Apache 2.0 |
+| **Mistral Large 3** | 675B (41B active, MoE) | Mistral API / self-host | Current primary therapy subject. Released Dec 2025. Apache 2.0. Top EU-origin model. 256K context. Multi-GPU required |
 | **Mistral Medium 3** | - | Mistral API | Check if released, may sit between Small and Large |
 | **OpenEuroLLM** | TBD | EU consortium | First versions expected mid-2026. Covers all 24 EU languages |
 
-**Key point for thesis:** sovereignty only matters for the primary therapy model (Mistral Small 3.2 on Scaleway). Other roles and eval targets have no sovereignty requirement.
+**Key point for thesis:** sovereignty only matters for the primary therapy model (Mistral Large 3 via Mistral API). Other roles and eval targets have no sovereignty requirement.
 
 ---
 
@@ -79,8 +79,8 @@ Best for academic defensibility. You can cite exactly what these were trained on
 
 | Model | Size | Origin | Performance | License |
 |---|---|---|---|---|
-| **Mistral Large 3** | 675B MoE (41B active) | Mistral (France) | Top EU model. Strong multilingual, 256K context | Apache 2.0 |
-| **Mistral Small 3.2** | 24B dense | Mistral (France) | Our primary subject. Punches above weight but not frontier-class | Apache 2.0 |
+| **Mistral Large 3** | 675B MoE (41B active) | Mistral (France) | Our primary subject. Top EU model. Strong multilingual, 256K context | Apache 2.0 |
+| **Mistral Small 3.2** | 24B dense | Mistral (France) | Small-class comparator. Punches above weight but not frontier-class | Apache 2.0 |
 
 ### Tier 3: Open Weights (good license, opaque data, non-EU origin)
 
@@ -113,7 +113,7 @@ Rate limits: 50 req/day without credits, 1000/day with $10+ deposit, typically 2
 |---|---|---|---|
 | **Llama 3.3 70B** | 70B | 20 | GPT-4 level, reliable baseline |
 | **Gemma 3 27B** | 27B | 20 | Good size-class comparator for Mistral Small |
-| **Mistral Small 3.1** | 24B | 20 | Slightly older than our 3.2 subject |
+| **Mistral Small 3.1** | 24B | 20 | Slightly older than our 3.2 comparator |
 | **DeepSeek R1** | 671B MoE | 20 | Strong reasoning, but Chinese-origin (high EU risk) |
 | **NVIDIA Nemotron Nano 9B v2** | 9B | 20 | Fast, good for testing |
 | **Dolphin Mistral Venice 24B** | 24B | 8 | Uncensored Mistral fine-tune. Current patient model |
@@ -125,14 +125,14 @@ Rate limits: 50 req/day without credits, 1000/day with $10+ deposit, typically 2
 
 > Cross-reference with `src/config/models.yaml` for actual configuration.
 
-**Primary therapy subject (being evaluated):** Mistral Small 3.2 on Scaleway
+**Primary therapy subject (being evaluated):** Mistral Large 3 via Mistral API
 
 **Evaluation targets (compared against primary):**
 - Small benchmark: Qwen 3 32B (Groq, benchmark leader at size class) - planned
 - Small provenance: OLMo 3.1 32B Instruct (OpenRouter/DeepInfra, fully open) - planned
 - Mid open: Llama 3.3 70B (Groq, original efficacy study model) - configured
 - Mid EU: Mistral Medium 3 (Mistral API, closed weights) - planned
-- Large EU: Mistral Large 3 675B MoE (Mistral API, Apache 2.0) - planned
+- Small EU: Mistral Small 3.2 24B (Scaleway, Apache 2.0) - configured
 - Proprietary ceiling: Gemini 3 Pro (Google, free credits). Upgrade to 3.1 Pro when available - planned
 - Testing: Gemini 2.5 Flash (configured, lightweight proprietary reference)
 

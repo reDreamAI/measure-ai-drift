@@ -136,12 +136,18 @@ roles:
 # EVALUATION TARGETS - Models to compare in experiments
 # =============================================================================
 evaluation_targets:
-  # --- Primary subject (EU-sovereign) ---
+  # --- Primary subject (EU flagship) ---
+  - name: mistral_large
+    provider: openrouter  # Direct: mistral / mistral-large-2512
+    model: mistralai/mistral-large-2512
+    notes: "Primary subject. EU-sovereign, Apache 2.0. 675B MoE (41B active). 256K context"
+
+  # --- Small class (24-32B comparators) ---
   - name: mistral_small
     provider: scaleway
     model: mistral-small-3.2-24b-instruct-2506
+    notes: "EU-origin, Apache 2.0. Small-class comparator"
 
-  # --- Small class (24-32B comparators) ---
   - name: qwen3_32b
     provider: groq
     model: qwen/qwen3-32b
@@ -162,12 +168,6 @@ evaluation_targets:
     provider: openrouter  # Direct: mistral / mistral-medium-3-1-25-08
     model: mistralai/mistral-medium-3.1
     notes: "EU-origin, Mistral vertical scaling. Closed weights, API-only"
-
-  # --- Large class (EU flagship) ---
-  - name: mistral_large
-    provider: openrouter  # Direct: mistral / mistral-large-2512
-    model: mistralai/mistral-large-2512
-    notes: "EU-origin, Apache 2.0. 675B MoE (41B active). 256K context"
 
   # --- Proprietary ceiling ---
   - name: gemini3_pro

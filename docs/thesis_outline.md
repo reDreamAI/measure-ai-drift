@@ -125,8 +125,8 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 \- Measures: does the model's response implement its declared therapeutic plan?
 
 ### 3.8 Model Selection
-\- EU sovereignty as selection criterion: data protection, AI Act, self-hostability requirements
-\- Primary subject: Mistral Small 3.2 (24B), EU-sovereign, self-hostable
+\- EU sovereignty as selection criterion: data protection, AI Act, open-weight licensing
+\- Primary subject: Mistral Large 3 (675B MoE, 41B active), EU-sovereign, Apache 2.0
 \- Proprietary baseline: GPT-5
 \- Open-weight comparisons: Llama 3.3 70B, Qwen 3 32B, Gemma 3 27B
 \- Selection rationale: size class diversity, provider diversity, sovereignty status
@@ -189,9 +189,9 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 ## 6 Discussion
 
 ### 6.1 Cross-Model Comparison
-\- Mistral against GPT and size-class peers
-\- Sovereignty dimension: does self-hostability come at a stability cost?
-\- Size-class effects: 24B vs. 32B vs. 70B vs. frontier
+\- Mistral Large 3 against proprietary frontier and size-class peers
+\- Sovereignty dimension: does the EU flagship match proprietary models?
+\- Size-class effects: 24B vs. 32B vs. 70B vs. 675B MoE vs. frontier
 
 ### 6.2 Temperature and Therapeutic Stability
 \- Greedy decoding as a clinical deployment baseline
