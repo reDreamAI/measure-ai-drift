@@ -88,7 +88,7 @@ Slicing uses `slice_at_rewriting_turn(n)`, which cuts after the Nth therapist re
 |-----------|------|---------|
 | Agents | `src/agents/` | Patient, Therapist, Router implementations |
 | Core models | `src/core/` | Conversation, Message, Stage/Language enums, config loading |
-| LLM provider | `src/llm/provider.py` | Multi-provider abstraction (Groq, OpenAI, Scaleway, Gemini, OpenRouter) |
+| LLM provider | `src/llm/provider.py` | Multi-provider abstraction (Groq, OpenAI, Scaleway, Gemini, Mistral, OpenRouter) |
 | Experiment runner | `src/evaluation/experiment.py` | Orchestrates a single experiment run |
 | Sampler | `src/evaluation/sampler.py` | Multi-trial generation (serial/parallel) |
 | Metrics | `src/evaluation/metrics.py` | Jaccard, BERTScore, validity rate, alignment |
@@ -198,7 +198,7 @@ The taxonomy evolved through three iterations (8 → 6 → 7) to resolve a sever
 
 ### 6.1 Sovereignty Scope
 
-Sovereignty is relevant **only for the primary therapy model**: Mistral Large 3 via Mistral API. It is the EU-sovereign, Apache 2.0 flagship being evaluated against baselines.
+Sovereignty is relevant **only for the primary therapy model**: Mistral Large 3 (currently via OpenRouter, Mistral API as fallback). It is the EU-sovereign, Apache 2.0 flagship being evaluated against baselines.
 
 All other roles (patient, router, judge) and all other evaluation targets have **no sovereignty requirement**. The thesis question is "does the EU flagship match proprietary frontier?", not "are all models sovereign?"
 
@@ -210,30 +210,30 @@ These are the models being compared on the three evaluation metrics, organized b
 
 | Model | Size | Provider | Notes | Config status |
 |-------|------|----------|-------|---------------|
-| **Mistral Large 3** | 675B MoE (41B active) | Mistral API | EU-sovereign, Apache 2.0. The EU flagship this thesis evaluates | planned |
+| **Mistral Large 3** | 675B MoE (41B active) | OpenRouter (Mistral API fallback) | EU-sovereign, Apache 2.0. The EU flagship this thesis evaluates | configured |
 
 **Open-weight comparators (by size class):**
 
 | Class | Model | Size | Provider | Why this model | Config status |
 |-------|-------|------|----------|----------------|---------------|
 | Small | **Mistral Small 3.2** | 24B dense | Scaleway | EU-origin, Apache 2.0. Tests how far the small EU model falls behind the flagship | configured |
-| Small | **Qwen 3 32B** | 32B | Groq | Benchmark leader at this size class. Apache 2.0. Strongest open-weight comparator for raw performance | planned |
-| Small | **OLMo 3.1 Instruct** | 32B | OpenRouter (DeepInfra) | Fully open (weights + training data + code). Best provenance story for a thesis | planned |
+| Small | **Qwen 3 32B** | 32B | Groq | Benchmark leader at this size class. Apache 2.0. Strongest open-weight comparator for raw performance | configured |
+| Small | **OLMo 3.1 Instruct** | 32B | OpenRouter (DeepInfra) | Fully open (weights + training data + code). Best provenance story for a thesis | configured |
 | Mid | **Llama 3.3 70B** | 70B | Groq / OpenRouter (free) | Original model from the efficacy study that motivated this thesis. Provides continuity with prior work | configured |
-| Mid | **Mistral Medium 3** | undisclosed | Mistral API | EU-origin, same Mistral family as primary subject. Closed weights, API-only. Shows scaling within the Mistral line | planned |
+| Mid | **Mistral Medium 3.1** | undisclosed | OpenRouter (Mistral API fallback) | EU-origin, same Mistral family as primary subject. Closed weights, API-only. Shows scaling within the Mistral line | configured |
 
 **Proprietary adversary:**
 
 | Model | Provider | Why this model | Config status |
 |-------|----------|----------------|---------------|
-| **Gemini 3 Pro** | Google | Proprietary ceiling with free credits available. Upgrade to Gemini 3.1 Pro when released | planned |
+| **Gemini 3 Pro** | Google | Proprietary ceiling with free credits available. Upgrade to Gemini 3.1 Pro when released | configured |
 | **Gemini 2.5 Flash** | Google | Fast, cheap. Currently used for pipeline testing, may stay as lightweight proprietary reference | configured |
 
 **Selection rationale:**
 - Size-class ladder: 24B (small EU) → 32B (benchmark leader + provenance baseline) → 70B (efficacy study) → mid (Mistral scaling) → 675B MoE (subject, EU flagship) → frontier (proprietary ceiling)
 - Small class has three models: Mistral Small (EU baseline), Qwen 3 (benchmark leader), OLMo 3.1 (full data provenance)
 - Llama 3.3 70B stays because it was the model used in the original efficacy study, providing direct continuity
-- Mistral Small + Medium test vertical scaling within the same EU vendor below the flagship
+- Mistral Small + Medium + Large test vertical scaling within the same EU vendor
 - OLMo 3.1 has fully transparent training data (Dolma 3 corpus), making it the most defensible open-weight comparator for an academic thesis
 - Qwen 3 32B is the strongest open-weight model at this size class (Apache 2.0, 535 tok/s on Groq). Chinese origin with opaque training data, but included for raw performance comparison
 - Gemini 3 Pro replaces GPT-5 as proprietary ceiling due to free credits. Switch to 3.1 Pro when available
@@ -243,7 +243,7 @@ These are the models being compared on the three evaluation metrics, organized b
 - GPT-5: replaced by Gemini 3 Pro (free credits available)
 - Gemma 3 27B: no unique angle that OLMo 3.1 doesn't cover better (OLMo has full data provenance)
 
-> **Note:** `models.yaml` currently has Mistral Small, Llama 70B, and Gemini Flash configured as evaluation targets. Mistral Large 3 (primary subject) and the remaining targets (Qwen 3 32B, OLMo 3.1, Mistral Medium 3, Gemini 3 Pro) need to be added before running the full experiment matrix. See [SOTA_LLMs.md](SOTA_LLMs.md) for current availability and pricing.
+> All 8 evaluation targets are configured in `models.yaml`. See [thesis_models.md](thesis_models.md) for the full assignment table and [SOTA_LLMs.md](SOTA_LLMs.md) for current availability and pricing.
 
 ### 6.3 Supporting Roles
 
@@ -259,11 +259,11 @@ These models are NOT being evaluated. They serve infrastructure roles:
 
 | Provider | Base URL | Used for |
 |----------|----------|----------|
-| Mistral API | `api.mistral.ai/v1` | Mistral Large 3 (primary subject), Mistral Medium 3 (eval target) |
-| Scaleway | `api.scaleway.ai/v1` | Mistral Small 3.2 (eval target) |
-| Groq | `api.groq.com/openai/v1` | Llama 3.3 70B (eval target), Router |
-| OpenRouter | `openrouter.ai/api/v1` | OLMo 3.1 (eval target via DeepInfra), Patient (Venice) |
-| Gemini | `generativelanguage.googleapis.com/v1beta/openai/` | Gemini 3 Pro (eval target), Judge (Gemini Flash), pipeline testing |
+| OpenRouter | `openrouter.ai/api/v1` | Mistral Large 3 (primary), Mistral Medium 3.1, OLMo 3.1, Patient (Venice) |
+| Scaleway | `api.scaleway.ai/v1` | Mistral Small 3.2 |
+| Groq | `api.groq.com/openai/v1` | Qwen 3 32B, Llama 3.3 70B, Router |
+| Gemini | `generativelanguage.googleapis.com/v1beta/openai/` | Gemini 3 Pro, Judge (Gemini Flash) |
+| Mistral API | `api.mistral.ai/v1` | Fallback for Mistral Large/Medium (direct access) |
 
 ### 6.5 OpenRouter Free Tier Constraints
 
@@ -284,10 +284,10 @@ Free models (`:free` suffix) have rate limits:
 | Slices | slice_1, slice_2, slice_3 |
 | Trials per condition | 10 |
 | Temperatures | T=0.0 (deterministic), T=0.7 (stochastic) |
-| Models | 5 evaluation targets (see §6.2) |
+| Models | 8 evaluation targets (see §6.2) |
 
 Total per model: 6 × 3 × 10 × 2 = **360 trials**
-Total across all models: 360 × 5 = **1,800 trials**
+Total across all models: 360 × 8 = **2,880 trials**
 
 ### 7.2 Output Structure
 

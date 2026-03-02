@@ -1,9 +1,9 @@
-# SOTA LLMs - Living Reference (February 2026)
+# SOTA LLMs - Living Reference (March 2026)
 
 > **Purpose:** This file overrides Claude's training data on model availability and performance.
 > LLM landscape changes faster than any training cutoff can track. Before recommending or configuring models, **always check live sources first** rather than relying on built-in knowledge.
 >
-> **Last verified:** 2026-02-23
+> **Last verified:** 2026-03-02
 >
 > **Live sources to check before any model decision:**
 > - [Artificial Analysis Leaderboard](https://artificialanalysis.ai/leaderboards/models) - intelligence, speed, price rankings
@@ -30,8 +30,8 @@ For a therapy thesis, both legal usability and data provenance matter. Models wi
 
 | Model | EU-Legal? | Training Data Transparency | Risk Notes |
 |---|---|---|---|
+| **Mistral Large 3** | Yes (EU company) | Undisclosed, but EU-origin likely compliant | Lowest risk. **Primary therapy subject.** Apache 2.0, 675B MoE |
 | **Mistral Small 3.2** | Yes (EU company) | Undisclosed, but EU-origin likely compliant | Low risk. Small-class comparator |
-| **Mistral Large 3** | Yes (EU company) | Undisclosed, but EU-origin likely compliant | Lowest risk. Primary therapy subject. Apache 2.0, 675B MoE |
 | **K2-V2 Instruct** | Yes (Apache 2.0) | **Fully open** - 12T tokens from TxT360, all mixtures published | Lowest risk. Best provenance story |
 | **OLMo 3.1 Instruct** | Yes (Apache 2.0) | **Fully open** - 9.3T token Dolma 3 corpus, all sources documented | Lowest risk. Allen AI nonprofit |
 | **Qwen 3 / 3.5** | Yes if self-hosted (Apache 2.0) | High-level disclosure (36T tokens), but no detailed source list. No EU GDPR representative | Medium. Chinese origin, opaque data details |
@@ -53,12 +53,12 @@ For a therapy thesis, both legal usability and data provenance matter. Models wi
 
 | Model | Params | Provider | Notes |
 |---|---|---|---|
+| **Mistral Large 3** | 675B (41B active, MoE) | OpenRouter / Mistral API | **Primary therapy subject.** Released Dec 2025. Apache 2.0. 256K context. Multi-GPU for self-host |
 | **Mistral Small 3.2** | 24B dense | Scaleway (EU) | Small-class comparator. Apache 2.0 |
-| **Mistral Large 3** | 675B (41B active, MoE) | Mistral API / self-host | Current primary therapy subject. Released Dec 2025. Apache 2.0. Top EU-origin model. 256K context. Multi-GPU required |
 | **Mistral Medium 3** | - | Mistral API | Check if released, may sit between Small and Large |
 | **OpenEuroLLM** | TBD | EU consortium | First versions expected mid-2026. Covers all 24 EU languages |
 
-**Key point for thesis:** sovereignty only matters for the primary therapy model (Mistral Large 3 via Mistral API). Other roles and eval targets have no sovereignty requirement.
+**Key point for thesis:** sovereignty only matters for the primary therapy model (Mistral Large 3 via OpenRouter/Mistral API). Other roles and eval targets have no sovereignty requirement.
 
 ---
 
@@ -125,21 +125,21 @@ Rate limits: 50 req/day without credits, 1000/day with $10+ deposit, typically 2
 
 > Cross-reference with `src/config/models.yaml` for actual configuration.
 
-**Primary therapy subject (being evaluated):** Mistral Large 3 via Mistral API
+**Primary therapy subject (being evaluated):** Mistral Large 3 (OpenRouter)
 
-**Evaluation targets (compared against primary):**
-- Small benchmark: Qwen 3 32B (Groq, benchmark leader at size class) - planned
-- Small provenance: OLMo 3.1 32B Instruct (OpenRouter/DeepInfra, fully open) - planned
-- Mid open: Llama 3.3 70B (Groq, original efficacy study model) - configured
-- Mid EU: Mistral Medium 3 (Mistral API, closed weights) - planned
-- Small EU: Mistral Small 3.2 24B (Scaleway, Apache 2.0) - configured
-- Proprietary ceiling: Gemini 3 Pro (Google, free credits). Upgrade to 3.1 Pro when available - planned
-- Testing: Gemini 2.5 Flash (configured, lightweight proprietary reference)
+**Evaluation targets (compared against primary) - all configured in models.yaml:**
+- Small EU: Mistral Small 3.2 (Scaleway)
+- Small benchmark: Qwen 3 32B (Groq)
+- Small provenance: OLMo 3.1 32B Instruct (OpenRouter/DeepInfra)
+- Mid continuity: Llama 3.3 70B (Groq)
+- Mid EU scaling: Mistral Medium 3.1 (OpenRouter)
+- Proprietary ceiling: Gemini 3 Pro (Gemini API, free credits)
+- Pipeline testing: Gemini 2.5 Flash (Gemini API)
 
 **Supporting roles (not being evaluated):**
 - Patient: Dolphin Mistral Venice 24B (OpenRouter, free)
-- Router: Gemini 2.5 Flash
-- Judge: GPT-5 / Claude (TBD)
+- Router: Llama 3.3 70B (Groq)
+- Judge: Gemini 2.5 Flash (T=0.0)
 
 ---
 
