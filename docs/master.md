@@ -226,7 +226,7 @@ These are the models being compared on the three evaluation metrics, organized b
 
 | Model | Provider | Why this model | Config status |
 |-------|----------|----------------|---------------|
-| **Gemini 3 Pro** | Google | Proprietary ceiling with free credits available. Upgrade to Gemini 3.1 Pro when released | configured |
+| **Gemini 3.1 Pro** | Google | Proprietary ceiling with free credits. Released Feb 19, 2026. 77.1% ARC-AGI-2, 1M context | configured |
 | **Gemini 2.5 Flash** | Google | Fast, cheap. Currently used for pipeline testing, may stay as lightweight proprietary reference | configured |
 
 **Selection rationale:**
@@ -236,7 +236,7 @@ These are the models being compared on the three evaluation metrics, organized b
 - Mistral Small + Medium + Large test vertical scaling within the same EU vendor
 - OLMo 3.1 has fully transparent training data (Dolma 3 corpus), making it the most defensible open-weight comparator for an academic thesis
 - Qwen 3 32B is the strongest open-weight model at this size class (Apache 2.0, 535 tok/s on Groq). Chinese origin with opaque training data, but included for raw performance comparison
-- Gemini 3 Pro replaces GPT-5 as proprietary ceiling due to free credits. Switch to 3.1 Pro when available
+- Gemini 3.1 Pro as proprietary ceiling (released Feb 19, 2026). Free credits available
 - K2-V2 Instruct (70B, fully open) would be ideal but has no hosted inference as of Feb 2026, only self-host
 
 **Dropped from earlier plans:**
