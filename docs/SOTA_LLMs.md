@@ -3,7 +3,7 @@
 > **Purpose:** This file overrides Claude's training data on model availability and performance.
 > LLM landscape changes faster than any training cutoff can track. Before recommending or configuring models, **always check live sources first** rather than relying on built-in knowledge.
 >
-> **Last verified:** 2026-03-02
+> **Last verified:** 2026-03-07
 >
 > **Live sources to check before any model decision:**
 > - [Artificial Analysis Leaderboard](https://artificialanalysis.ai/leaderboards/models) - intelligence, speed, price rankings
@@ -26,10 +26,15 @@
 
 ### Releases in Last 2-4 Weeks
 
+- **GPT-5.4** (Mar 6): Combines GPT-5.3-Codex coding strength with improved reasoning and computer use. 83% on GDPval (professional knowledge work). Replaces GPT-5.2 as frontier ceiling. Variants: GPT-5.4 Thinking, GPT-5.4 Pro. 1M context (experimental in Codex)
+- **DeepSeek V4** (early Mar): ~1T total / ~32B active MoE. 1M context. Native multimodal (vision + audio + text). Optimized for Huawei Ascend chips. Apache 2.0. Not EU-sovereign. Active EU GDPR issues persist
+- **GPT-5.3-Codex** (Feb 24): 400K context. Industry-leading coding. $1.75/$14.00 per M tokens
 - **Gemini 3.1 Pro** (Feb 19): Google's latest flagship. 77.1% ARC-AGI-2, 1M context, 65K output tokens. **Action: upgrade our proprietary ceiling from gemini-3-pro-preview to gemini-3.1-pro-preview**
 - **Qwen 3.5** (Feb 17-24): Full family released. 397B-A17B flagship MoE, 27B dense, 35B-A3B efficient MoE. Apache 2.0. Native multimodal. **Consider upgrading our qwen3_32b target to Qwen3.5 variant once on Groq**
-- **DeepSeek V4** (expected first week of March): ~1T total / ~32B active MoE. 1M context. Optimized for Huawei Ascend chips. Not EU-sovereign. Watch for open weights
-- **GPT-5.2** (Feb 2026): 400K context, 100% AIME 2025, hallucination rate 6.2%. Sets proprietary ceiling
+- **MiniMax M2.5** (Feb 12): 230B MoE, 10B active. Lightning Attention. 205K context. 80.2% SWE-Bench Verified. Modified MIT license. Chinese origin (Shanghai). Available on OpenRouter. Extremely cheap ($0.15/$1.20 per M tokens for standard variant)
+- **GLM-5** (Feb 11): 744B MoE, 40B active, 256 experts. 205K context, 128K output. 77.8% SWE-bench, 92.7% AIME 2026. Trained entirely on Huawei Ascend (zero NVIDIA dependency). MIT license. Chinese origin (Zhipu AI / Z.ai). Available on OpenRouter
+- **GPT-5.2** (Feb 2026): 400K context, 100% AIME 2025, hallucination rate 6.2%. Superseded by GPT-5.4
+- **Kimi K2.5** (Jan 27): 1T MoE, 32B active, 384 experts. 256K context. Native multimodal (MoonViT 400M vision encoder). Agent swarm mode (up to 100 sub-agents). Modified MIT license. Chinese origin (Moonshot AI). Available on OpenRouter
 - **Guide Labs Steerling-8B** (Feb 23): Every output token traceable to training data origins. Interesting for clinical interpretability arguments
 - **Inception Mercury 2** (Feb 24): First reasoning diffusion LLM (dLLM). 1,000 tok/s. Not relevant for stability evaluation
 - **NVIDIA Nemotron 3 Nano** (available): 3.2B active / 31.6B total, hybrid Mamba-Transformer MoE, 1M context. Nemotron 3 Super (~100B) and Ultra (~500B) expected H1 2026
@@ -63,10 +68,13 @@ For a therapy thesis, both legal usability and data provenance matter. Models wi
 | **OLMo 3.1 Instruct** | Yes (Apache 2.0) | **Fully open** - 9.3T token Dolma 3 corpus, all sources documented | Lowest risk. Allen AI nonprofit |
 | **Qwen 3 / 3.5** | Yes if self-hosted (Apache 2.0) | High-level disclosure (36T tokens), but no detailed source list. No EU GDPR representative | Medium. Chinese origin, opaque data details |
 | **Llama 3.3 70B** | Yes (text-only, EU ban is multimodal-only) | Undisclosed | Medium. US company, opaque data |
-| **Llama 4 (all)** | **No** - entire family is multimodal, EU excluded from license | Undisclosed | Blocked. Do not use |
+| **Llama 4 (all)** | **No** - entire family is multimodal, EU excluded from license | Undisclosed | capabilities low/ benchmarks faked | Blocked. Do not use |
 | **DeepSeek R1/V3/V4** | Legally yes if self-hosted (MIT) | Undisclosed | High risk. Active GDPR enforcement across EU. Bad optics for therapy |
 | **Gemma 3 27B** | Yes (open weights) | Undisclosed | Low-medium. Google has EU data processing agreements |
-| **GPT-5 / 5.2** | Yes (API, OpenAI has EU DPA) | Closed | Low. Standard API use, no self-hosting |
+| **GLM-5** | Yes if self-hosted (MIT) | Undisclosed (28.5T tokens) | High risk. Chinese origin (Zhipu AI). No EU GDPR representative. Same risk profile as DeepSeek |
+| **Kimi K2.5** | Yes if self-hosted (Modified MIT) | Undisclosed (15T tokens, multimodal) | High risk. Chinese origin (Moonshot AI). Native multimodal complicates EU licensing. Same risk profile as DeepSeek |
+| **MiniMax M2.5** | Yes if self-hosted (Modified MIT) | Undisclosed | High risk. Chinese origin (MiniMax, Shanghai). No EU GDPR representative |
+| **GPT-5 / 5.2 / 5.4** | Yes (API, OpenAI has EU DPA) | Closed | Low. Standard API use, no self-hosting |
 | **GPT-oss-120B** | Yes (Apache 2.0) | Partially open | Low. OpenAI's first open-weight model |
 
 ### Key Regulations
@@ -117,6 +125,9 @@ Best for academic defensibility. You can cite exactly what these were trained on
 |---|---|---|---|---|
 | **Qwen 3.5 27B** | 27B dense | Alibaba (China) | NEW (Feb 2026). 800K+ context. Successor to Qwen 3 32B | Apache 2.0 |
 | **Qwen 3.5 35B-A3B** | 35B (3B active, MoE) | Alibaba (China) | NEW (Feb 2026). Exceeds 1M context on 32GB VRAM. Extremely efficient | Apache 2.0 |
+| **GLM-5** | 744B MoE (40B active) | Zhipu AI / Z.ai (China) | NEW (Feb 2026). 205K context, 128K output. 77.8% SWE-bench, 92.7% AIME 2026. Trained on Huawei Ascend. On OpenRouter | MIT |
+| **Kimi K2.5** | 1T MoE (32B active) | Moonshot AI (China) | NEW (Jan 2026). 256K context. Native multimodal. Agent swarm mode. On OpenRouter | Modified MIT |
+| **MiniMax M2.5** | 230B MoE (10B active) | MiniMax (China) | NEW (Feb 2026). 205K context. Lightning Attention. 80.2% SWE-bench. Extremely cheap. On OpenRouter | Modified MIT |
 | **Qwen 3 32B** | 32B dense | Alibaba (China) | Current eval target. Benchmark leader at 32B. Hybrid thinking modes | Apache 2.0 |
 | **Gemma 3 27B** | 27B | Google (US) | Same size class as Mistral Small. Good comparator | Open |
 | **Llama 3.3 70B** | 70B | Meta (US) | Text-only = EU-legal. Original efficacy study model | Meta license |
@@ -128,10 +139,11 @@ Best for academic defensibility. You can cite exactly what these were trained on
 
 | Model | Provider | Tier | Notes |
 |---|---|---|---|
+| **GPT-5.4** | OpenAI | Top | NEW (Mar 6). Combines GPT-5.3-Codex coding with reasoning + computer use. 83% GDPval. 1M context (experimental). Supersedes GPT-5.2 |
 | **Gemini 3.1 Pro** | Google | Top | NEW (Feb 19). 77.1% ARC-AGI-2, 1M context. Our proprietary ceiling target |
-| **GPT-5.2** | OpenAI | Top | 400K context, 100% AIME 2025, 6.2% hallucination rate |
-| **Claude Opus 4.6** | Anthropic | Top | Top reasoning performance |
-| **Claude Sonnet 4.6** | Anthropic | High | Strong reasoning, faster than Opus |
+| **Claude Opus 4.6** | Anthropic | Top | Top reasoning performance. 1M context (beta). 128K output |
+| **Claude Sonnet 4.6** | Anthropic | Top | Strong reasoning, faster than Opus. Best value at frontier tier |
+| **GPT-5.2** | OpenAI | High | 400K context, 100% AIME 2025. Superseded by GPT-5.4 |
 | **GPT-5** | OpenAI | High | Previous flagship, still strong |
 
 ---
@@ -149,6 +161,8 @@ Rate limits: 20 RPM, 200 req/day without credits, higher with credits.
 | **Mistral Small 3.1** | 24B | Slightly older than our 3.2 comparator |
 | **Gemma 3 27B** | 27B | Good size-class comparator |
 | **NVIDIA Nemotron Nano 9B v2** | 9B | Fast, good for testing |
+| **GLM-5** | 744B MoE (40B active) | Frontier-class open-weight. MIT license. Chinese-origin (high EU risk) |
+| **MiniMax M2.5** | 230B MoE (10B active) | Extremely cheap. Modified MIT. Chinese-origin (high EU risk) |
 | **Dolphin Mistral Venice 24B** | 24B | Uncensored Mistral fine-tune. Current patient model |
 
 ---
@@ -179,7 +193,7 @@ Rate limits: 20 RPM, 200 req/day without credits, higher with credits.
 
 | Model | Why | Timeline |
 |---|---|---|
-| **DeepSeek V4** | ~1T MoE, ~32B active. If open weights + hosted inference, could be strong comparator | First week of March 2026 |
+| **DeepSeek V4** | ~1T MoE, ~32B active. Now released with Apache 2.0. Native multimodal. Strong comparator but EU GDPR risk persists | Released early Mar 2026 |
 | **Qwen 3.5 on Groq** | May replace our Qwen 3 32B target with better performance | Check availability |
 | **NVIDIA Nemotron 3 Super/Ultra** | ~100B / ~500B. Hybrid Mamba-Transformer MoE | H1 2026 |
 | **OpenEuroLLM** | EU institutional sovereign LLM | Mid-2026 |
