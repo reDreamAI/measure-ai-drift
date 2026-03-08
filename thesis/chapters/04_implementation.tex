@@ -1,19 +1,38 @@
 \chapter{Implementation}
 \label{chap:implementation}
 
+% Role: translates Chapter 3 design decisions into concrete technical choices.
+% Each decision here is a consequence of a methods requirement.
+
 \section{Software Architecture}
 \label{sec:impl-architecture}
-% Python async-first pipeline, config-driven via YAML
-% Pydantic models for type-safe data flow
-% Multi-provider LLM abstraction (OpenRouter, Google)
+% Python async-first pipeline; YAML config; Pydantic validation
+%   Why async? 10 parallel trials per condition -- sequential would be prohibitive
+%   Why YAML? Every condition is a config parameter -- reproducibility without
+%     code changes; full experiment defined declaratively
+%   Why Pydantic? Malformed <plan> blocks must fail at parse time --
+%     silent propagation would corrupt downstream metrics
+% Multi-provider LLM abstraction via OpenRouter and Google
+%   Enables model swap without changing evaluation logic -- critical for
+%   cross-model comparison
+% [FIG] Component diagram -- modules, interfaces, provider abstraction layer
 
 \section{Experiment Execution}
 \label{sec:impl-execution}
 % ExperimentRun orchestration with structured output
+% Config -> frozen history -> parallel trials -> output bundle
 % Multi-trial sampling with parallel execution
-% Output: config, frozen history, trials/, metrics.json, judgments.json
+% Artefacts per run: config.yaml, frozen_history.json, trials/,
+%   metrics.json, judgments.json
+%   Why this structure? Frozen history is the only irreplaceable artefact;
+%   metrics and judgments are recomputable if evaluation logic changes
+% [Example] Output directory tree for one complete experiment run
 
 \section{Aggregation Pipeline}
 \label{sec:impl-aggregation}
 % Cross-experiment result collection
-% Per-model, per-vignette, per-slice, per-temperature breakdowns
+% Collects all model x vignette x slice x temperature results into one
+%   analysis frame
+% Produces per-model, per-vignette, per-slice, per-temperature breakdowns
+%   Cross-method correlation (5.5) requires all three metric types aligned
+%   on the same condition index -- this pipeline produces that alignment

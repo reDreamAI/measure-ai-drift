@@ -1,32 +1,138 @@
 \chapter{Background}
 \label{chap:background}
 
+% Reading guide: each section establishes one conceptual prerequisite and ends
+% with an open question or unresolved tension. The gaps identified here are
+% resolved in the Methods chapter.
+
 \section{Imagery Rehearsal Therapy}
 \label{sec:bg-irt}
-% Five-stage IRT protocol: recording -> rewriting -> summary -> rehearsal -> final
-% The rescripting phase as the core cognitive intervention
-% Clinical evidence and treatment fidelity assessment in psychotherapy
+% QUESTION THIS SECTION ANSWERS: What is IRT and why is rescripting the hard part?
+%
+% Five-stage protocol: recording, rewriting, summary, rehearsal, final
+%   Each stage has defined purpose and bounded appropriate therapist behaviours
+% Rescripting: patient rewrites the nightmare to reduce distress and restore agency
+%   This is the cognitive core -- the phase where the therapist must make active
+%   strategic decisions (not just listen or summarise)
+% Treatment fidelity instruments (ENACT, NIH BCC): define adherence gradations
+%   absent / partial / implemented -- the clinical standard for measuring whether
+%   a therapist delivers an intervention correctly
+% Clinical evidence base for IRT effectiveness
+%
+% TENSION LEFT OPEN: Fidelity assessment exists for human therapists delivering
+%   manualized protocols. No equivalent exists for LLM-based agents -- the
+%   evaluation instruments assume a human clinician.
+%
+% [Example] Nightmare excerpt -> rescripted version with strategy labels overlaid
+%   (cognitive_reframe, confrontation) -- what a valid rescripting move looks like
 
 \section{Large Language Models in Healthcare}
 \label{sec:bg-llm-healthcare}
-% Current therapeutic AI applications and their evaluation
-% Challenges in high-stakes settings: hallucination, drift, inconsistency
-% Regulatory landscape: EU AI Act, Medical Device Regulation
+% QUESTION THIS SECTION ANSWERS: Why is therapeutic AI different from a chatbot?
+%
+% Growing deployment of LLMs in mental health settings
+%   Current therapeutic AI applications and how they have been evaluated
+% The general vs. protocol distinction -- conceptual grounding:
+%   Treatment fidelity research (Webb et al., 2010; Waltz et al., 1993) formalises
+%   what it means for a therapist to deliver an intervention correctly:
+%   adherence (doing the prescribed things) and competence (doing them well)
+%   Fidelity is only a meaningful concept when there is a protocol to adhere to --
+%   it is undefined for a general assistant
+%   For rule-based chatbots, adherence is built in by construction -- responses
+%   are pre-authored and reviewed once
+%   For LLM-based protocol agents, adherence becomes probabilistic -- it must
+%   be measured across runs, not assumed from a single review
+% Capability vs. reliability -- the core gap:
+%   A model can produce high-quality individual responses while being clinically
+%   unreliable across sessions -- capability benchmarks cannot detect this
+% Documented LLM failure modes in clinical settings: hallucination, strategy
+%   drift, stage confusion, persona inconsistency
+% Regulatory framing: EU AI Act high-risk classification; Medical Device
+%   Regulation auditability and documentation requirements
+%   Data sovereignty as a legal constraint pushing toward EU-resident models
+%
+% TENSION LEFT OPEN: Stability is a precondition for clinical deployment, but
+%   no existing evaluation framework measures it for protocol-driven LLM agents.
+%   Prior therapeutic AI evaluation is largely qualitative, post-hoc, or
+%   single-session -- it cannot detect cross-run inconsistency.
+%
+% [FIG] EU AI Act risk tier diagram -- where autonomous therapeutic AI sits
 
 \section{Stochastic Behaviour in Language Models}
 \label{sec:bg-stochastic}
-% Temperature-based sampling and output variance
-% Reproducibility challenges across repeated generations
-% Prior work on measuring LLM behavioural stability and drift
+% QUESTION THIS SECTION ANSWERS: Where does instability come from mechanically?
+%
+% Temperature sampling: at T>0, token selection is probabilistic -- small
+%   per-token variance compounds across a full therapeutic response
+% Autoregressive generation: each token conditions on all previous tokens --
+%   a single divergent token can cascade into a completely different strategy
+% Clinical consequence: the same patient on two different days may receive
+%   strategically inconsistent care -- this is not benign noise in a
+%   manualized protocol
+% Prior stability work in NLP:
+%   Targets factual consistency, output diversity, or benchmark reproducibility
+%   Not therapeutic strategy stability or protocol adherence
+%
+% TENSION LEFT OPEN: The mechanical source of instability is well understood,
+%   but its impact on structured therapeutic decision-making has not been
+%   quantified. How much does stochastic sampling cost in clinical consistency?
+%
+% [FIG] Sampling diagram -- same frozen history at T=0.0 vs. T=0.7 ->
+%   diverging strategy distributions
 
 \section{Evaluation Metrics for Text Generation}
 \label{sec:bg-metrics}
-% Traditional metrics (BLEU, ROUGE) and their limitations for semantic comparison
-% BERTScore: contextual embedding-based evaluation (Zhang et al., 2020)
-% LLM-as-judge: paradigm, known biases, mitigation strategies
+% QUESTION THIS SECTION ANSWERS: How do people measure text similarity, and
+%   why is it hard for therapy?
+%
+% Surface metrics (BLEU, ROUGE): token overlap
+%   Therapeutically equivalent paraphrases score near zero
+%   Lexically similar but strategically divergent responses score high
+%   Ruled out: therapeutic paraphrasing is the norm; surface metrics
+%   penalise valid variation
+% BERTScore (Zhang et al., 2020): contextual embedding similarity
+%   Meaning equivalence independent of surface form
+%   Multiple embedding model options with different strengths
+%   Highest human correlation achieved with NLI-fine-tuned models
+%   Open question: how well does this transfer to therapeutic language?
+% LLM-as-judge paradigm:
+%   Evaluates criteria no scalar metric can capture
+%   (e.g. "does this response implement a confrontation strategy?")
+%   Known biases: self-preference, position bias, verbosity bias
+%   Mitigation strategies in the literature: cross-model judging,
+%   deterministic decoding, structured rubrics
+%
+% TENSION LEFT OPEN: Embedding similarity captures semantic equivalence but
+%   cannot assess strategic intent. LLM judges can assess intent but introduce
+%   their own reliability concerns. No single metric covers what clinical
+%   stability requires -- a multi-level approach is needed, but none exists
+%   for therapeutic AI.
+%
+% [FIG] ROUGE vs. BERTScore on a matched therapeutic sentence pair --
+%   where surface overlap fails and why embedding similarity is needed
 
 \section{Chain-of-Thought and Plan Faithfulness}
 \label{sec:bg-cot}
-% CoT prompting (Wei et al., 2022)
-% Faithfulness concerns: CoT as post-hoc rationalisation (Turpin et al., 2023; Lanham et al., 2023)
-% Implications for structured plan mechanisms in evaluation
+% QUESTION THIS SECTION ANSWERS: Can we trust what a model says it is doing?
+%
+% CoT prompting (Wei et al., 2022): step-by-step generation before answering
+%   improves output structure and coherence
+%   Widely adopted for complex reasoning tasks
+% The faithfulness problem: CoT explanations often do not reflect actual
+%   computation -- post-hoc rationalisation of an answer reached by other means
+%   (Turpin et al., 2023; Lanham et al., 2023)
+%   Evidence: perturbing CoT steps does not always change the answer;
+%   models can produce correct answers with incorrect reasoning chains
+% The spectrum: from faithful step-by-step reasoning to pure post-hoc
+%   rationalisation -- current evidence suggests most CoT falls somewhere
+%   in between
+%
+% TENSION LEFT OPEN: If a model declares its therapeutic strategy before
+%   responding, is that declaration a window into its decision-making or a
+%   rationalisation? This matters because measuring strategy consistency
+%   is only meaningful if strategy declarations carry information about
+%   what the model actually does. This tension must be resolved before
+%   any plan-based evaluation can be designed.
+%
+% [FIG] Declared intent spectrum -- from faithful CoT to post-hoc
+%   rationalisation; the open question of where structured declarations sit

@@ -3,31 +3,50 @@
 
 \section{Plan Validity and Strategy Distribution}
 \label{sec:res-validity}
-% Validity rates across models and temperatures
+% Validity rates across models and temperatures -- quality gate check before
+%   any stability analysis
 % Strategy frequency distribution across the 7 categories
 % Comparison with expected vignette-strategy mappings
+% [GRAPH] Validity rate per model x temperature
+% [GRAPH] Strategy frequency heatmap -- expected vs. observed per vignette
 
 \section{Cognitive Stability (Method 1)}
 \label{sec:res-cognitive}
-% Jaccard scores by model, vignette, temperature, slice
+% Mean Jaccard scores by model, vignette, temperature, and slice
 % T=0.0 vs. T=0.7: how much does stochastic sampling destabilise strategy selection?
 % Cross-model comparison: sovereign vs. proprietary
+% [GRAPH] Mean Jaccard per model x temperature
+% [GRAPH] Jaccard heatmap: vignette x slice for primary model (Mistral)
+% [GRAPH] Jaccard by slice depth (slice_1 -> slice_3) -- does context
+%   accumulation help or hurt stability?
 
 \section{Output Consistency (Method 2)}
 \label{sec:res-output}
 % BERTScore F1 by model, vignette, temperature, slice
 % Relationship to plan consistency: does stable planning produce stable output?
 % Cross-model comparison
+% [GRAPH] Mean BERTScore F1 per model x temperature
+% [GRAPH] Scatter: Jaccard vs. BERTScore F1 per condition --
+%   coupling or decoupling between planning and output stability
 
 \section{Plan-Output Alignment (Method 3)}
 \label{sec:res-alignment}
 % Alignment scores by model and vignette
 % Per-strategy scoring distributions (absent / partial / implemented)
+% Which strategies are consistently implemented vs. consistently absent?
 % Judge reasoning patterns
+% [GRAPH] Mean alignment score per model
+% [GRAPH] Stacked bar: absent / partial / implemented per strategy category
+% [GRAPH] Alignment heatmap: vignette x strategy category
 
 \section{Cross-Method Analysis}
 \label{sec:res-cross}
-% Correlations between the three evaluation levels
-% Divergence cases: high plan consistency with low output consistency (or vice versa)
-% Stability profiles per model
+% Correlations across all three evaluation levels -- do the methods agree?
+% Divergence cases: high plan consistency with low output consistency
+%   (and vice versa) -- what do these reveal about model behaviour?
+% Stability profiles per model across all three methods
 % Effect of conversation depth (slice_1 -> slice_2 -> slice_3)
+% [GRAPH] Correlation matrix: Jaccard x BERTScore x Alignment
+% [GRAPH] Radar chart: per-model stability profile across all three methods
+% [Example] Annotated divergence case -- Method 1 and Method 2 disagree;
+%   plan sets and response excerpts shown side by side

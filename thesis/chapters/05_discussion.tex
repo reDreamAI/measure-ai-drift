@@ -1,33 +1,56 @@
 \chapter{Discussion}
 \label{chap:discussion}
 
+\section{Interpreting the Three-Level Framework}
+\label{sec:disc-framework-interpretation}
+% What the three methods together reveal that no single method could show alone
+% Cases where the levels align vs. diverge -- and what each divergence type means
+% The framework as a diagnostic tool: which layer is the source of instability?
+% [FIG] Stability failure taxonomy -- which divergence pattern indicates which
+%   type of clinical risk
+
 \section{Cross-Model Comparison}
 \label{sec:disc-models}
-% Mistral Large 3 against proprietary frontier and size-class peers
+% Mistral Large 3 vs. Gemini 3.1 Pro and open-weight peers across all three methods
 % Sovereignty dimension: does the EU flagship match proprietary models?
+% Does self-hostability come at a stability cost? -- the sovereignty tradeoff
 % Size-class effects: 24B vs. 32B vs. 70B vs. 675B MoE vs. frontier
+%   Does more parameters mean more stability?
+% [GRAPH] Summary: all models x all three metrics x both temperatures --
+%   the central comparative result
 
-\section{Temperature and Therapeutic Stability}
+\section{Temperature and Clinical Deployment}
 \label{sec:disc-temperature}
-% Greedy decoding as a clinical deployment baseline
-% Stochastic drift patterns and their clinical significance
-% Recommendations for deployment temperature
+% Greedy decoding as an upper-bound baseline -- theoretical best case
+% Stochastic drift patterns: which models degrade most under T=0.7?
+% Clinical significance of measured drift patterns
+% Practical deployment recommendations: when is T=0.7 acceptable?
+% [GRAPH] Delta chart: T=0.7 minus T=0.0 per model -- the stochastic cost
 
 \section{Vignette-Dependent Behaviour}
 \label{sec:disc-vignettes}
-% Patient profiles that challenge model consistency (e.g., resistant, trauma)
-% Strategy selection patterns across clinical presentations
+% Which patient profiles challenge model consistency most: resistant, trauma
+% Strategy selection patterns across clinical presentations -- are some
+%   strategies inherently harder to maintain consistently?
+% Implications for deployment: not all patient profiles are equally safe
 % Implications for patient-specific adaptation
+% [GRAPH] Per-vignette stability ranking across all three methods
 
 \section{Evaluation Framework Reflections}
-\label{sec:disc-framework}
+\label{sec:disc-framework-design}
 % Strengths: hierarchical decomposition, reproducibility, clinical grounding
-% Taxonomy sensitivity: how category design shapes measured consistency
-% Plan-as-declared-intent: what this framing enables and what it cannot claim
-% Generalisability beyond IRT to other structured therapeutic protocols
+% What the taxonomy design choices reveal -- and what they constrain
+%   Taxonomy sensitivity: how category design shapes measured consistency
+% What declared intent can and cannot claim about model cognition
+%   Plan-as-declared-intent: what this framing enables and what it cannot claim
+% Generalisability: can this framework apply to CBT, DBT, other manualized protocols?
+% [FIG] Generalisation sketch -- framework mapped onto a second structured
+%   protocol (e.g. CBT thought records) to show reusability
 
 \section{Toward In Silico Clinical Trials}
 \label{sec:disc-silico}
-% Framework as template for automated therapeutic AI validation
+% This framework as a reusable, reproducible validation template
 % Regulatory relevance: what stability testing can and cannot certify
-% Gap between benchmark performance and clinical readiness
+% The remaining gap: from benchmark stability to demonstrated clinical safety
+% [FIG] Positioning diagram -- where this framework sits in a full clinical
+%   validation pipeline; what it certifies and what remains open

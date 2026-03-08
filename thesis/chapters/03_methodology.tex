@@ -1,86 +1,171 @@
 \chapter{Methods}
 \label{chap:methods}
 
-\section{System Overview}
+\section{System Overview and Design Rationale}
 \label{sec:meth-overview}
-% Two-stack architecture: generation stack (dialogue creation) and evaluation stack (stability measurement)
-% Data flow: vignettes -> generation -> frozen histories -> evaluation -> aggregation
-% Key design principle: separate dialogue creation from stability testing
+% Two decoupled stacks: generation (dialogue creation) and evaluation
+%   (stability measurement)
+%   Why decoupled? Evaluation must not be contaminated by generation-side
+%   randomness -- reproducible entry points require frozen, pre-generated histories
+% End-to-end data flow:
+%   vignettes -> generation -> frozen histories -> evaluation -> aggregation
+% [FIG] Full pipeline diagram -- logical data flow across all stages, stack
+%   boundary marked, example artefact names at each step
 
 \section{Dialogue Generation}
 \label{sec:meth-dialogue}
-% Three-agent loop: Patient (BDI-profiled vignette), Router (stage classification), Therapist (stage-appropriate response)
+% Three-agent loop: Patient (BDI-profiled vignette), Router (stage classifier),
+%   Therapist (stage-appropriate response)
+%   Why three agents? Mirrors clinical interaction structure; separates
+%   routing logic from therapeutic content generation
 % Six patient vignettes: anxious, avoidant, cooperative, resistant, skeptic, trauma
-% Five-stage IRT protocol traversal
+%   Cover the range of clinical presentation difficulty expected in IRT deployment
+% Full five-stage IRT traversal produces naturalistic conversation histories
+%   used as frozen evaluation entry points
+% [FIG] Three-agent loop -- single turn cycle with message passing
+% [Example] Resistant vignette excerpt -- BDI profile and opening patient turn
 
 \section{Frozen History Design}
 \label{sec:meth-frozen}
 % Deterministic evaluation entry points: identical context for every trial
-% Conversation slicing at rewriting-turn boundaries (slice_1, slice_2, slice_3)
+% Conversations sliced at rewriting-turn boundaries: slice_1, slice_2, slice_3
+%   Why frozen? Any measured inconsistency is attributable solely to the
+%   model under evaluation -- not to upstream context differences
+% Three slice depths test whether stability changes as therapeutic context accumulates
 % Rationale: evaluate at different conversation depths within the rescripting phase
+% [FIG] Slicing diagram -- P/T turn sequence with cut points; which turns are
+%   in-context vs. excluded per slice
 
 \section{Evaluation Stack}
 \label{sec:meth-eval}
-% Router bypass: rescripting prompt injected directly (stage is known a priori)
-% Fused CoT generation: plan and response in a single call
+% Router bypassed -- rescripting prompt injected directly (stage known a priori)
+%   Why bypass? Isolates the therapist model from stage-classification error
+% Fused CoT generation: <plan> block + response in a single model call
 %   <plan> block declares 1-2 strategies before the therapeutic response
 %   Plan conditions the response tokens (Chain-of-Thought style)
-% 10 independent trials per condition
+%   Why fused? Plan must condition the response tokens -- a separate call
+%   would decouple intent from output
+% 10 independent trials per condition sample the stochastic output distribution
+% [FIG] Evaluation stack -- frozen history -> injected prompt -> fused generation
+% [Example] Raw model output: <plan> block and response side by side
 
 \section{The Plan Mechanism}
 \label{sec:meth-plan}
-% Plan as declared intent, not as explanation of internal reasoning
+% GROUNDING: resolves the CoT faithfulness tension from Section 2.5
+%
+% <plan> block declares 1-2 IRT strategies before the therapeutic response
+% Framed as declared intent -- a structured output, not a reasoning trace
+%   Why? Sidesteps the CoT faithfulness problem: the plan is not claimed to
+%   be a window into model cognition. It is a measurable output in its own right.
+%   If strategy declarations vary across runs, clinical responses will vary --
+%   this is true regardless of whether declarations reflect internal reasoning
 % Structured measurement independent of CoT faithfulness debate
-% Enables: strategy-level consistency measurement, alignment verification, clinical oversight
-% Fixed IRT strategy taxonomy constrains output to therapeutic domain
+% Enables three independent uses:
+%   1. Strategy-level consistency scoring (Method 1)
+%   2. Plan-output alignment verification (Method 3)
+%   3. Human-readable clinical oversight
+% Fixed IRT strategy taxonomy constrains declarations to the therapeutic domain --
+%   prevents arbitrary strategies that cannot be clinically evaluated
+% [FIG] Plan mechanism -- <plan> block feeding into three downstream uses
+%   with declared-intent framing labelled
 
 \section{Strategy Taxonomy Development}
 \label{sec:meth-taxonomy}
-% Initial 8-category taxonomy: severe distribution skew (empowerment/mastery = 87.7%)
-% Revision 1, merge to agency: failed (100% dominance, goal vs. mechanism confusion)
-% Revision 2, mechanism-specific split: confrontation vs. self_empowerment
+% Why fixed? Enables discrete, comparable strategy sets -- free-text plans
+%   cannot be aggregated into Jaccard similarity scores
+% Iterative revision driven by observed distribution failures:
+%   v1 (8 categories): 87.7% mass on empowerment/mastery -> unusable skew
+%   v2 (merge to agency): 100% dominance -> goal-mechanism conflation
+%   v3 (mechanism-specific split): confrontation (external action) vs.
+%     self_empowerment (internal transformation)
 % Final 7 categories: confrontation, self_empowerment, safety, cognitive_reframe,
 %   emotional_regulation, social_support, sensory_modulation
-% Prompt-level steering for category diversity
+% Prompt-level steering encourages diversity across categories
+% [GRAPH] Strategy frequency per taxonomy version (v1 -> v3) -- shows skew
+%   collapse and final distribution
+% [FIG] 7-category taxonomy card -- each category, definition, example phrase
 
 \section{Evaluation Metrics}
 \label{sec:meth-metrics}
+% Why three methods? Each targets a distinct layer of the generation process --
+%   no single metric captures the full picture of clinical stability
+%   Method 1: does the model make consistent therapeutic decisions? (planning layer)
+%   Method 2: does the model produce consistent therapeutic responses? (output layer)
+%   Method 3: does the model do what it says it will do? (alignment layer)
+% [FIG] Three-level framework -- plan -> output -> alignment; inputs and outputs
+%   of each method, with the clinical question each answers
 
 \subsection{Method 1: Cognitive Stability (Plan Consistency)}
 \label{sec:meth-m1}
-% Pairwise Jaccard similarity over strategy sets: J(A,B) = |A n B| / |A u B|
-% Mean over C(10,2) = 45 trial pairs
-% Strategy extraction from <plan> blocks. Validity rate as quality gate
+% Pairwise Jaccard similarity over strategy sets from <plan> blocks
+%   J(A,B) = |A n B| / |A u B|; mean over C(10,2) = 45 trial pairs
+% Strategy extraction from <plan> blocks. Validity rate as upstream quality gate
+%   -- malformed plans excluded
+% Why Jaccard? Set similarity is appropriate for unordered strategy
+%   combinations; insensitive to labelling artefacts
 % Measures: do stochastic runs produce the same therapeutic decisions?
+% [Example] 10 plan sets -> pairwise Jaccard matrix -> mean score;
+%   one high- and one low-consistency condition shown
 
 \subsection{Method 2: Output Consistency (Semantic Stability)}
 \label{sec:meth-m2}
-% Pairwise BERTScore F1 over response texts, mean over 45 pairs
-% Embedding model: DeBERTa-XLarge-MNLI (He et al., 2021)
-%   NLI fine-tuning aligns with semantic comparison task
-%   Highest WMT16 correlation with human judgments (r = 0.778)
-%   Disentangled attention handles surface-form variation in therapeutic language
+% GROUNDING: builds on the metric landscape from Section 2.4
+%
+% Pairwise BERTScore F1 over response texts; mean over C(10,2) = 45 pairs
+% Embedding model choice: DeBERTa-XLarge-MNLI (He et al., 2021)
+%   Why this model?
+%   - NLI fine-tuning aligns with semantic equivalence over surface matching
+%   - Highest WMT16 human correlation (r = 0.778) among available options
+%   - Disentangled attention handles surface-form variation in therapeutic language
+%     where valid paraphrasing is the norm
+% Why not BLEU/ROUGE? Surface metrics penalise valid therapeutic paraphrasing
+%   (established in 2.4) -- embedding similarity is the appropriate level
 % Measures: do stochastic runs produce therapeutically equivalent responses?
+% [Example] Two responses from the same condition -> token alignment
+%   heatmap -> F1; one high- and one low-similarity pair
 
 \subsection{Method 3: Plan-Output Alignment (Exploratory)}
 \label{sec:meth-m3}
+% GROUNDING: addresses the multi-level gap from Section 2.4
+%   (no single metric captures strategic intent + semantic equivalence)
+%
 % LLM judge (Gemini Pro, T=0.0) with ternary scoring per declared strategy
 %   0 = absent, 1 = partial, 2 = implemented
-% Ternary scale grounded in clinical fidelity literature (ENACT, NIH BCC)
-% Rejected alternatives: NLI cross-encoders (F1 ceiling ~0.55, task mismatch, no reasoning trace)
-% Mitigations: cross-model judging, CoT justification, deterministic decoding, transparent rubric
+% Why ternary? Borrowed from clinical fidelity literature (ENACT, NIH BCC,
+%   introduced in 2.1); binary scoring loses partial implementation --
+%   clinically meaningful
+% Why LLM judge? Only approach capable of multi-strategy alignment with
+%   a reasoning trace; NLI cross-encoders ceiling at F1 ~0.55 on this task
+% Rejected alternatives: NLI cross-encoders (F1 ceiling ~0.55, task mismatch,
+%   no reasoning trace)
+% Mitigations for known judge biases (identified in 2.4):
+%   cross-model judging, CoT justification, T=0.0, transparent rubric
+% Labelled exploratory: judge reliability is itself an open question
 % Measures: does the model's response implement its declared therapeutic plan?
+% [Example] Judge input + output -- plan, response, ternary verdict with
+%   CoT justification; partial and absent case shown
 
 \section{Model Selection}
 \label{sec:meth-models}
-% EU sovereignty as selection criterion: data protection, AI Act, open-weight licensing
-% Primary subject: Mistral Large 3 (675B MoE, 41B active), EU-sovereign, Apache 2.0
-% Proprietary baseline: GPT-5
-% Open-weight comparisons: Llama 3.3 70B, Qwen 3 32B, Gemma 3 27B
+% GROUNDING: regulatory framing established in 2.2
+%
+% EU data sovereignty as primary selection criterion -- self-hostability and EU data
+%   residency are legal constraints in the reDreamAI deployment context
+% Primary subject: Mistral Large 3 (675B MoE, 41B active)
+%   EU-sovereign, Apache 2.0, frontier-class
+% Proprietary ceiling: Gemini 3.1 Pro
+%   Closed-weight frontier baseline; upper bound on achievable stability
+% Open-weight comparisons: Llama 3.3 70B, Qwen 3 32B, OLMo 3.1
+%   Size-class diversity (32B-70B); provider diversity; sovereignty status varies
 % Selection rationale: size class diversity, provider diversity, sovereignty status
+% [FIG] Model selection table -- model, size, provider, sovereignty status,
+%   role in study
 
 \section{Experimental Conditions}
 \label{sec:meth-conditions}
-% 6 vignettes x 3 slices x 10 trials x 2 temperatures (T=0.0, T=0.7) x N models
-% T=0.0: deterministic baseline (greedy decoding)
-% T=0.7: stochastic condition (clinical deployment temperature range)
+% Full factorial: 6 vignettes x 3 slices x 10 trials x T in {0.0, 0.7} x N models
+% T=0.0: deterministic baseline -- theoretical upper bound on stability
+%   (greedy decoding)
+% T=0.7: stochastic condition -- realistic clinical deployment range
+%   (mechanistic grounding established in 2.3)
+% [FIG] Condition matrix -- factorial design as a grid; total run count labelled
