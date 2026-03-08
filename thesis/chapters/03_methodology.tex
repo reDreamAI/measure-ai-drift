@@ -1,0 +1,86 @@
+\chapter{Methods}
+\label{chap:methods}
+
+\section{System Overview}
+\label{sec:meth-overview}
+% Two-stack architecture: generation stack (dialogue creation) and evaluation stack (stability measurement)
+% Data flow: vignettes -> generation -> frozen histories -> evaluation -> aggregation
+% Key design principle: separate dialogue creation from stability testing
+
+\section{Dialogue Generation}
+\label{sec:meth-dialogue}
+% Three-agent loop: Patient (BDI-profiled vignette), Router (stage classification), Therapist (stage-appropriate response)
+% Six patient vignettes: anxious, avoidant, cooperative, resistant, skeptic, trauma
+% Five-stage IRT protocol traversal
+
+\section{Frozen History Design}
+\label{sec:meth-frozen}
+% Deterministic evaluation entry points: identical context for every trial
+% Conversation slicing at rewriting-turn boundaries (slice_1, slice_2, slice_3)
+% Rationale: evaluate at different conversation depths within the rescripting phase
+
+\section{Evaluation Stack}
+\label{sec:meth-eval}
+% Router bypass: rescripting prompt injected directly (stage is known a priori)
+% Fused CoT generation: plan and response in a single call
+%   <plan> block declares 1-2 strategies before the therapeutic response
+%   Plan conditions the response tokens (Chain-of-Thought style)
+% 10 independent trials per condition
+
+\section{The Plan Mechanism}
+\label{sec:meth-plan}
+% Plan as declared intent, not as explanation of internal reasoning
+% Structured measurement independent of CoT faithfulness debate
+% Enables: strategy-level consistency measurement, alignment verification, clinical oversight
+% Fixed IRT strategy taxonomy constrains output to therapeutic domain
+
+\section{Strategy Taxonomy Development}
+\label{sec:meth-taxonomy}
+% Initial 8-category taxonomy: severe distribution skew (empowerment/mastery = 87.7%)
+% Revision 1, merge to agency: failed (100% dominance, goal vs. mechanism confusion)
+% Revision 2, mechanism-specific split: confrontation vs. self_empowerment
+% Final 7 categories: confrontation, self_empowerment, safety, cognitive_reframe,
+%   emotional_regulation, social_support, sensory_modulation
+% Prompt-level steering for category diversity
+
+\section{Evaluation Metrics}
+\label{sec:meth-metrics}
+
+\subsection{Method 1: Cognitive Stability (Plan Consistency)}
+\label{sec:meth-m1}
+% Pairwise Jaccard similarity over strategy sets: J(A,B) = |A n B| / |A u B|
+% Mean over C(10,2) = 45 trial pairs
+% Strategy extraction from <plan> blocks. Validity rate as quality gate
+% Measures: do stochastic runs produce the same therapeutic decisions?
+
+\subsection{Method 2: Output Consistency (Semantic Stability)}
+\label{sec:meth-m2}
+% Pairwise BERTScore F1 over response texts, mean over 45 pairs
+% Embedding model: DeBERTa-XLarge-MNLI (He et al., 2021)
+%   NLI fine-tuning aligns with semantic comparison task
+%   Highest WMT16 correlation with human judgments (r = 0.778)
+%   Disentangled attention handles surface-form variation in therapeutic language
+% Measures: do stochastic runs produce therapeutically equivalent responses?
+
+\subsection{Method 3: Plan-Output Alignment (Exploratory)}
+\label{sec:meth-m3}
+% LLM judge (Gemini Pro, T=0.0) with ternary scoring per declared strategy
+%   0 = absent, 1 = partial, 2 = implemented
+% Ternary scale grounded in clinical fidelity literature (ENACT, NIH BCC)
+% Rejected alternatives: NLI cross-encoders (F1 ceiling ~0.55, task mismatch, no reasoning trace)
+% Mitigations: cross-model judging, CoT justification, deterministic decoding, transparent rubric
+% Measures: does the model's response implement its declared therapeutic plan?
+
+\section{Model Selection}
+\label{sec:meth-models}
+% EU sovereignty as selection criterion: data protection, AI Act, open-weight licensing
+% Primary subject: Mistral Large 3 (675B MoE, 41B active), EU-sovereign, Apache 2.0
+% Proprietary baseline: GPT-5
+% Open-weight comparisons: Llama 3.3 70B, Qwen 3 32B, Gemma 3 27B
+% Selection rationale: size class diversity, provider diversity, sovereignty status
+
+\section{Experimental Conditions}
+\label{sec:meth-conditions}
+% 6 vignettes x 3 slices x 10 trials x 2 temperatures (T=0.0, T=0.7) x N models
+% T=0.0: deterministic baseline (greedy decoding)
+% T=0.7: stochastic condition (clinical deployment temperature range)

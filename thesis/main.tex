@@ -1,0 +1,307 @@
+% Measure-AI-Drift Thesis
+% Master's Thesis: LLM Stability in Therapeutic Contexts
+%
+% Compile with: latexmk -pdf main.tex
+% Or: pdflatex main.tex && biber main && pdflatex main.tex && pdflatex main.tex
+
+\documentclass[11pt,
+  paper=a4,
+  bibliography=totocnumbered,
+  captions=tableheading,
+  BCOR=10mm
+]{scrreprt}
+
+% --- Encoding and fonts ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+% --- Language ---
+\usepackage[english]{babel}
+
+% --- Spacing ---
+\usepackage[onehalfspacing]{setspace}
+
+% --- Quoting ---
+\usepackage{csquotes}
+
+% --- Math ---
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{mathtools}
+
+% --- Floats and figures ---
+\usepackage[section]{placeins}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{subcaption}
+\usepackage{floatrow}
+\floatsetup[table]{style=plaintop}
+\graphicspath{{figures/}{../visualizations/}}
+
+% --- Tables ---
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{multirow}
+
+% --- Typography ---
+\usepackage[all]{nowidow}
+\usepackage{scrhack}
+
+% --- Hyperlinks ---
+\usepackage[
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=blue!60!black,
+  urlcolor=blue!70!black
+]{hyperref}
+
+% --- Code listings ---
+\usepackage{xcolor}
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily,
+  keywordstyle=\color{black}\bfseries\underbar,
+  identifierstyle=,
+  commentstyle=\color{white},
+  stringstyle=\ttfamily,
+  showstringspaces=false,
+  numbers=left,
+  numberstyle=\tiny,
+  stepnumber=1
+}
+
+% JSON syntax highlighting
+\colorlet{json:punct}{red!60!black}
+\colorlet{json:numb}{magenta!60!black}
+\definecolor{json:delim}{RGB}{20,105,176}
+\lstdefinelanguage{json}{
+  basicstyle=\linespread{0.9}\ttfamily,
+  showstringspaces=false,
+  breaklines=true,
+  breakindent=4pt,
+  breakautoindent=false,
+  literate=
+   *{0}{{{\color{json:numb}0}}}{1}
+    {1}{{{\color{json:numb}1}}}{1}
+    {2}{{{\color{json:numb}2}}}{1}
+    {3}{{{\color{json:numb}3}}}{1}
+    {4}{{{\color{json:numb}4}}}{1}
+    {5}{{{\color{json:numb}5}}}{1}
+    {6}{{{\color{json:numb}6}}}{1}
+    {7}{{{\color{json:numb}7}}}{1}
+    {8}{{{\color{json:numb}8}}}{1}
+    {9}{{{\color{json:numb}9}}}{1}
+    {:}{{{\color{json:punct}{:}}}}{1}
+    {,}{{{\color{json:punct}{,}}}}{1}
+    {\{}{{{\color{json:delim}{\{}}}}{1}
+    {\}}{{{\color{json:delim}{\}}}}}{1}
+    {[}{{{\color{json:delim}{[}}}}{1}
+    {]}{{{\color{json:delim}{]}}}}{1},
+}
+
+% Python syntax highlighting
+\definecolor{py:keyword}{RGB}{0,128,0}
+\definecolor{py:string}{RGB}{186,33,33}
+\definecolor{py:comment}{RGB}{128,128,128}
+\lstdefinestyle{python}{
+  language=Python,
+  basicstyle=\linespread{0.9}\ttfamily\small,
+  keywordstyle=\color{py:keyword}\bfseries,
+  stringstyle=\color{py:string},
+  commentstyle=\color{py:comment}\itshape,
+  showstringspaces=false,
+  breaklines=true,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+}
+
+% --- Colored boxes (for prompt examples, model outputs) ---
+\usepackage[most]{tcolorbox}
+\tcbset{boxrule=0.5pt}
+
+% --- Bibliography (APA style for psychology-adjacent thesis) ---
+\usepackage[
+  backend=biber,
+  style=apa,
+  sorting=nyt
+]{biblatex}
+\addbibresource{references.bib}
+
+% --- Glossary and acronyms ---
+\usepackage[automake, nopostdot, nonumberlist]{glossaries}
+\makeglossaries
+
+% --- Misc ---
+\usepackage{authoraftertitle}
+
+%%% Custom commands %%%
+
+% Model names in small caps
+\newcommand{\modelname}[1]{\textsc{#1}}
+
+% Inline code
+\newcommand{\codeil}[1]{\lstinline{#1}}{}
+\newcommand{\techil}[1]{\texttt{#1}}
+
+% Shorthands
+\newcommand{\ie}{i.\,e.~}
+\newcommand{\eg}{e.\,g.~}
+\newcommand{\vs}{vs.~}
+
+% Reference helpers
+\newcommand{\figref}[1]{(cf.~Figure \ref{#1})}
+\newcommand{\figureref}[1]{Figure \ref{#1}}
+\newcommand{\tabref}[1]{(cf.~Table \ref{#1})}
+\newcommand{\tableref}[1]{Table \ref{#1}}
+
+% Figure width
+\def \figwidth {0.9\linewidth}
+
+% Capitalized autoref names
+\renewcommand*{\chapterautorefname}{Chapter}
+\renewcommand*{\sectionautorefname}{Section}
+
+% Signature line for declaration
+\newcommand{\namesigdate}[1][5cm]{%
+  \vspace{5cm}
+  {\setlength{\parindent}{0cm}
+  \begin{minipage}{0.3\textwidth}
+    \hrule
+    \vspace{0.5cm}
+    {\small city, date}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.3\textwidth}
+    \hrule
+    \vspace{0.5cm}
+    {\small signature}
+  \end{minipage}
+  }
+}
+
+%%% Acronym definitions %%%
+\newacronym{llm}{LLM}{Large Language Model}
+\newacronym{irt}{IRT}{Imagery Rehearsal Therapy}
+\newacronym{moe}{MoE}{Mixture of Experts}
+\newacronym{eu}{EU}{European Union}
+\newacronym{api}{API}{Application Programming Interface}
+\newacronym{json}{JSON}{JavaScript Object Notation}
+\newacronym{cbt}{CBT}{Cognitive Behavioral Therapy}
+\newacronym{rlhf}{RLHF}{Reinforcement Learning with Human Feedback}
+\newacronym{gdpr}{GDPR}{General Data Protection Regulation}
+\newacronym{ptsd}{PTSD}{Post-Traumatic Stress Disorder}
+\newacronym{cot}{CoT}{Chain-of-Thought}
+\newacronym{nli}{NLI}{Natural Language Inference}
+\newacronym{bdi}{BDI}{Brief Dreamer Interview}
+\newacronym{nlp}{NLP}{Natural Language Processing}
+
+%%% Document metadata %%%
+\title{Measuring Drift in Therapeutic AI: A Stability-Based Evaluation of Sovereign LLMs in Nightmare Therapy}
+\author{Daniel Menzel}
+\date{\today}
+
+\begin{document}
+
+% --- Title page ---
+\begin{titlepage}
+  \begin{flushleft}
+    Universit\"at Osnabr\"uck\\
+    Fachbereich Humanwissenschaften\\
+    Institute of Cognitive Science
+  \end{flushleft}
+
+  \vspace{2cm}
+  \centering{
+    Master's Thesis\vspace{1cm}\\
+    \textbf{\Large{\MyTitle}}
+    \vspace{1cm}\\
+    \begin{tabular}{c}
+      \MyAuthor                             \\
+      % TODO: matriculation number          \\
+      Master's Program Cognitive Science    \\
+      % TODO: semester range
+    \end{tabular}}
+  \vspace{1cm}
+
+  \begin{tabular}{ll}
+    First supervisor:  & Moritz Hartstang                \\
+                       & Institute of Cognitive Science  \\
+                       & Osnabr\"uck                     \\\\
+    Second supervisor: & Prof.\ Dr.\ Sebastian Musslick  \\
+                       & Institute of Cognitive Science  \\
+                       & Osnabr\"uck
+  \end{tabular}
+
+\end{titlepage}
+
+
+% --- Declaration of Authorship ---
+\chapter*{Declaration of Authorship}
+The content of this thesis represents my own knowledge, my own understanding and my own perspective on the topic.
+In case artificial intelligence tools were used, their way and purpose of usage has been made transparent.
+Moreover, I have cited all my sources in accordance with academic standards.
+I am ready and able to explain and defend the positions developed in this thesis.
+This thesis has not been submitted, either in part or whole, at this or any other university.
+
+\namesigdate
+\pagenumbering{gobble}
+\pagebreak
+
+
+% --- Abstract ---
+\begin{abstract}
+  \textbf{\LARGE{Abstract}}\\\\
+  % TODO: Write abstract
+\end{abstract}
+
+
+% --- Lists ---
+\tableofcontents
+\listoffigures
+\listoftables
+
+
+% --- Main matter ---
+\pagenumbering{arabic}
+
+\include{chapters/01_introduction}
+\include{chapters/02_background}
+\include{chapters/03_methodology}
+\include{chapters/04_implementation}
+\include{chapters/04_results}
+\include{chapters/05_discussion}
+\include{chapters/06_conclusion}
+\include{chapters/07_acknowledgements}
+
+
+% --- AI tools disclosure ---
+\chapter*{Use of AI Tools in This Thesis}
+
+Throughout the research and writing of this thesis,
+I made use of several LLM-based tools in a supporting capacity.
+
+For intellectual engagement with the subject matter,
+I used Claude (Anthropic)\footnote{\href{https://claude.ai}{https://claude.ai}} and ChatGPT (OpenAI)\footnote{\href{https://chatgpt.com}{https://chatgpt.com}} as discussion partners.
+Their role was to challenge my reasoning, surface counterarguments, and suggest alternative framings for the arguments I had already developed.
+As English is not my native language, I occasionally used these tools to refine phrasing where my original formulations lacked precision or fluency.
+
+For software development, I used Claude Code and Cursor (with Claude Sonnet) as coding assistants for the evaluation pipeline that forms the core of this thesis.
+Given that the pipeline itself measures LLM behavioral stability, I took particular care to verify all AI-generated code before inclusion, to avoid introducing confounds into the instrument being studied.
+
+No part of the thesis text was generated by AI.
+All arguments, interpretations, and conclusions are my own.
+
+
+% --- Glossary and bibliography ---
+\glsaddall
+\printglossaries
+\printbibliography
+
+
+% --- Appendix ---
+\appendix
+\include{chapters/appendix}
+
+\end{document}
