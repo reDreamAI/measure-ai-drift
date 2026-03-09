@@ -1,5 +1,5 @@
 % Measure-AI-Drift Thesis
-% Master's Thesis: LLM Stability in Therapeutic Contexts
+% Bachelor's Thesis: LLM Stability in Therapeutic Contexts
 %
 % Compile with: latexmk -pdf main.tex
 % Or: pdflatex main.tex && biber main && pdflatex main.tex && pdflatex main.tex
@@ -34,7 +34,6 @@
 % --- Floats and figures ---
 \usepackage[section]{placeins}
 \usepackage{graphicx}
-\usepackage{float}
 \usepackage{subcaption}
 \usepackage{floatrow}
 \floatsetup[table]{style=plaintop}
@@ -47,7 +46,6 @@
 
 % --- Typography ---
 \usepackage[all]{nowidow}
-\usepackage{scrhack}
 
 % --- Hyperlinks ---
 \usepackage[
@@ -118,7 +116,7 @@
 }
 
 % --- Colored boxes (for prompt examples, model outputs) ---
-\usepackage[most]{tcolorbox}
+\usepackage[skins,breakable]{tcolorbox}
 \tcbset{boxrule=0.5pt}
 
 % --- Bibliography (APA style for psychology-adjacent thesis) ---
@@ -214,13 +212,13 @@
 
   \vspace{2cm}
   \centering{
-    Master's Thesis\vspace{1cm}\\
+    Bachelor's Thesis\vspace{1cm}\\
     \textbf{\Large{\MyTitle}}
     \vspace{1cm}\\
     \begin{tabular}{c}
       \MyAuthor                             \\
       % TODO: matriculation number          \\
-      Master's Program Cognitive Science    \\
+      Bachelor's Program Cognitive Science    \\
       % TODO: semester range
     \end{tabular}}
   \vspace{1cm}
