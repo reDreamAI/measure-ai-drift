@@ -26,6 +26,11 @@ providers:
     base_url: https://api.scaleway.ai/v1
     api_key_env: SCALEWAY_API_KEY
 
+  groq:
+    type: openai_compatible
+    base_url: https://api.groq.com/openai/v1
+    api_key_env: GROQ_API_KEY
+
   openai:
     type: openai_compatible
     base_url: https://api.openai.com/v1
@@ -71,10 +76,10 @@ model_options:
       provider: gemini
       model: gemini-3.1-pro-preview
       notes: "Experiment judge. Thinking aids judgment accuracy. Free Google AI Studio credits"
-    openrouter_gpt_oss:
-      provider: openrouter
-      model: openai/gpt-oss-120b:free
-      notes: "Free testing judge. OpenAI open-weight 120B"
+    gemini31_flash_lite:
+      provider: gemini
+      model: gemini-3.1-flash-lite-preview
+      notes: "Testing judge. Cheapest Gemini. Free Google AI Studio credits"
 
 # =============================================================================
 # ACTIVE ROLES - Current selection (change these to swap models)
@@ -98,7 +103,7 @@ roles:
     max_tokens: 32
 
   judge:
-    use: openrouter_gpt_oss  # Switch to gemini31_pro for experiment
+    use: gemini31_flash_lite  # Switch to gemini31_pro for experiment
     temperature: 0.0
     max_tokens: 4096  # Extra budget for Gemini thinking tokens
 
@@ -114,10 +119,10 @@ evaluation_targets:
     model: meta-llama/llama-3.3-70b-instruct:free
     notes: "Testing only. Free tier Llama 3.3"
 
-  - name: gemini31_flash_lite
-    provider: gemini
-    model: gemini-3.1-flash-lite-preview
-    notes: "Testing only. Cheapest Gemini, saves Pro credits for experiment"
+  - name: gpt_oss_test
+    provider: openrouter
+    model: openai/gpt-oss-120b:free
+    notes: "Testing only. Free OpenAI open-weight 120B"
 
 # =============================================================================
 # EVALUATION TARGETS - Experiment (uncomment to activate)

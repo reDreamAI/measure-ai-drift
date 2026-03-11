@@ -11,8 +11,8 @@
 
 For pipeline development and debugging.
 
-- Eval targets: Llama 3.3 70B (OpenRouter free), Gemini 3.1 Flash Lite (Google AI Studio)
-- Judge: GPT-oss-120B (OpenRouter free, T=0.0)
+- Eval targets: Llama 3.3 70B (OpenRouter free), GPT-oss-120B (OpenRouter free)
+- Judge: Gemini 3.1 Flash Lite (Google AI Studio, T=0.0)
 - Patient: Dolphin Mistral Venice 24B (OpenRouter free, only uncensored option, always same)
 - Router: Llama 3.3 70B (OpenRouter free)
 - Therapist: Llama 3.3 70B (OpenRouter free)
@@ -144,9 +144,9 @@ All evaluation targets run in non-thinking mode for fair comparison.
   - max_tokens: 4096 (extra budget for thinking overhead)
   - No model-family overlap with any evaluation target
 
-- **GPT-oss-120B** (T=0.0) - testing
-  - Provider: OpenRouter (free)
-  - Purpose: free judge for pipeline development
+- **Gemini 3.1 Flash Lite** (T=0.0) - testing
+  - Provider: Google AI Studio (free)
+  - Purpose: free judge for pipeline development. Same Gemini family as experiment judge
 
 ---
 

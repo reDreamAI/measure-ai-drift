@@ -26,13 +26,13 @@
 
 ### Releases in Last 2-4 Weeks
 
-- **GPT-5.4** (Mar 5): Combines GPT-5.3-Codex coding strength with improved reasoning and computer use. 83% on GDPval (professional knowledge work). Replaces GPT-5.2 as frontier ceiling. Variants: GPT-5.4 Thinking, GPT-5.4 Pro. 1M context. $2.50/$15.00 per M tokens (cached input: $0.25/M)
-- **Gemini 3.1 Flash Lite** (Mar 3): Cheapest Gemini model. $0.25/$1.50 per M tokens. 2.5x faster TTFT than 2.5 Flash. 86.9% GPQA Diamond. Strong judge candidate
+- **GPT-5.4** (Mar 5): Combines GPT-5.3-Codex coding strength with improved reasoning and computer use. 83% on GDPval (professional knowledge work). Replaces GPT-5.2 as frontier ceiling. Variants: GPT-5.4 Thinking, GPT-5.4 Pro. 1M context. $2.50/$15.00 per M tokens (cached input: $0.25/M). **Now our proprietary ceiling eval target**
+- **Gemini 3.1 Flash Lite** (Mar 3): Cheapest Gemini model. $0.25/$1.50 per M tokens. 2.5x faster TTFT than 2.5 Flash. 86.9% GPQA Diamond. Used as testing eval target
+- **Gemini 3 Flash** (~Feb 2026): Default Gemini app model. Outperforms 2.5 Pro at 3x speed. $0.50/$3.00 per M tokens
 - **DeepSeek V4** (early Mar): ~1T total / ~32B active MoE. 1M context. Native multimodal (vision + audio + text). Optimized for Huawei Ascend chips. Apache 2.0. Not EU-sovereign. Active EU GDPR issues persist
 - **GPT-5.3-Codex** (Feb 24): 400K context. Industry-leading coding. $1.75/$14.00 per M tokens
-- **Gemini 3.1 Pro** (Feb 19): Google's latest flagship. 77.1% ARC-AGI-2, 1M context, 65K output tokens. **Gemini 3 Pro Preview shut down Mar 9 - upgrade to gemini-3.1-pro-preview is now required**
-- **Gemini 3 Flash** (~Feb 2026): Default Gemini app model. Outperforms 2.5 Pro at 3x speed. $0.50/$3.00 per M tokens
-- **Qwen 3.5** (Feb 17-24): Full family released. 397B-A17B flagship MoE, 27B dense, 35B-A3B efficient MoE. Apache 2.0. Native multimodal. **Consider upgrading our qwen3_32b target to Qwen3.5 variant once on Groq**
+- **Gemini 3.1 Pro** (Feb 19): Google's latest flagship. 77.1% ARC-AGI-2, 1M context, 65K output tokens. **Gemini 3 Pro Preview shut down Mar 9. Now our experiment judge (thinking aids accuracy)**
+- **Qwen 3.5** (Feb 17-24): Full family released. 397B-A17B flagship MoE, 27B dense, 35B-A3B efficient MoE. Apache 2.0. Native multimodal. **Qwen 3.5 27B replaces Qwen 3 32B as eval target**
 - **MiniMax M2.5** (Feb 12): 230B MoE, 10B active. Lightning Attention. 205K context. 80.2% SWE-Bench Verified. Modified MIT license. Chinese origin (Shanghai). Available on OpenRouter. Extremely cheap ($0.15/$1.20 per M tokens for standard variant)
 - **GLM-5** (Feb 11): 744B MoE, 40B active, 256 experts. 205K context, 128K output. 77.8% SWE-bench, 92.7% AIME 2026. Trained entirely on Huawei Ascend (zero NVIDIA dependency). MIT license. Chinese origin (Zhipu AI / Z.ai). Available on OpenRouter
 - **GPT-5.2** (Feb 2026): 400K context, 100% AIME 2025, hallucination rate 6.2%. Superseded by GPT-5.4
@@ -41,20 +41,20 @@
 - **Inception Mercury 2** (Feb 24): First reasoning diffusion LLM (dLLM). 1,000 tok/s. Not relevant for stability evaluation
 - **NVIDIA Nemotron 3 Nano** (available): 3.2B active / 31.6B total, hybrid Mamba-Transformer MoE, 1M context. Nemotron 3 Super (~100B) and Ultra (~500B) expected H1 2026
 
-### OpenAI GPT-4.1 Family (Still API-Available)
-
-GPT-4.1 was released Apr 2025 and retired from ChatGPT Feb 13, 2026, but all three variants remain available via API and OpenRouter. The family was specifically optimized for instruction following and structured outputs, making it strong for judge/classification use cases.
-
-- **GPT-4.1**: $2.00/$8.00 per M tokens. 1M context. Strong instruction following
-- **GPT-4.1 mini**: $0.40/$1.60 per M tokens. 1M context. Mid-tier
-- **GPT-4.1 nano**: $0.10/$0.40 per M tokens. 1M context. Cheapest quality OpenAI model. Excellent for LLM-as-judge at scale
-
 ### Mistral Ecosystem Updates
 
 - **Mistral acquired Koyeb** (Feb 17): Paris-based cloud startup (ex-Scaleway founders). Signals full-stack EU-sovereign AI cloud ambitions. Strengthens sovereignty narrative for thesis
 - **Mistral Compute** (announced Jun 2025) + Koyeb = building European inference infrastructure independent of US cloud
 - **Ministral 3** (Dec 2025): 3B/8B/14B dense models, Apache 2.0. The 14B reasoning variant scores 85% on AIME '25
 - **Devstral 2** (Dec 2025): 123B dense for coding, 256K context. Devstral Small 2: 24B, Apache 2.0
+
+### OpenAI GPT-4.1 Family (Still API-Available)
+
+GPT-4.1 was released Apr 2025 and retired from ChatGPT Feb 13, 2026, but all three variants remain available via API and OpenRouter. The family was specifically optimized for instruction following and structured outputs.
+
+- **GPT-4.1**: $2.00/$8.00 per M tokens. 1M context. Strong instruction following
+- **GPT-4.1 mini**: $0.40/$1.60 per M tokens. 1M context. Mid-tier
+- **GPT-4.1 nano**: $0.10/$0.40 per M tokens. 1M context. Cheapest quality OpenAI model
 
 ### EU Sovereignty Developments
 
@@ -149,8 +149,8 @@ Best for academic defensibility. You can cite exactly what these were trained on
 
 | Model | Provider | Tier | Notes |
 |---|---|---|---|
-| **GPT-5.4** | OpenAI | Top | (Mar 5). Combines GPT-5.3-Codex coding with reasoning + computer use. 83% GDPval. 1M context. $2.50/$15.00 per M tokens. Supersedes GPT-5.2 |
-| **Gemini 3.1 Pro** | Google | Top | NEW (Feb 19). 77.1% ARC-AGI-2, 1M context. Our proprietary ceiling target |
+| **GPT-5.4** | OpenAI | Top | (Mar 5). $2.50/$15.00. 1M context. 83% GDPval. **Our proprietary ceiling eval target** |
+| **Gemini 3.1 Pro** | Google | Top | (Feb 19). 77.1% ARC-AGI-2, 1M context. **Our experiment judge** |
 | **Claude Opus 4.6** | Anthropic | Top | Top reasoning performance. 1M context (beta). 128K output |
 | **Claude Sonnet 4.6** | Anthropic | Top | Strong reasoning, faster than Opus. Best value at frontier tier |
 | **GPT-5.2** | OpenAI | High | 400K context, 100% AIME 2025. Superseded by GPT-5.4 |
@@ -185,8 +185,8 @@ Rate limits: 20 RPM, 200 req/day without credits, higher with credits.
 
 For pipeline development and debugging.
 
-- Eval targets: `meta-llama/llama-3.3-70b-instruct:free`, Gemini 3.1 Flash Lite (Google AI Studio)
-- Judge: `openai/gpt-oss-120b:free` (T=0.0)
+- Eval targets: `meta-llama/llama-3.3-70b-instruct:free`, `openai/gpt-oss-120b:free`
+- Judge: Gemini 3.1 Flash Lite (Google AI Studio, T=0.0)
 - Patient: `cognitivecomputations/dolphin-mistral-24b-venice-edition:free` (always free, only uncensored option)
 - Router: `meta-llama/llama-3.3-70b-instruct:free`
 - Mistral Small removed from testing: shares Venice provider rate limit with patient
@@ -239,7 +239,6 @@ When updating this file, verify:
 - [ ] Is K2-V2 / OLMo 3.1 available on any hosted provider?
 - [ ] Is Qwen 3.5 27B available on OpenRouter?
 - [ ] Has DeepSeek V4 been released with open weights?
-- [ ] Is Gemini 3.1 Pro stable enough to replace 3.0 as eval target?
 - [ ] Is GPT-oss-120B still free on OpenRouter? (testing judge)
 - [x] ~~Has judge model been decided?~~ Gemini 3.1 Pro (experiment), GPT-oss-120B (testing)
 - [ ] Has models.yaml been updated to match new assignments?
