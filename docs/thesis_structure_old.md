@@ -1,4 +1,5 @@
 # Thesis Structure
+keep frozen like this for now, no updates needed
 
 **Measuring Drift in Therapeutic AI: A Stability-Based Evaluation of Sovereign LLMs in Nightmare Therapy**
 
@@ -14,7 +15,7 @@
 
 2 Background
 \- 2.1 Imagery Rehearsal Therapy
-\- 2.2 Large Language Models in Healthcare
+\- 2.2 Treatment Fidelity in LLM-Based Interventions
 \- 2.3 Stochastic Behaviour in Language Models
 \- 2.4 Evaluation Metrics for Text Generation
 \- 2.5 Chain-of-Thought and Plan Faithfulness
@@ -108,7 +109,8 @@ Each section establishes one conceptual prerequisite and ends with an open tensi
 - Strategy taxonomy scope derives from the space of legitimate rescripting moves (grounds 3.4)
 - Tension: fidelity assessment exists for human therapists but not for LLM-based agents
 
-### 2.2 Large Language Models in Healthcare
+### 2.2 Treatment Fidelity in LLM-Based Interventions
+- Scope: protocol adherence in manualized interventions, not the full LLM-healthcare landscape. General clinical AI is referenced only where it establishes failure modes relevant to stability measurement.
 - Treatment fidelity research (Webb et al., 2010; Waltz et al., 1993)
   \- Adherence (doing the prescribed things) vs competence (doing them well)
   \- For rule-based chatbots, adherence is built in
@@ -169,6 +171,7 @@ VISUAL: diagram for two-stack pipeline with data flow and isolation boundary
 - Six vignettes: anxious, avoidant, cooperative, resistant, skeptic, trauma
   \- Why these six: cover the range of clinical presentation difficulty, from cooperative (easy) to trauma/resistant (hard)
   \- Tests whether model stability varies with patient complexity
+  \- Vignette design informed by prior synthetic patient work (Roleplay-doh??, check reference). Six profiles sample the difficulty range but do not claim exhaustive coverage (limitation in 7.2)
 
 VISUAL: diagram for three-agent generation loop with example exchange
 
@@ -230,22 +233,30 @@ VISUAL: diagram for three-level evaluation framework (central figure)
 - LLM judge with ternary scoring per declared strategy: 0 = absent, 1 = partial, 2 = implemented
   \- Why ternary: borrowed from clinical fidelity literature (ENACT, NIH BCC, grounded in 2.1)
   \- Why not NLI cross-encoders: tested and rejected (F1 ceiling ~0.55, no reasoning trace)
-- Judge model from a different model family than any evaluation target
+- Judge: Gemini 3.1 Pro (Google AI Studio, T=0.0), different model family than any evaluation target
   \- Why cross-family: prevents model family bias
+  \- Why Gemini: thinking mode aids judgment accuracy, free credits, no OpenAI/Mistral/Meta models in eval targets
 - Bias mitigations:
   \- Cross-model judging (judge never evaluates its own family)
   \- CoT justification (judge explains its rating)
   \- Deterministic decoding (T=0.0)
   \- Transparent rubric
 - Acknowledged limitation: judge reliability is itself an open question (discussed in 6.4)
+- Validation: human annotation of a random subset (~50 trials) scoring the same rubric. Cohen's kappa between human and judge as reliability estimate. If kappa is low, Method 3 results carry the caveat explicitly.
 
 ### 3.6 Model Selection
 - EU data sovereignty as primary criterion for the primary subject (legal constraint from 1.2)
 - Primary subject: Mistral Large 3 (675B MoE, 41B active, EU-sovereign, Apache 2.0)
   \- Why: EU-sovereign flagship, the model reDreamAI would deploy
-- Proprietary ceiling: upper bound on achievable stability
-- Open-weight comparators: size-class and provider diversity
-  \- why multiple: isolates whether stability differences are model-specific or class-wide
+- Proprietary ceiling: GPT-5.4 (non-thinking variant, $2.50/$15.00)
+  \- Why GPT-5.4: strongest proprietary model without thinking overhead, fair comparison with all other non-thinking targets
+- Open-weight comparators across three size classes, all non-thinking:
+  \- Small (24-32B): Mistral Small 3.2, Qwen 3.5 27B, OLMo 3.1 32B
+  \- Mid (70B): Llama 3.3 70B, Mistral Medium 3.1
+  \- Large (MoE, ~40B active): GLM-5 744B, DeepSeek V3.2 671B
+  \- Why multiple: isolates whether stability differences are model-specific or class-wide
+  \- Why size classes: tests whether MoE architecture or parameter count predicts stability
+- Hybrid-thinking models (Qwen 3.5, GLM-5) run with reasoning disabled for fair comparison
 
 ### 3.7 Experimental Conditions
 - Full factorial: 6 vignettes x 3 slices x 10 trials x 2 temperatures x N models
@@ -258,6 +269,7 @@ VISUAL: diagram for three-level evaluation framework (central figure)
 - Bootstrap 95% confidence intervals for model comparisons
 - Spearman rank correlations for cross-method analysis (5.5)
   \- Why Spearman: rank-based, robust to non-normal distributions from bounded similarity scores
+- No fixed threshold for "stable enough." Results are interpreted comparatively (model vs model, T=0.0 vs T=0.7) rather than against an absolute cutoff. Clinical significance thresholds for LLM stability do not yet exist in the literature.
 
 ---
 
@@ -270,7 +282,7 @@ VISUAL: diagram for three-level evaluation framework (central figure)
   \- model swaps, temperature changes, vignette selection without code changes possible
 - Pydantic validation at every data boundary
   \- Why: prevents malformed plan blocks from corrupting downstream metrics
-- Provider abstraction (OpenRouter, Google, Mistral API)
+- Provider abstraction (OpenRouter, Google AI Studio)
   \- Why: adding a new model means adding a config entry, not changing evaluation logic
 
 ### 4.2 Experiment Execution and Aggregation
@@ -309,7 +321,7 @@ VISUAL: diagram for three-level evaluation framework (central figure)
   \- Which strategies do models claim but fail to implement?
 
 ### 5.5 Cross-Method Analysis
-- correlations across all three levels -> specific method, maybe Spearman??
+- Spearman rank correlations across all three method pairs (M1-M2, M1-M3, M2-M3)
 - Divergence cases:
   \- High plan consistency + low output consistency = stable intent, variable execution
   \- Low plan consistency + high output consistency = different strategies, similar surface output
@@ -364,6 +376,7 @@ VISUAL: diagram for three-level evaluation framework (central figure)
 ### 7.2 Limitations
 - Single protocol phase (rescripting only)
 - Synthetic patients (no real clinical interactions)
+- Six vignettes sample the difficulty range but cannot claim exhaustive coverage of patient variability
 - Method 3 judge reliability
 - Fixed taxonomy (alternative categorizations could yield different profiles)
 - Computational stability does not equal clinical safety
@@ -373,7 +386,7 @@ VISUAL: diagram for three-level evaluation framework (central figure)
 - Longitudinal version drift (same model across updates)
 - Multi-language evaluation for reDreamAI
 - Clinical validation with human therapist ratings
-- new models
+- Replication with future model generations to track whether stability improves across release cycles
 
 ---
 

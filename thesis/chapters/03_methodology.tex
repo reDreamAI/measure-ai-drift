@@ -20,6 +20,8 @@
 %   routing logic from therapeutic content generation
 % Six patient vignettes: anxious, avoidant, cooperative, resistant, skeptic, trauma
 %   Cover the range of clinical presentation difficulty expected in IRT deployment
+%   Vignette design informed by prior synthetic patient work (Roleplay-doh??, check ref).
+%   Six profiles sample the difficulty range but do not claim exhaustive coverage (7.2).
 % Full five-stage IRT traversal produces naturalistic conversation histories
 %   used as frozen evaluation entry points
 % [FIG] Three-agent loop -- single turn cycle with message passing
@@ -129,7 +131,8 @@
 % GROUNDING: addresses the multi-level gap from Section 2.4
 %   (no single metric captures strategic intent + semantic equivalence)
 %
-% LLM judge (Gemini Pro, T=0.0) with ternary scoring per declared strategy
+% LLM judge: Gemini 3.1 Pro (Google AI Studio, T=0.0), cross-family with
+%   all evaluation targets. Thinking mode aids judgment accuracy.
 %   0 = absent, 1 = partial, 2 = implemented
 % Why ternary? Borrowed from clinical fidelity literature (ENACT, NIH BCC,
 %   introduced in 2.1); binary scoring loses partial implementation --
@@ -141,6 +144,9 @@
 % Mitigations for known judge biases (identified in 2.4):
 %   cross-model judging, CoT justification, T=0.0, transparent rubric
 % Labelled exploratory: judge reliability is itself an open question
+% Validation: human annotation of a random subset (~50 trials) scoring the
+%   same rubric. Cohen's kappa between human and judge as reliability estimate.
+%   If kappa is low, Method 3 results carry the caveat explicitly.
 % Measures: does the model's response implement its declared therapeutic plan?
 % [Example] Judge input + output -- plan, response, ternary verdict with
 %   CoT justification; partial and absent case shown
@@ -151,15 +157,21 @@
 %
 % EU data sovereignty as primary selection criterion -- self-hostability and EU data
 %   residency are legal constraints in the reDreamAI deployment context
+% All evaluation targets run in non-thinking mode for fair comparison.
+%   Hybrid-thinking models (Qwen 3.5, GLM-5) run with reasoning disabled.
+%
 % Primary subject: Mistral Large 3 (675B MoE, 41B active)
 %   EU-sovereign, Apache 2.0, frontier-class
-% Proprietary ceiling: Gemini 3.1 Pro
-%   Closed-weight frontier baseline; upper bound on achievable stability
-% Open-weight comparisons: Llama 3.3 70B, Qwen 3 32B, OLMo 3.1
-%   Size-class diversity (32B-70B); provider diversity; sovereignty status varies
-% Selection rationale: size class diversity, provider diversity, sovereignty status
-% [FIG] Model selection table -- model, size, provider, sovereignty status,
-%   role in study
+% Proprietary ceiling: GPT-5.4 (non-thinking variant)
+%   Strongest proprietary model without thinking overhead
+% Open-weight comparators across three size classes:
+%   Small (24-32B): Mistral Small 3.2, Qwen 3.5 27B, OLMo 3.1 32B
+%   Mid (70B): Llama 3.3 70B, Mistral Medium 3.1
+%   Large (MoE, ~40B active): GLM-5 744B, DeepSeek V3.2 671B
+% Selection rationale: size class diversity, MoE vs dense architecture,
+%   provider diversity, sovereignty status
+% [FIG] Model selection table -- model, size, architecture, provider,
+%   sovereignty status, role in study
 
 \section{Experimental Conditions}
 \label{sec:meth-conditions}
@@ -169,3 +181,15 @@
 % T=0.7: stochastic condition -- realistic clinical deployment range
 %   (mechanistic grounding established in 2.3)
 % [FIG] Condition matrix -- factorial design as a grid; total run count labelled
+
+\section{Statistical Analysis}
+\label{sec:meth-stats}
+% Descriptive statistics: means, standard deviations, confidence intervals
+%   across 45 trial pairs per condition
+% Bootstrap 95\% confidence intervals for model comparisons
+% Spearman rank correlations for cross-method analysis (\autoref{sec:res-cross})
+%   Why Spearman: rank-based, robust to non-normal distributions from
+%   bounded similarity scores
+% No fixed threshold for ``stable enough.'' Results are interpreted comparatively
+%   (model vs model, T=0.0 vs T=0.7) rather than against an absolute cutoff.
+%   Clinical significance thresholds for LLM stability do not yet exist.
