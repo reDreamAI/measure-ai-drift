@@ -181,33 +181,34 @@ Rate limits: 20 RPM, 200 req/day without credits, higher with credits.
 
 > Cross-reference with `src/config/models.yaml` for actual configuration.
 
-### Testing Mode (Free Tier)
+### Testing (Free Tier)
 
-For pipeline development and debugging. All models free on OpenRouter.
+For pipeline development and debugging.
 
-- Eval targets: `mistralai/mistral-small-3.1-24b-instruct:free`, `meta-llama/llama-3.3-70b-instruct:free`
+- Eval targets: `meta-llama/llama-3.3-70b-instruct:free`, Gemini 3.1 Flash Lite (Google AI Studio)
 - Judge: `openai/gpt-oss-120b:free` (T=0.0)
-- Patient: `cognitivecomputations/dolphin-mistral-24b-venice-edition:free`
+- Patient: `cognitivecomputations/dolphin-mistral-24b-venice-edition:free` (always free, only uncensored option)
 - Router: `meta-llama/llama-3.3-70b-instruct:free`
+- Mistral Small removed from testing: shares Venice provider rate limit with patient
 
-### Full Schedule (Paid)
+### Experiment (Full Run)
 
 **Primary therapy subject:** Mistral Large 3 (OpenRouter)
 
-**Evaluation targets (compared against primary):**
+**Evaluation targets (compared against primary) - all non-thinking:**
 - Small EU: Mistral Small 3.2 (OpenRouter)
-- Small benchmark: Qwen 3.5 27B (OpenRouter)
+- Small benchmark: Qwen 3.5 27B (OpenRouter, `reasoning.effort: none`)
 - Small provenance: OLMo 3.1 32B Instruct (OpenRouter)
 - Mid continuity: Llama 3.3 70B (OpenRouter)
 - Mid EU scaling: Mistral Medium 3.1 (OpenRouter)
-- Large open-weight: GLM-5 744B MoE / 40B active (OpenRouter)
+- Large open-weight: GLM-5 744B MoE / 40B active (OpenRouter, `reasoning.effort: none`)
 - Large open-weight: DeepSeek V3.2 671B MoE (OpenRouter)
-- Proprietary ceiling: Gemini 3.1 Pro (Google AI Studio)
+- Proprietary ceiling: GPT-5.4 (OpenRouter, non-thinking, $2.50/$15.00)
 
 **Supporting roles (not being evaluated):**
 - Patient: Dolphin Mistral Venice 24B (OpenRouter, free) - same across both modes
 - Router: Llama 3.3 70B (OpenRouter)
-- Judge: GPT-5.4 (OpenRouter, T=0.0, $2.50/$15.00) - no family overlap with any eval target
+- Judge: Gemini 3.1 Pro (Google AI Studio, T=0.0, free credits) - thinking aids judgment accuracy, no family overlap with any eval target
 
 > **Provider policy:** OpenRouter for everything, except Gemini via Google AI Studio (free credits). Groq no longer receives model updates since NVIDIA deal
 
@@ -240,5 +241,5 @@ When updating this file, verify:
 - [ ] Has DeepSeek V4 been released with open weights?
 - [ ] Is Gemini 3.1 Pro stable enough to replace 3.0 as eval target?
 - [ ] Is GPT-oss-120B still free on OpenRouter? (testing judge)
-- [x] ~~Has judge model been decided?~~ GPT-5.4 (full), GPT-oss-120B (testing)
+- [x] ~~Has judge model been decided?~~ Gemini 3.1 Pro (experiment), GPT-oss-120B (testing)
 - [ ] Has models.yaml been updated to match new assignments?
