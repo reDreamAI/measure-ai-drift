@@ -82,7 +82,7 @@ def test_config():
         assert 'model_options' in config, "Missing 'model_options' in config"
         
         # Check roles are defined
-        expected_roles = ['patient', 'therapist', 'router']
+        expected_roles = ['patient', 'therapist', 'router', 'judge']
         for role in expected_roles:
             assert role in config['roles'], f"Missing role: {role}"
         
@@ -139,9 +139,8 @@ def test_api_keys():
     try:
         # Check for common API keys
         keys_to_check = {
-            'GROQ_API_KEY': 'Groq (default for patient/therapist)',
-            'OPENAI_API_KEY': 'OpenAI (optional)',
-            'GEMINI_API_KEY': 'Gemini (optional)',
+            'OPENROUTER_API_KEY': 'OpenRouter (all models except Gemini)',
+            'GOOGLE_AI_STUDIO_API_KEY': 'Google AI Studio (Gemini models)',
         }
         
         found_keys = []
@@ -173,7 +172,7 @@ def test_provider_creation():
     try:
         from src.llm.provider import create_provider
         
-        roles = ['patient', 'therapist', 'router']
+        roles = ['patient', 'therapist', 'router', 'judge']
         created = []
         
         for role in roles:
@@ -280,7 +279,7 @@ def print_summary(results: dict, mode: str):
                 f"[bold green]All {total} tests passed![/bold green]\n\n"
                 "Your setup is ready to use.\n\n"
                 "Next steps:\n"
-                "1. Ensure .env file has your GROQ_API_KEY\n"
+                "1. Ensure .env file has your OPENROUTER_API_KEY\n"
                 "2. Run: python3 -m src generate\n"
                 "3. Or: ./run generate",
                 title="✅ Setup Complete",

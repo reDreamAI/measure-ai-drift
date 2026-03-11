@@ -1,119 +1,89 @@
 # LLM Provider Configuration
 # This file defines providers, available model options, and active role assignments.
+#
+# Two modes: "testing" (free OpenRouter models) and "full" (paid experiment).
+# Switch by changing the `use:` keys under roles and swapping evaluation_targets.
 
 # =============================================================================
 # PROVIDERS - API endpoints and authentication
 # =============================================================================
+# Policy: OpenRouter for everything, except Gemini via Google AI Studio (free credits).
+# Groq no longer receives model updates since NVIDIA deal.
 providers:
-  scaleway:
+  openrouter:
     type: openai_compatible
-    base_url: https://api.scaleway.ai/v1
-    api_key_env: SCALEWAY_API_KEY
-
-  groq:
-    type: openai_compatible
-    base_url: https://api.groq.com/openai/v1
-    api_key_env: GROQ_API_KEY
-
-  openai:
-    type: openai_compatible
-    base_url: https://api.openai.com/v1
-    api_key_env: OPENAI_API_KEY
-
-  vertex:
-    type: openai_compatible  # Vertex has OpenAI-compatible endpoint
-    base_url: https://${GCP_REGION}-aiplatform.googleapis.com/v1/projects/${GCP_PROJECT_ID}/locations/${GCP_REGION}/endpoints/openapi
-    api_key_env: GOOGLE_APPLICATION_CREDENTIALS  # Uses ADC
+    base_url: https://openrouter.ai/api/v1
+    api_key_env: OPENROUTER_API_KEY
 
   gemini:
     type: openai_compatible
     base_url: https://generativelanguage.googleapis.com/v1beta/openai/
     api_key_env: GOOGLE_AI_STUDIO_API_KEY
 
+  # Legacy providers (kept for reference, not actively used)
+  scaleway:
+    type: openai_compatible
+    base_url: https://api.scaleway.ai/v1
+    api_key_env: SCALEWAY_API_KEY
+
+  openai:
+    type: openai_compatible
+    base_url: https://api.openai.com/v1
+    api_key_env: OPENAI_API_KEY
+
   mistral:
     type: openai_compatible
     base_url: https://api.mistral.ai/v1
     api_key_env: MISTRAL_API_KEY
-
-  openrouter:
-    type: openai_compatible
-    base_url: https://openrouter.ai/api/v1
-    api_key_env: OPENROUTER_API_KEY
 
 # =============================================================================
 # MODEL OPTIONS - Full menu of available models per role
 # =============================================================================
 model_options:
   therapist:
-    groq_llama70b:
-      provider: groq
-      model: llama-3.3-70b-versatile
+    openrouter_llama70b:
+      provider: openrouter
+      model: meta-llama/llama-3.3-70b-instruct
       notes: "Same as router for consistency"
-    mistral_sovereign:
-      provider: scaleway
-      model: mistral-small-3.2-24b-instruct-2506
-      notes: "Sovereign EU option"
-    groq_oss:
-      provider: groq
-      model: openai/gpt-oss-120
-      notes: "Fast, free tier available"
-    openai_gpt4o:
-      provider: openai
-      model: gpt-4o-2024-08-06
-      notes: "Benchmark baseline"
+    openrouter_llama70b_free:
+      provider: openrouter
+      model: meta-llama/llama-3.3-70b-instruct:free
+      notes: "Free tier for testing"
 
   patient:
-    groq_qwen:
-      provider: groq
-      model: qwen/qwen3-32b
-      notes: "Strong reasoning, good roleplay"
-    groq_kimi:
-      provider: groq
-      model: moonshotai/kimi-k2-instruct-0905
-      notes: "Good roleplay, fast"
-    vertex_claude:
-      provider: vertex
-      model: claude-sonnet-4-20250514
-      notes: "Strong reasoning, higher cost"
-    openrouter_mimo:
-      provider: openrouter
-      model: xiaomi/mimo-v2-flash:free
-      notes: "Free tier (DEPRECATED - free period ended)"
-    openrouter_trinity:
-      provider: openrouter
-      model: arcee-ai/trinity-large-preview:free
-      notes: "Free tier, good roleplay, fast"
     openrouter_venice:
       provider: openrouter
       model: cognitivecomputations/dolphin-mistral-24b-venice-edition:free
-      notes: "Uncensored Mistral fine-tune, good for nightmare/trauma roleplay"
+      notes: "Uncensored Mistral fine-tune, good for nightmare/trauma roleplay. Always free"
 
   router:
-    mistral_nemo:
-      provider: scaleway
-      model: mistral-nemo-instruct-2407
-      notes: "Lightweight, fast"
-    llama70b:
-      provider: groq
-      model: llama-3.3-70b-versatile
-      notes: "More capable, slower"
+    openrouter_llama70b:
+      provider: openrouter
+      model: meta-llama/llama-3.3-70b-instruct
+      notes: "Capable, reliable stage classifier"
+    openrouter_llama70b_free:
+      provider: openrouter
+      model: meta-llama/llama-3.3-70b-instruct:free
+      notes: "Free tier for testing"
 
   judge:
-    gemini3_pro:
-      provider: gemini
-      model: gemini-3-pro-preview
-      notes: "Primary evaluation model (future)"
-    gemini_flash:
-      provider: gemini
-      model: gemini-2.5-flash
-      notes: "Fast, cheap testing"
+    openrouter_gpt54:
+      provider: openrouter
+      model: openai/gpt-5.4
+      notes: "Full experiment judge. Native json_schema enforcement. $2.50/$15.00 per M tokens"
+    openrouter_gpt_oss:
+      provider: openrouter
+      model: openai/gpt-oss-120b:free
+      notes: "Free testing judge. OpenAI open-weight 120B"
 
 # =============================================================================
 # ACTIVE ROLES - Current selection (change these to swap models)
 # =============================================================================
+# --- TESTING MODE (free tier) ---
+# To switch to full mode, change use: keys to paid variants
 roles:
   therapist:
-    use: groq_llama70b  # References model_options.therapist.groq_llama70b
+    use: openrouter_llama70b_free
     temperature: 0.0
     max_tokens: 1024
 
@@ -123,61 +93,81 @@ roles:
     max_tokens: 512
 
   router:
-    use: llama70b
+    use: openrouter_llama70b_free
     temperature: 0.0
     max_tokens: 32
 
   judge:
-    use: gemini_flash
+    use: openrouter_gpt_oss  # Switch to openrouter_gpt54 for full experiment
     temperature: 0.0
     max_tokens: 2048
 
 # =============================================================================
-# EVALUATION TARGETS - Models to compare in experiments
+# EVALUATION TARGETS - Testing mode (free tier, pipeline development)
 # =============================================================================
+# Uncomment the full experiment section and comment this one to switch modes.
 evaluation_targets:
-  # --- Primary subject (EU flagship) ---
-  - name: mistral_large
-    provider: openrouter  # Direct: mistral / mistral-large-2512
-    model: mistralai/mistral-large-2512
-    notes: "Primary subject. EU-sovereign, Apache 2.0. 675B MoE (41B active). 256K context"
-
-  # --- Small class (24-32B comparators) ---
-  - name: mistral_small
-    provider: scaleway
-    model: mistral-small-3.2-24b-instruct-2506
-    notes: "EU-origin, Apache 2.0. Small-class comparator"
-
-  - name: qwen3_32b
-    provider: groq
-    model: qwen/qwen3-32b
-    notes: "Benchmark leader at 32B. Apache 2.0. ~535 tok/s on Groq"
-
-  - name: olmo3_32b
+  # --- Testing mode: 2 free models for pipeline dev ---
+  - name: mistral_small_test
     provider: openrouter
-    model: allenai/olmo-3.1-32b-instruct
-    notes: "Fully open (weights + training data + code). Best provenance for thesis"
+    model: mistralai/mistral-small-3.1-24b-instruct:free
+    notes: "Testing only. Free tier Mistral Small"
 
-  # --- Mid class (70B + Mistral scaling) ---
-  - name: llama70b
-    provider: groq
-    model: llama-3.3-70b-versatile
-    notes: "Original efficacy study model. Continuity with prior work"
+  - name: llama70b_test
+    provider: openrouter
+    model: meta-llama/llama-3.3-70b-instruct:free
+    notes: "Testing only. Free tier Llama 3.3"
 
-  - name: mistral_medium
-    provider: openrouter  # Direct: mistral / mistral-medium-3-1-25-08
-    model: mistralai/mistral-medium-3.1
-    notes: "EU-origin, Mistral vertical scaling. Closed weights, API-only"
-
-  # --- Proprietary ceiling ---
-  - name: gemini3_pro
-    provider: gemini
-    model: gemini-3-pro-preview
-    notes: "Proprietary ceiling. Free credits. Upgrade to gemini-3.1-pro-preview when available"
-
-  # --- Pipeline testing ---
-  - name: gemini_flash
-    provider: gemini
-    model: gemini-2.5-flash
-    max_tokens: 8192  # Gemini 2.5 thinking tokens count against max_tokens
-    notes: "Lightweight proprietary reference. Pipeline testing"
+# =============================================================================
+# EVALUATION TARGETS - Full experiment (uncomment to activate)
+# =============================================================================
+# evaluation_targets:
+#   # --- Primary subject (EU flagship) ---
+#   - name: mistral_large
+#     provider: openrouter
+#     model: mistralai/mistral-large-2512
+#     notes: "Primary subject. EU-sovereign, Apache 2.0. 675B MoE (41B active). 256K context"
+#
+#   # --- Small class (24-32B) ---
+#   - name: mistral_small
+#     provider: openrouter
+#     model: mistralai/mistral-small-3.2-24b-instruct
+#     notes: "EU-origin, Apache 2.0. Small-class comparator"
+#
+#   - name: qwen35_27b
+#     provider: openrouter
+#     model: qwen/qwen3.5-27b
+#     notes: "Qwen 3.5 27B dense. Apache 2.0. Replaces Qwen 3 32B"
+#
+#   - name: olmo3_32b
+#     provider: openrouter
+#     model: allenai/olmo-3.1-32b-instruct
+#     notes: "Fully open (weights + training data + code). Best provenance for thesis"
+#
+#   # --- Mid class (70B) ---
+#   - name: llama70b
+#     provider: openrouter
+#     model: meta-llama/llama-3.3-70b-instruct
+#     notes: "Original efficacy study model. Continuity with prior work"
+#
+#   - name: mistral_medium
+#     provider: openrouter
+#     model: mistralai/mistral-medium-3.1
+#     notes: "EU-origin, Mistral vertical scaling. Closed weights, API-only"
+#
+#   # --- Large class (MoE, ~40B active) ---
+#   - name: glm5
+#     provider: openrouter
+#     model: z-ai/glm-5
+#     notes: "744B MoE (40B active). MIT. Chinese origin (Zhipu AI). $0.72/$2.30"
+#
+#   - name: deepseek_v32
+#     provider: openrouter
+#     model: deepseek/deepseek-chat-v3-0324
+#     notes: "DeepSeek V3.2 671B MoE. MIT. Chinese origin. $0.25/$0.40"
+#
+#   # --- Proprietary ceiling ---
+#   - name: gemini31_pro
+#     provider: gemini
+#     model: gemini-3.1-pro-preview
+#     notes: "Proprietary ceiling. Google AI Studio free credits"
