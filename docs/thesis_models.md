@@ -65,15 +65,7 @@ All evaluation targets run in non-thinking mode for fair comparison.
 
 ### Comparators by Size Class
 
-**Small (24-32B)**
-
-- **Mistral Small 3.2**
-  - Config key: `mistral_small`
-  - Size: 24B dense
-  - Provider: OpenRouter
-  - License: Apache 2.0
-  - Thinking: no (native non-thinking)
-  - Angle: EU-origin, same Mistral family. Tests how far the small model falls behind the flagship
+**Small (24-32B dense)**
 
 - **Qwen 3.5 27B**
   - Config key: `qwen35_27b`
@@ -81,7 +73,7 @@ All evaluation targets run in non-thinking mode for fair comparison.
   - Provider: OpenRouter
   - License: Apache 2.0
   - Thinking: hybrid, disabled via `reasoning.effort: none`
-  - Angle: current benchmark leader at this size class. 800K+ context. Replaces Qwen 3 32B
+  - Angle: current benchmark leader at this size class. 800K+ context
 
 - **OLMo 3.1 32B Instruct**
   - Config key: `olmo3_32b`
@@ -91,7 +83,7 @@ All evaluation targets run in non-thinking mode for fair comparison.
   - Thinking: no (native non-thinking)
   - Angle: fully open (weights + training data + code). Best provenance story for a thesis
 
-**Mid (70B)**
+**Mid (70B dense)**
 
 - **Llama 3.3 70B**
   - Config key: `llama70b`
@@ -101,23 +93,7 @@ All evaluation targets run in non-thinking mode for fair comparison.
   - Thinking: no (native non-thinking)
   - Angle: original model from the efficacy study. Provides continuity with prior work
 
-- **Mistral Medium 3.1**
-  - Config key: `mistral_medium`
-  - Size: undisclosed
-  - Provider: OpenRouter
-  - License: closed weights, API-only
-  - Thinking: no (native non-thinking)
-  - Angle: EU-origin, Mistral vertical scaling between Small and Large
-
-**Large (MoE, ~40B active)**
-
-- **GLM-5**
-  - Config key: `glm5`
-  - Size: 744B MoE (40B active)
-  - Provider: OpenRouter ($0.72/$2.30)
-  - License: MIT
-  - Thinking: hybrid, disabled via `reasoning.effort: none`
-  - Angle: similar active parameter count to Mistral Large 3. Chinese origin (Zhipu AI). Trained on Huawei Ascend
+**Large (MoE)**
 
 - **DeepSeek V3.2**
   - Config key: `deepseek_v32`
@@ -125,7 +101,7 @@ All evaluation targets run in non-thinking mode for fair comparison.
   - Provider: OpenRouter ($0.25/$0.40)
   - License: MIT
   - Thinking: no (V3 line is non-reasoning)
-  - Angle: similar MoE architecture to Mistral Large 3. Chinese origin. Cheapest large-class model
+  - Angle: similar MoE architecture to Mistral Large 3. Chinese origin. Direct architectural comparator
 
 **Proprietary Ceiling**
 
@@ -134,6 +110,12 @@ All evaluation targets run in non-thinking mode for fair comparison.
   - Provider: OpenRouter ($2.50/$15.00)
   - Thinking: no (separate `gpt-5.4-thinking` model exists)
   - Angle: proprietary ceiling. Non-thinking variant ensures fair comparison with all other targets
+
+### Dropped (available if needed)
+
+- **Mistral Small 3.2** (24B) - redundant with Qwen/OLMo at small class
+- **Mistral Medium 3.1** (undisclosed) - closed weights, weak thesis story
+- **GLM-5** (744B MoE, 40B active) - third MoE adds little over DeepSeek
 
 ### Judge
 
@@ -152,15 +134,11 @@ All evaluation targets run in non-thinking mode for fair comparison.
 
 ## Size Ladder
 
-Primary subject at the top, comparators below:
-
-- 744B MoE (40B active): **GLM-5**
 - 675B MoE (41B active): **Mistral Large 3** (primary subject)
 - 671B MoE: **DeepSeek V3.2**
-- 70B: **Llama 3.3**
-- undisclosed: **Mistral Medium 3.1**
-- 32B: **OLMo 3.1**
-- 27B: **Qwen 3.5**, **Mistral Small 3.2** (24B)
+- 70B dense: **Llama 3.3**
+- 32B dense: **OLMo 3.1**
+- 27B dense: **Qwen 3.5**
 - Frontier: **GPT-5.4** (proprietary ceiling)
 
-MoE note: Mistral Large 3 uses 41B active parameters per token. MoE routing is deterministic at inference, so the architecture does not add stochastic variance to stability measurements. GLM-5 and DeepSeek V3.2 have similar MoE architectures, making them direct comparators at the architectural level.
+MoE note: Mistral Large 3 uses 41B active parameters per token. MoE routing is deterministic at inference, so the architecture does not add stochastic variance to stability measurements. DeepSeek V3.2 has a similar MoE architecture, making it the direct architectural comparator.

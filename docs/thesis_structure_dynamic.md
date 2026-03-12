@@ -17,13 +17,12 @@
 \-- 2.2 Treatment Fidelity in LLM-Based Interventions
 \-- 2.3 Stochastic Behaviour in Language Models
 \-- 2.4 Evaluation Metrics for Text Generation
-\-- 2.5 Chain-of-Thought and Plan Faithfulness
 
 3 Methods
 \-- 3.1 System Overview and Design Rationale
 \-- 3.2 Dialogue Generation
 \-- 3.3 Evaluation Design (Frozen Histories and Evaluation Stack)
-\-- 3.4 Plan Mechanism and Strategy Taxonomy
+\-- 3.4 Plan Mechanism and Strategy Taxonomy (incl. CoT faithfulness resolution)
 \-- 3.5 Evaluation Metrics
 \-  3.5.1 Method 1: Cognitive Stability (Plan Consistency)
 \-  3.5.2 Method 2: Output Consistency (Semantic Stability)
@@ -42,13 +41,13 @@
 \-- 5.3 Output Consistency (Method 2)
 \-- 5.4 Plan-Output Alignment (Method 3)
 \-- 5.5 Cross-Method Analysis
+\-- 5.6 Secondary Effects
 
 6 Discussion
 \-- 6.1 Interpreting the Three-Level Framework
 \-- 6.2 Cross-Model Comparison
 \-- 6.3 Temperature and Clinical Deployment
 \-- 6.4 Evaluation Framework Reflections
-\-- 6.5 Toward Systematic Computational Evaluation
 
 7 Conclusion
 \-- 7.1 Summary of Findings
@@ -140,14 +139,6 @@ Each section establishes one conceptual prerequisite and ends with an open tensi
   \-- Why still used: only approach that can assess strategic intent, mitigations in 3.5.3
 - Tension: no single metric covers what clinical stability requires, motivating the multi-method design
 
-### 2.5 Chain-of-Thought and Plan Faithfulness
-- CoT prompting (Wei et al., 2022) improves output structure
-- Faithfulness literature (Turpin et al., 2023; Lanham et al., 2023)
-  \-- CoT explanations often do not reflect actual computation
-  \-- Spectrum from faithful reasoning to post-hoc rationalization
-- Tension: if a model declares its therapeutic strategy before responding, that declaration may not reflect actual decision-making
-  \-- Why this must be resolved before Methods: the plan mechanism (3.4) depends on this, resolved through declared-intent framing
-
 ---
 
 ## 3 Methods
@@ -188,8 +179,8 @@ VISUAL: short representation of frozen history and slicing at 3 points
   \-- 10 independent trials per condition: C(10,2) = 45 pairwise comparisons, balancing statistical power with compute cost
 
 ### 3.4 Plan Mechanism and Strategy Taxonomy
-- The `<plan>` block is framed as declared intent, not a reasoning trace
-  \-- Resolves the CoT faithfulness tension from 2.5
+- The CoT faithfulness problem: CoT prompting (Wei et al., 2022) improves output structure, but faithfulness literature (Turpin et al., 2023; Lanham et al., 2023) shows that CoT explanations often do not reflect actual computation. If a model declares its strategy before responding, that declaration may be post-hoc rationalization rather than a window into its decision-making.
+- Resolution: the `<plan>` block is framed as declared intent, not a reasoning trace
   \-- Why declared intent: sidesteps the faithfulness debate entirely
   \-- Whether or not the declaration reflects internal computation, variable declarations predict variable clinical responses
   \-- The plan captures what the model commits to, which is what matters for clinical oversight
@@ -250,12 +241,11 @@ VISUAL: diagram for three-level evaluation framework (central figure)
 - Proprietary ceiling: GPT-5.4 (non-thinking variant, $2.50/$15.00)
   \-- Why GPT-5.4: strongest proprietary model without thinking overhead, fair comparison with all other non-thinking targets
 - Open-weight comparators across three size classes, all non-thinking:
-  \-- Small (24-32B): Mistral Small 3.2, Qwen 3.5 27B, OLMo 3.1 32B
-  \-- Mid (70B): Llama 3.3 70B, Mistral Medium 3.1
-  \-- Large (MoE, ~40B active): GLM-5 744B, DeepSeek V3.2 671B
-  \-- Why multiple: isolates whether stability differences are model-specific or class-wide
-  \-- Why size classes: tests whether MoE architecture or parameter count predicts stability
-- Hybrid-thinking models (Qwen 3.5, GLM-5) run with reasoning disabled for fair comparison
+  \-- Small (24-32B dense): Qwen 3.5 27B, OLMo 3.1 32B
+  \-- Mid (70B dense): Llama 3.3 70B (continuity with prior efficacy study)
+  \-- Large (MoE): DeepSeek V3.2 671B (MoE comparator to Mistral Large)
+  \-- Why these: size-class diversity, dense vs MoE architecture, provider diversity
+- Qwen 3.5 runs with reasoning disabled (hybrid-thinking model) for fair comparison
 
 ### 3.7 Experimental Conditions
 - Full factorial: 6 vignettes x 3 slices x 10 trials x 2 temperatures x N models
@@ -358,11 +348,7 @@ All main results reported at slice_2 (mid-rescripting), aggregated across vignet
   \-- IRT as lower-risk entry point (no diagnosis), but still requires safeguards
   \-- Stability as necessary but not sufficient for safe deployment
 - Generalizability to other manualized protocols (CBT, DBT)
-
-### 6.5 Toward Systematic Computational Evaluation
-- Framework as reusable validation template for protocol-driven AI agents
-- What stability testing can certify vs what it cannot replace
-  \-- Computational evaluation complements but does not substitute clinical validation
+- Broader perspective: framework as reusable validation template for protocol-driven AI agents. Computational evaluation complements but does not substitute clinical validation.
 
 ---
 

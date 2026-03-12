@@ -112,28 +112,7 @@
 % [FIG] ROUGE vs. BERTScore on a matched therapeutic sentence pair --
 %   where surface overlap fails and why embedding similarity is needed
 
-\section{Chain-of-Thought and Plan Faithfulness}
-\label{sec:bg-cot}
-% QUESTION THIS SECTION ANSWERS: Can we trust what a model says it is doing?
-%
-% CoT prompting (Wei et al., 2022): step-by-step generation before answering
-%   improves output structure and coherence
-%   Widely adopted for complex reasoning tasks
-% The faithfulness problem: CoT explanations often do not reflect actual
-%   computation -- post-hoc rationalisation of an answer reached by other means
-%   (Turpin et al., 2023; Lanham et al., 2023)
-%   Evidence: perturbing CoT steps does not always change the answer;
-%   models can produce correct answers with incorrect reasoning chains
-% The spectrum: from faithful step-by-step reasoning to pure post-hoc
-%   rationalisation -- current evidence suggests most CoT falls somewhere
-%   in between
-%
-% TENSION LEFT OPEN: If a model declares its therapeutic strategy before
-%   responding, is that declaration a window into its decision-making or a
-%   rationalisation? This matters because measuring strategy consistency
-%   is only meaningful if strategy declarations carry information about
-%   what the model actually does. This tension must be resolved before
-%   any plan-based evaluation can be designed.
-%
-% [FIG] Declared intent spectrum -- from faithful CoT to post-hoc
-%   rationalisation; the open question of where structured declarations sit
+% NOTE: Chain-of-Thought and Plan Faithfulness content folded into
+% Section 3.4 (The Plan Mechanism) where the declared-intent resolution
+% is introduced. Citations: Wei et al. 2022, Turpin et al. 2023,
+% Lanham et al. 2023.

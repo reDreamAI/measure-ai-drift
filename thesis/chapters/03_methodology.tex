@@ -53,9 +53,14 @@
 
 \section{The Plan Mechanism}
 \label{sec:meth-plan}
-% GROUNDING: resolves the CoT faithfulness tension from Section 2.5
+% The CoT faithfulness problem (folded from Background):
+%   CoT prompting (Wei et al., 2022) improves output structure, but
+%   faithfulness literature (Turpin et al., 2023; Lanham et al., 2023) shows
+%   that CoT explanations often do not reflect actual computation. If a model
+%   declares its strategy before responding, that declaration may be post-hoc
+%   rationalization rather than a window into its decision-making.
 %
-% <plan> block declares 1-2 IRT strategies before the therapeutic response
+% Resolution: <plan> block declares 1-2 IRT strategies before the response
 % Framed as declared intent -- a structured output, not a reasoning trace
 %   Why? Sidesteps the CoT faithfulness problem: the plan is not claimed to
 %   be a window into model cognition. It is a measurable output in its own right.
@@ -158,18 +163,18 @@
 % EU data sovereignty as primary selection criterion -- self-hostability and EU data
 %   residency are legal constraints in the reDreamAI deployment context
 % All evaluation targets run in non-thinking mode for fair comparison.
-%   Hybrid-thinking models (Qwen 3.5, GLM-5) run with reasoning disabled.
+%   Qwen 3.5 (hybrid-thinking) runs with reasoning disabled.
 %
 % Primary subject: Mistral Large 3 (675B MoE, 41B active)
 %   EU-sovereign, Apache 2.0, frontier-class
 % Proprietary ceiling: GPT-5.4 (non-thinking variant)
 %   Strongest proprietary model without thinking overhead
 % Open-weight comparators across three size classes:
-%   Small (24-32B): Mistral Small 3.2, Qwen 3.5 27B, OLMo 3.1 32B
-%   Mid (70B): Llama 3.3 70B, Mistral Medium 3.1
-%   Large (MoE, ~40B active): GLM-5 744B, DeepSeek V3.2 671B
-% Selection rationale: size class diversity, MoE vs dense architecture,
-%   provider diversity, sovereignty status
+%   Small (24-32B dense): Qwen 3.5 27B, OLMo 3.1 32B
+%   Mid (70B dense): Llama 3.3 70B (continuity with prior efficacy study)
+%   Large (MoE): DeepSeek V3.2 671B (MoE comparator to Mistral Large)
+% Selection rationale: size-class diversity, dense vs MoE architecture,
+%   provider diversity
 % [FIG] Model selection table -- model, size, architecture, provider,
 %   sovereignty status, role in study
 
