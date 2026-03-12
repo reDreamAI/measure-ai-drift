@@ -96,12 +96,16 @@ measure-ai-drift/
 │
 ├── docs/
 │   ├── architecture_plan.md                         # This file
-│   ├── thesis_proposal.md                           # Research objectives and methodology
+│   ├── master.md                                    # Single source of truth
+│   ├── thesis_extended_structure.md                 # Canonical thesis outline
+│   ├── thesis_models.md                             # LLM role assignments
+│   ├── SOTA_LLMs.md                                 # Living model landscape reference
+│   ├── TODO.md                                      # Current action items
+│   ├── STYLE.md                                     # Writing style rules
 │   ├── alignment_approach_analysis.md               # LLM judge vs NLI rationale
 │   ├── bertscore_model_selection.md                 # DeBERTa-XLarge-MNLI justification
 │   ├── plan_mechanism_analysis.md                   # Plan as declared intent, fused vs chained
-│   ├── strategy_taxonomy_evolution.md               # 8 → 6 → 7 category journey
-│   └── pipeline_flowcharts.md                       # Mermaid diagrams of full architecture
+│   └── strategy_taxonomy_evolution.md               # 8 → 6 → 7 category journey
 │
 ├── tests/
 │   ├── test_setup.py                                # Config and connectivity verification

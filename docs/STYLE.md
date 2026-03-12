@@ -2,7 +2,7 @@
 
 Rules for all `.md` files in this project. Referenced from `CLAUDE.md`.
 
-This guide distinguishes between **project docs** (master.md, decision docs, CLAUDE.md) and **thesis-facing docs** (thesis_outline.md, thesis_proposal.md, anything feeding into the final thesis).
+This guide distinguishes between **project docs** (master.md, decision docs, CLAUDE.md) and **thesis-facing docs** (thesis_extended_structure.md, anything feeding into the final thesis).
 
 ## Punctuation (all files)
 
@@ -19,7 +19,7 @@ This guide distinguishes between **project docs** (master.md, decision docs, CLA
 - Cut filler: no "it should be noted", "it is worth noting", "as previously discussed"
 - Short paragraphs, max 4-5 sentences
 
-## Thesis-Facing Docs (thesis_outline.md, thesis_proposal.md)
+## Thesis-Facing Docs (thesis_extended_structure.md, LaTeX chapters)
 
 - Formal academic register
 - No contractions ("do not" instead of "don't")
