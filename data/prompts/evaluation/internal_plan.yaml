@@ -11,6 +11,6 @@ system_prompt: |
   Do NOT include explanations, bullets, or any other text.
 
 example_1: |
-  <plan>social_support / confrontation</plan>
+  <plan>safety / confrontation</plan>
 example_2: |
   <plan>social_support</plan>
