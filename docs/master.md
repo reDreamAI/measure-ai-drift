@@ -312,4 +312,5 @@ experiments/runs/{timestamp}_{model}_{vignette}/
 | [plan_mechanism_analysis.md](plan_mechanism_analysis.md) | Plan as declared intent, fused vs. chained comparison |
 | [alignment_approach_analysis.md](alignment_approach_analysis.md) | LLM judge vs. NLI rationale, ternary scoring design |
 | [bertscore_model_selection.md](bertscore_model_selection.md) | DeBERTa-XLarge-MNLI selection rationale |
+| [citations.md](citations.md) | Literature grounding: where each source fits, Zotero keys, integration notes |
 | [STYLE.md](STYLE.md) | Writing style rules for all markdown files |

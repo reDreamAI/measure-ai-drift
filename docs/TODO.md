@@ -1,8 +1,9 @@
 # TODO
 
-## Now: pipeline smoke test
+## Now: pipeline smoke test (blocked on OpenRouter rate limit reset)
 
-- [ ] Run test pipeline on existing frozen histories (test targets: Llama 70B, GPT-oss-120B)
+- [x] Run test pipeline on existing frozen histories: 1/12 completed (llama70b/anxious)
+- [ ] Re-run remaining 11 jobs after OpenRouter credits upgraded
 - [ ] Re-evaluate strategy taxonomy distribution: v3 resolved the 87.7% empowerment skew, but verify current models do not collapse back into mastery/empowerment dominance
 - [ ] Check plan validity rates and strategy spread across vignettes before committing to full run
 
@@ -11,7 +12,10 @@
 - [ ] Test structured output compliance: all 6 eval targets must produce valid `<plan>` blocks
 - [ ] Switch `models.yaml` from testing to experiment mode
 - [ ] Link Zotero to `thesis/references.bib`
-- [ ] Find Roleplay-doh citation (placeholder `??` in `docs/thesis_structure_dynamic.md` line 164)
+- [x] Find Roleplay-doh citation (Wang et al., 2024, EMNLP)
+- [ ] Add BOLT (Chiu et al., 2024) and Albanese et al. (2022) to Zotero
+- [ ] Identify "mystical mastery" IRT rescripting taxonomy paper
+- [ ] Identify therapist vignette/taxonomy paper
 
 ## Experiment
 
@@ -26,4 +30,3 @@
 - [ ] Ch5 Results (skeleton, blocked on experiment)
 - [ ] Ch6 Discussion (skeleton, blocked on experiment)
 - [ ] Ch7 Conclusion (not started)
-- [ ] Strategy distribution heatmap figure (`??` in structure doc line 395)

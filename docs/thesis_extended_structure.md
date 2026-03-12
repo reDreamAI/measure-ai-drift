@@ -121,7 +121,7 @@ Each section establishes one conceptual prerequisite and ends with an open tensi
    - Six vignettes: anxious, avoidant, cooperative, resistant, skeptic, trauma
       \-- Why these six: cover the range of clinical presentation difficulty, from cooperative (easy) to trauma/resistant (hard)
       \-- Tests whether model stability varies with patient complexity
-      \-- Vignette design informed by prior synthetic patient work (Roleplay-doh??, check reference). Six profiles sample the difficulty range but do not claim exhaustive coverage (limitation in 7.2)
+      \-- Vignette design informed by prior synthetic patient work (Wang et al., 2024, Roleplay-doh). Six profiles sample the difficulty range but do not claim exhaustive coverage (limitation in 7.2)
    - [FIG] *Three-agent loop -- single turn cycle with message passing*
    - [Example] *Resistant vignette excerpt -- BDI profile and opening patient turn*
 

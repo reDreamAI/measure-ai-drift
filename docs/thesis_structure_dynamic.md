@@ -161,7 +161,7 @@ VISUAL: diagram for two-stack pipeline with data flow and isolation boundary
 - Six vignettes: anxious, avoidant, cooperative, resistant, skeptic, trauma
   \-- Why these six: cover the range of clinical presentation difficulty, from cooperative (easy) to trauma/resistant (hard)
   \-- Tests whether model stability varies with patient complexity
-  \-- Vignette design informed by prior synthetic patient work (Roleplay-doh??, check reference). Six profiles sample the difficulty range but do not claim exhaustive coverage (limitation in 7.2)
+  \-- Vignette design informed by prior synthetic patient work (Wang et al., 2024, Roleplay-doh). Six profiles sample the difficulty range but do not claim exhaustive coverage (limitation in 7.2)
 
 VISUAL: diagram for three-agent generation loop with example exchange
 
