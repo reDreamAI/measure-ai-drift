@@ -376,7 +376,7 @@ All main results reported at slice_2 (mid-rescripting), aggregated across vignet
 
 ## Appendices
 
-A Strategy Taxonomy: full 7-category definitions with examples, revision history (v1 -> v3)
+A Strategy Taxonomy: full 6-category definitions with examples, revision history (v1 -> v4)
 B Prompts: fused plan+response system prompt, judge rubric, patient vignette profiles
 C Architecture Diagrams: detailed pipeline diagram (expanded version of 3.1)
 D Supplementary Results: full per-condition metric tables

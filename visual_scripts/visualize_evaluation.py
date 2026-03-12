@@ -155,7 +155,7 @@ section_bg(11.8, 9.4, 5.9, 2.1, C["taxonomy"])
 section_label(12.1, 11.3, "JUDGE INPUTS", C["taxonomy"])
 
 box(12.1, 10.35, 5.3, 0.7, C["taxonomy"],
-    "Strategy Taxonomy", sublabel="7 categories", fontsize=9)
+    "Strategy Taxonomy", sublabel="6 categories", fontsize=9)
 
 box(12.1, 9.55, 2.35, 0.45, C["taxonomy"],
     "extracted strategies", fontsize=7, alpha=0.6)

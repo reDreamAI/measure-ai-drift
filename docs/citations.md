@@ -60,7 +60,7 @@
 
 ### 3.4 Strategy Taxonomy
 - **[ADD]** Albanese et al. (2022) -- also cited in 2.1
-  Use: our 7-category taxonomy maps to *mechanism* rather than *observed patient behavior*. Cite Albanese's empirical categories to show the clinical grounding, then explain why we chose mechanism-level categories (Jaccard scoring requires discrete, non-overlapping sets).
+  Use: our 6-category taxonomy maps to *mechanism* rather than *observed patient behavior*. Cite Albanese's empirical categories to show the clinical grounding, then explain why we chose mechanism-level categories (Jaccard scoring requires discrete, non-overlapping sets).
 
 ---
 

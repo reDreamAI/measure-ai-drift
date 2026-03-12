@@ -1,4 +1,4 @@
-# IRT Strategy Taxonomy (7 categories)
+# IRT Strategy Taxonomy (6 categories)
 # Source: Thesis methodology - standardized categories for plan classification
 # Used for extracting and classifying therapeutic strategies in rescripting plans
 #
@@ -11,6 +11,11 @@
 #     clashed with the plan output separator)
 #   - v3: Sharpened descriptions to focus on mechanism (HOW the change works),
 #     not outcome (what it achieves). Added NOT-examples to reduce overlap.
+#   - v4: Merged emotional_regulation into sensory_modulation. In smoke testing
+#     (120 trials, 2 models) emotional_regulation was picked once (0.4%).
+#     Internal calming (breathing, self-talk) is a sensory/somatic mechanism,
+#     not a distinct therapeutic move in single-turn rescripting.
+#     Also sharpened cognitive_reframe vs self_empowerment boundary.
 
 strategies:
   - id: confrontation
@@ -25,7 +30,7 @@ strategies:
       - oppose
 
   - id: self_empowerment
-    description: "The dreamer gains a new ability, skill, or inner strength they lacked before (NOT reinterpreting what already exists)"
+    description: "The dreamer gains a new ability, skill, or inner strength they did not have before (e.g. discovers they can fly, becomes stronger, unlocks a hidden power). The DREAMER changes, not the threat. (NOT reinterpreting existing elements — that is cognitive_reframe)"
     keywords:
       - power
       - strength
@@ -50,7 +55,7 @@ strategies:
       - secure
 
   - id: cognitive_reframe
-    description: "The meaning or identity of existing dream elements changes (e.g. a monster becomes harmless, an enemy becomes a friend — the element stays but is seen differently)"
+    description: "The meaning or identity of existing dream elements changes (e.g. a monster becomes harmless, an enemy becomes a friend). The THREAT changes, not the dreamer. The element stays but is seen differently. (NOT the dreamer gaining new powers — that is self_empowerment)"
     keywords:
       - reframe
       - reinterpret
@@ -58,17 +63,6 @@ strategies:
       - perspective
       - view differently
       - becomes
-
-  - id: emotional_regulation
-    description: "The dreamer's internal emotional state shifts through breathing, self-talk, or felt calmness (NOT by changing external sensory details)"
-    keywords:
-      - calm
-      - soothing
-      - comfort
-      - regulate
-      - peace
-      - breathing
-      - self-talk
 
   - id: social_support
     description: "A new person, companion, or ally is introduced into the dream to help or accompany the dreamer"
@@ -82,7 +76,7 @@ strategies:
       - together
 
   - id: sensory_modulation
-    description: "External sensory details of the dream environment change — what is seen, heard, or felt physically shifts (e.g. darkness becomes light, harsh sounds become soft music)"
+    description: "The dream's sensory qualities change — what is seen, heard, or felt shifts (e.g. darkness becomes light, harsh sounds become soft music, the dreamer feels calm through breathing or self-talk). Covers both external environment changes and internal somatic calming."
     keywords:
       - sensory
       - imagery
@@ -93,6 +87,10 @@ strategies:
       - brighter
       - quieter
       - softer
+      - calm
+      - soothing
+      - breathing
+      - peace
 
 # Validation rules for generated plans
 validation:

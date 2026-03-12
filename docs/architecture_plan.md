@@ -105,7 +105,7 @@ measure-ai-drift/
 │   ├── alignment_approach_analysis.md               # LLM judge vs NLI rationale
 │   ├── bertscore_model_selection.md                 # DeBERTa-XLarge-MNLI justification
 │   ├── plan_mechanism_analysis.md                   # Plan as declared intent, fused vs chained
-│   └── strategy_taxonomy_evolution.md               # 8 → 6 → 7 category journey
+│   └── strategy_taxonomy_evolution.md               # 8 → 6 → 7 → 6 category journey
 │
 ├── tests/
 │   ├── test_setup.py                                # Config and connectivity verification

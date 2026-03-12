@@ -10,5 +10,7 @@ system_prompt: |
   Output ONLY a <plan> block with 1-2 category names separated by " / ".
   Do NOT include explanations, bullets, or any other text.
 
-example: |
-  <plan>emotional_regulation / sensory_modulation</plan>
+example_1: |
+  <plan>social_support / confrontation</plan>
+example_2: |
+  <plan>social_support</plan>

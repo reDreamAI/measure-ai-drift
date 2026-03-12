@@ -170,13 +170,13 @@ In fused mode, the model produces `<plan>strategy_1 / strategy_2</plan>` followe
 
 **What the plan does NOT claim:** faithfulness to internal reasoning. The CoT faithfulness debate (Turpin et al., 2023; Lanham et al., 2023) is acknowledged but sidestepped: the measurement framework works regardless of whether the plan reflects genuine reasoning.
 
-> For the full analysis including fused vs. chained comparison, see [plan_mechanism_analysis.md](plan_mechanism_analysis.md). Note: that document was written during early exploration when chained mode showed higher empirical stability. The thesis uses fused mode because the plan conditioning the response tokens is the more natural CoT framing, and the chained comparison data predates the current 7-category taxonomy.
+> For the full analysis including fused vs. chained comparison, see [plan_mechanism_analysis.md](plan_mechanism_analysis.md). Note: that document was written during early exploration when chained mode showed higher empirical stability. The thesis uses fused mode because the plan conditioning the response tokens is the more natural CoT framing, and the chained comparison data predates the current 6-category taxonomy.
 
 ---
 
 ## 5 Strategy Taxonomy
 
-7 categories describing concrete therapeutic **mechanisms** (not goals):
+6 categories describing concrete therapeutic **mechanisms** (not goals):
 
 | Category | Mechanism |
 |----------|-----------|
@@ -184,11 +184,10 @@ In fused mode, the model produces `<plan>strategy_1 / strategy_2</plan>` followe
 | self_empowerment | Internal transformation (grow stronger, gain abilities) |
 | safety | Environment modification (safe spaces, protective elements) |
 | cognitive_reframe | Meaning change (reinterpret threatening elements) |
-| emotional_regulation | Calming (introduce comforting elements) |
 | social_support | Adding allies (introduce helpful figures) |
-| sensory_modulation | Sensory details (modify light, sound, texture) |
+| sensory_modulation | Sensory and calming details (modify light, sound, texture, introduce comforting elements) |
 
-The taxonomy evolved through three iterations (8 → 6 → 7) to resolve a severe distribution skew where empowerment/mastery consumed 87.7% of all picks.
+The taxonomy evolved through four iterations (8 → 6 → 7 → 6) to resolve a severe distribution skew where empowerment/mastery consumed 87.7% of all picks.
 
 > For the full evolution history, see [strategy_taxonomy_evolution.md](strategy_taxonomy_evolution.md).
 
@@ -308,7 +307,7 @@ experiments/runs/{timestamp}_{model}_{vignette}/
 | [SOTA_LLMs.md](SOTA_LLMs.md) | Living reference for current model landscape (overrides LLM training data) |
 | [TODO.md](TODO.md) | Current action items and blockers |
 | [architecture_plan.md](architecture_plan.md) | Full project file tree |
-| [strategy_taxonomy_evolution.md](strategy_taxonomy_evolution.md) | Taxonomy journey: 8 -> 6 -> 7 categories |
+| [strategy_taxonomy_evolution.md](strategy_taxonomy_evolution.md) | Taxonomy journey: 8 → 6 → 7 → 6 categories |
 | [plan_mechanism_analysis.md](plan_mechanism_analysis.md) | Plan as declared intent, fused vs. chained comparison |
 | [alignment_approach_analysis.md](alignment_approach_analysis.md) | LLM judge vs. NLI rationale, ternary scoring design |
 | [bertscore_model_selection.md](bertscore_model_selection.md) | DeBERTa-XLarge-MNLI selection rationale |

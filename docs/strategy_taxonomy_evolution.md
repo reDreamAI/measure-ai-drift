@@ -96,7 +96,7 @@ Prompt-level steering added to encourage specificity:
 - Diverse examples that demonstrate non-default category picks
 - Categories listed with descriptions so the model understands each mechanism
 
-### Final taxonomy (7 categories)
+### v3 taxonomy (7 categories)
 
 ```
 confrontation:        Directly face, challenge, or overpower the threatening element
@@ -108,13 +108,45 @@ social_support:       Introduce helpful figures or allies
 sensory_modulation:   Modify sensory details (light, sound, texture)
 ```
 
+## Revision 3: merge emotional_regulation into sensory_modulation (7 → 6)
+
+### Evidence
+
+Smoke test (2026-03-12): 120 trials across 2 models (Llama 70B, GPT-oss 120B) x 6 vignettes.
+
+```
+sensory_modulation:    46 picks (19.2%)
+emotional_regulation:   1 pick  (0.4%)
+```
+
+`emotional_regulation` is effectively dead. Models never choose "internal calming via breathing/self-talk" as a distinct strategy in single-turn rescripting. This makes clinical sense: in a single dream rescripting turn, internal calming manifests as sensory change (the dreamer *feels* calm, the environment *becomes* peaceful). The mechanism boundary between "felt calmness" and "sensory shift" is not meaningful at this granularity.
+
+Additionally, the `cognitive_reframe` vs `self_empowerment` boundary showed strong inter-model bias: Llama favored cognitive_reframe (34%), GPT-oss favored self_empowerment (44%). Sharpened descriptions to make the locus of change explicit: "the THREAT changes" (cognitive_reframe) vs "the DREAMER changes" (self_empowerment).
+
+### Decision
+
+- Merge `emotional_regulation` keywords (calm, soothing, breathing, peace) into `sensory_modulation`
+- Broaden `sensory_modulation` description to cover both external environment changes and internal somatic calming
+- Sharpen `cognitive_reframe` and `self_empowerment` with explicit "NOT the other" cross-references
+
+### Final taxonomy (6 categories, v4)
+
+```
+confrontation:      The dreamer directly faces, fights, or stands up to the threat
+self_empowerment:   The DREAMER gains a new ability or inner strength (dreamer changes, not threat)
+safety:             A physical barrier, shelter, or protective figure shields the dreamer
+cognitive_reframe:  Existing dream elements change meaning (THREAT changes, not dreamer)
+social_support:     A new person, companion, or ally is introduced
+sensory_modulation: Sensory qualities shift (external environment or internal somatic calming)
+```
+
 ### Expected vignette-strategy mapping
 
 | Vignette | Primary nightmare content | Expected strategies |
 |----------|--------------------------|---------------------|
-| anxious | Exam room flooding, walls closing in | emotional_regulation, sensory_modulation, cognitive_reframe |
+| anxious | Exam room flooding, walls closing in | sensory_modulation, cognitive_reframe |
 | trauma | Trapped in dark room, footsteps approaching | safety, social_support, self_empowerment |
 | skeptic | Server maze, being chased | confrontation, cognitive_reframe, sensory_modulation |
-| avoidant | (varies) | safety, emotional_regulation |
+| avoidant | (varies) | safety, sensory_modulation |
 | cooperative | (varies) | confrontation, self_empowerment |
 | resistant | (varies) | cognitive_reframe, social_support |

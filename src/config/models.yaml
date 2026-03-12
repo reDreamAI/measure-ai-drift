@@ -108,79 +108,61 @@ roles:
     max_tokens: 4096  # Extra budget for Gemini thinking tokens
 
 # =============================================================================
-# EVALUATION TARGETS - Testing mode (free tier, pipeline development)
+# EVALUATION TARGETS - All available models (select via --model on CLI)
 # =============================================================================
-# Uncomment the experiment section and comment this one to switch modes.
 evaluation_targets:
-  # --- Testing: free models for pipeline dev ---
-  # Mistral Small removed: shares Venice provider rate limit with patient (Dolphin Venice)
+  # --- Testing ---
   - name: llama70b_test
     provider: openrouter
-    model: meta-llama/llama-3.3-70b-instruct:free
-    notes: "Testing only. Free tier Llama 3.3"
+    model: meta-llama/llama-3.3-70b-instruct
+    notes: "Llama 3.3 70B. Smoke testing and taxonomy validation"
 
   - name: gpt_oss_test
     provider: openrouter
-    model: openai/gpt-oss-120b:free
-    notes: "Testing only. Free OpenAI open-weight 120B"
+    model: openai/gpt-oss-120b
+    notes: "GPT-oss 120B. Smoke testing and taxonomy validation"
 
-# =============================================================================
-# EVALUATION TARGETS - Experiment (uncomment to activate)
-# =============================================================================
-# evaluation_targets:
-#   # --- Primary subject (EU flagship) ---
-#   - name: mistral_large
-#     provider: openrouter
-#     model: mistralai/mistral-large-2512
-#     notes: "Primary subject. EU-sovereign, Apache 2.0. 675B MoE (41B active). 256K context"
-#
-#   # --- Small class (24-32B dense) ---
-#   - name: qwen35_27b
-#     provider: openrouter
-#     model: qwen/qwen3.5-27b
-#     extra_params:
-#       reasoning:
-#         effort: "none"  # Disable hybrid thinking
-#     notes: "Qwen 3.5 27B dense. Apache 2.0. Non-thinking mode"
-#
-#   - name: olmo3_32b
-#     provider: openrouter
-#     model: allenai/olmo-3.1-32b-instruct
-#     notes: "Fully open (weights + training data + code). Best provenance for thesis"
-#
-#   # --- Mid class (70B dense) ---
-#   - name: llama70b
-#     provider: openrouter
-#     model: meta-llama/llama-3.3-70b-instruct
-#     notes: "Original efficacy study model. Continuity with prior work"
-#
-#   # --- Large class (MoE, ~40B active) ---
-#   - name: deepseek_v32
-#     provider: openrouter
-#     model: deepseek/deepseek-chat-v3-0324
-#     notes: "DeepSeek V3.2 671B MoE. MIT. Chinese origin. MoE comparator to Mistral Large. $0.25/$0.40"
-#
-#   # --- Proprietary ceiling ---
-#   - name: gpt54
-#     provider: openrouter
-#     model: openai/gpt-5.4
-#     notes: "Proprietary ceiling. Non-thinking (separate gpt-5.4-thinking model exists). $2.50/$15.00"
-#
-#   # --- Dropped (available if needed) ---
-#   # - name: mistral_small
-#   #   provider: openrouter
-#   #   model: mistralai/mistral-small-3.2-24b-instruct
-#   #   notes: "EU-origin, Apache 2.0. Dropped: redundant with Qwen/OLMo at small class"
-#   #
-#   # - name: mistral_medium
-#   #   provider: openrouter
-#   #   model: mistralai/mistral-medium-3.1
-#   #   notes: "EU-origin. Dropped: undisclosed size, closed weights, weak thesis story"
-#   #
-#   # - name: glm5
-#   #   provider: openrouter
-#   #   model: z-ai/glm-5
-#   #   extra_params:
-#   #     reasoning:
-#   #       effort: "none"
-#   #   notes: "744B MoE (40B active). MIT. Dropped: third MoE adds little over DeepSeek"
+  # --- Experiment ---
+  - name: mistral_large
+    provider: openrouter
+    model: mistralai/mistral-large-2512
+    notes: "Primary subject. EU-sovereign, Apache 2.0. 675B MoE (41B active). 256K context"
+
+  - name: qwen35_27b
+    provider: openrouter
+    model: qwen/qwen3.5-27b
+    extra_params:
+      reasoning:
+        effort: "none"
+    notes: "Qwen 3.5 27B dense. Apache 2.0. Non-thinking mode"
+
+  - name: olmo3_32b
+    provider: openrouter
+    model: allenai/olmo-3.1-32b-instruct
+    notes: "Fully open (weights + training data + code). Best provenance for thesis"
+
+  - name: llama70b
+    provider: openrouter
+    model: meta-llama/llama-3.3-70b-instruct
+    notes: "Original efficacy study model. Continuity with prior work"
+
+  - name: deepseek_v32
+    provider: openrouter
+    model: deepseek/deepseek-chat-v3-0324
+    notes: "DeepSeek V3.2 671B MoE. MIT. Chinese origin. MoE comparator to Mistral Large"
+
+  - name: gpt54
+    provider: openrouter
+    model: openai/gpt-5.4
+    notes: "Proprietary ceiling. Non-thinking. $2.50/$15.00"
+
+  # --- Dropped (available if needed) ---
+  # - name: mistral_small
+  #   provider: openrouter
+  #   model: mistralai/mistral-small-3.2-24b-instruct
+  #   notes: "EU-origin, Apache 2.0. Dropped: redundant with Qwen/OLMo at small class"
+  #
+  # - name: glm5
+  #   provider: openrouter
+  #   model: z-ai/glm-5
+  #   notes: "744B MoE (40B active). MIT. Dropped: third MoE adds little over DeepSeek"

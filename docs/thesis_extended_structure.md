@@ -161,7 +161,7 @@ Each section establishes one conceptual prerequisite and ends with an open tensi
       \-- v3: mechanism-level split distinguishing external action from internal transformation (resolved)
       \-- Why document the iteration: shows that taxonomy design directly affects measured consistency (discussed in 6.4)
    - [GRAPH] *Strategy frequency per taxonomy version (v1-v3) -- shows skew collapse and final distribution*
-   - [FIG] *7-category taxonomy card -- each category, definition, example phrase*
+   - [FIG] *6-category taxonomy card -- each category, definition, example phrase*
 
    ### 3.5 Evaluation Metrics
 
@@ -363,7 +363,7 @@ All main results reported at slice_2 (mid-rescripting), aggregated across vignet
 
 ## Appendices
 
-A Strategy Taxonomy: full 7-category definitions with examples, revision history (v1-v3)
+A Strategy Taxonomy: full 6-category definitions with examples, revision history (v1-v4)
 B Prompts: fused plan+response system prompt, judge rubric, patient vignette profiles
 C Architecture Diagrams: detailed pipeline diagram (expanded version of 3.1)
 D Supplementary Results: full per-condition metric tables
