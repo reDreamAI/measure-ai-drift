@@ -1,5 +1,11 @@
 # TODO
 
+## Now: pipeline smoke test
+
+- [ ] Run test pipeline on existing frozen histories (test targets: Llama 70B, GPT-oss-120B)
+- [ ] Re-evaluate strategy taxonomy distribution: v3 resolved the 87.7% empowerment skew, but verify current models do not collapse back into mastery/empowerment dominance
+- [ ] Check plan validity rates and strategy spread across vignettes before committing to full run
+
 ## Pre-experiment (blocking full run)
 
 - [ ] Test structured output compliance: all 6 eval targets must produce valid `<plan>` blocks

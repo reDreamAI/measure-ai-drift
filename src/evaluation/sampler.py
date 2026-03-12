@@ -51,18 +51,28 @@ class Sampler:
         self,
         frozen_history: Conversation,
         temperature: float,
+        max_retries: int = 1,
     ) -> TrialResult:
-        """Run a single trial."""
-        plan, response, plan_usage, response_usage = await self._stack.run_trial(
-            frozen_history, temperature
-        )
-        return TrialResult(
-            temperature=temperature,
-            plan=plan,
-            response=response,
-            plan_usage=plan_usage,
-            response_usage=response_usage,
-        )
+        """Run a single trial with retry on transient errors (e.g. 429)."""
+        for attempt in range(max_retries + 1):
+            try:
+                plan, response, plan_usage, response_usage = (
+                    await self._stack.run_trial(frozen_history, temperature)
+                )
+                return TrialResult(
+                    temperature=temperature,
+                    plan=plan,
+                    response=response,
+                    plan_usage=plan_usage,
+                    response_usage=response_usage,
+                )
+            except Exception as e:
+                if attempt < max_retries and ("429" in str(e) or "rate" in str(e).lower()):
+                    wait = 2 ** attempt * 5
+                    print(f"  ↻ Rate limited, retrying in {wait}s...")
+                    await asyncio.sleep(wait)
+                else:
+                    raise
 
     async def run(
         self,
