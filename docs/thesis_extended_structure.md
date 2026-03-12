@@ -6,185 +6,99 @@ Daniel Menzel, Institute of Cognitive Science, University of Osnabruck
 Supervisors: Moritz Hartstang, Sebastian Musslick
 
 > **Visualisation legend**
-> [FIG] Conceptual diagram — logic, structure, or framework
-> [GRAPH] Data figure — empirical results or distributions
-> [Example] Worked instance — concrete case to build intuition
-
----
-
-## Abstract
+> [FIG] Conceptual diagram -- logic, structure, or framework
+> [GRAPH] Data figure -- empirical results or distributions
+> [Example] Worked instance -- concrete case to build intuition
 
 ---
 
 ## 1 Introduction
 
    ### 1.1 Nightmare Disorder and Imagery Rehearsal Therapy
-   - ~5% prevalence; strong comorbidity with PTSD and depression
-   - IRT as evidence-based gold standard — rigid, phase-driven protocol
-      - *Why IRT?* Its fixed structure makes it uniquely testable for protocol adherence
-   - Rescripting as the cognitive core — narrative transformation as the key intervention
-   - Clinician shortage as the practical motivation for scalable AI-assisted delivery
-   - [FIG] *IRT five-stage overview — stages, clinical goals, where rescripting sits*
+   - ~5% prevalence, comorbidity with PTSD/depression
+   - IRT as evidence-based gold standard with rigid five-stage structure
+   - Rescripting as the cognitive core, the phase where active therapeutic strategy decisions happen
+   - Clinician shortage as motivation for scalable AI delivery
+   - [FIG] *IRT five-stage overview -- stages, clinical goals, where rescripting sits*
 
-   ### 1.2 AI-Assisted Psychotherapy
-   - Growing LLM deployment in mental health — from empathy tools to full CBT state
-     machines — driven by scalability and access (Stade et al., 2024; NPJ MHR, 2024)
-   - reDreamAI: consumer-facing IRT chatbot guiding users through all five protocol stages
-      - Not a research prototype — a real deployment target where reliability is
-        non-negotiable
-   - **The problem this creates:** reDreamAI is not a general assistant — it is a
-     *protocol-driven agent* bound to a manualized intervention
-      - A general assistant has no therapeutic obligation; variability across sessions
-        is fine — no single response is wrong
-      - A protocol agent must make consistent strategic decisions across sessions and
-        users — inconsistency is not stylistic variation, it is a clinical failure
-      - *Why this matters for evaluation:* unlike rule-based chatbots whose behaviour
-        can be reviewed once before deployment, an LLM agent must be evaluated
-        repeatedly — each run is a new draw from the output distribution
-      - *The deeper point:* stability is a necessary precondition for clinical
-        deployment — not sufficient on its own, but without it, no claim about
-        therapeutic quality is meaningful (see 2.2 for conceptual grounding)
-   - EU AI Act and data sovereignty requirements push toward self-hosted EU-resident
-     models → introduces the sovereign model constraint (detailed in 2.2)
+   ### 1.2 AI-Assisted Psychotherapy and Deployment Context
+   - LLM deployment in mental health: from empathy tools to full protocol agents (Stade et al., 2024)
+   - reDreamAI as the concrete deployment context
+      \-- Consumer-facing IRT chatbot guiding users through all five protocol stages
+      \-- Not a general assistant: a protocol-driven agent where consistency is a clinical obligation
+      \-- Why this matters: inconsistency in a manualized intervention is not stylistic variation but a potential clinical failure
+   - Ethical scope
+      \-- IRT targets nightmares (not psychiatric diagnosis), lowering clinical risk relative to full psychotherapy
+      \-- Still requires awareness: AI-generated therapeutic responses carry responsibility even below diagnostic thresholds
+      \-- Full ethical discussion in 6.4 and 7.2
+   - EU AI Act and data sovereignty as constraints on model selection (motivates 3.6)
 
    ### 1.3 The Evaluation Gap
-   - Standard NLP benchmarks optimise for capability, not clinical reliability
-   - No existing metrics for: intent stability, protocol adherence, strategic consistency
-      - *The core problem:* a capable but inconsistent model is clinically unsafe —
-        these two properties are not the same and are currently conflated
-   - Prior therapeutic AI evaluation is largely qualitative, post-hoc, or single-session
-   - The case for systematic, reproducible in silico clinical trials as a validation paradigm
-   - [FIG] *Gap diagram — what capability benchmarks measure vs. what clinical
-     reliability requires; the unmeasured space this thesis addresses*
+   - Standard benchmarks measure capability, not reliability across repeated runs
+      \-- Why this is a problem: a model can produce high-quality individual responses while being clinically unreliable across sessions
+   - No existing metrics for intent stability, protocol adherence, or strategic consistency
+   - Prior therapeutic AI evaluation is qualitative, post-hoc, or single-session
+      \-- No systematic framework for quantifying therapeutic consistency under stochastic conditions
+   - [FIG] *Gap diagram -- what capability benchmarks measure vs. what clinical reliability requires*
 
    ### 1.4 Research Objectives
-   - **RQ:** How consistent is LLM clinical reasoning across stochastic runs within
-     a structured therapeutic protocol?
-   - **Contribution 1:** A three-level hierarchical evaluation framework for therapeutic
-     AI stability — plan consistency, output consistency, plan–output alignment
-   - **Contribution 2:** Quantitative cross-model comparison across sovereign,
-     proprietary, and open-weight model classes
-   - **Scope:** IRT rescripting phase — isolated as the highest-stakes, most
-     cognitively demanding intervention point
-      - *Why isolated?* Eliminates stage-routing confounds; enables clean attribution
-        of any measured instability to the therapist model
+   - **RQ:** How consistent is LLM clinical reasoning across stochastic runs in a structured therapeutic protocol?
+   - Contribution 1: three-level evaluation framework (plan, output, alignment)
+   - Contribution 2: cross-model comparison (sovereign, proprietary, open-weight)
+   - Scope: IRT rescripting phase only
+      \-- Why rescripting only: highest-stakes intervention point, requires active strategy decisions (unlike recording or rehearsal), isolates therapist model from upstream classification error
 
 ---
 
 ## 2 Background
 
-   > *Reading guide:* each subsection establishes one conceptual prerequisite for
-   > the methods. 2.1 defines what correct IRT delivery looks like → grounds the
-   > evaluation target and Method 3 scoring. 2.2 names the clinical failure modes
-   > → each maps to one evaluation method. 2.3 explains the mechanical source of
-   > instability → justifies the experimental temperature conditions. 2.4 justifies
-   > the chosen metrics → directly grounds Methods 1 and 2. 2.5 resolves the
-   > conceptual tension the plan mechanism creates → must precede 3.5.
+Each section establishes one conceptual prerequisite and ends with an open tension that the Methods chapter resolves.
 
    ### 2.1 Imagery Rehearsal Therapy
-   - *Role:* defines "correct" IRT delivery — the clinical standard the model is
-     evaluated against
-   - Five-stage protocol: recording → rewriting → summary → rehearsal → final
-      - Each stage has defined purpose and bounded appropriate therapist behaviours
-      - *→ 3.2:* dialogue generation traverses exactly these stages
-   - Rescripting: patient rewrites the nightmare to reduce distress and restore agency
-      - *→ 3.6:* the strategy taxonomy scope comes from the space of legitimate
-        rescripting moves — no more, no less
-   - Treatment fidelity instruments (ENACT, NIH BCC): define adherence gradations
-     across absent / partial / implemented
-      - *→ 3.7.3:* Method 3's ternary scoring is borrowed from this literature —
-        not invented, clinically grounded
-   - [Example] *Nightmare excerpt → rescripted version with strategy labels overlaid
-     (cognitive_reframe, confrontation) — what a valid rescripting move looks like*
+   - Five-stage protocol: recording, rewriting, summary, rehearsal, final
+      \-- Rescripting as the phase requiring active therapeutic strategy decisions
+   - Treatment fidelity instruments (ENACT, NIH BCC)
+      \-- Grade therapist adherence on a ternary scale: absent, partial, implemented
+      \-- Why this matters: provides the scoring foundation for Method 3 (3.5.3)
+   - Strategy taxonomy scope derives from the space of legitimate rescripting moves (grounds 3.4)
+   - Tension: fidelity assessment exists for human therapists but not for LLM-based agents
+   - [Example] *Nightmare excerpt with strategy labels overlaid (cognitive_reframe, confrontation)*
 
-   ### 2.2 Large Language Models in Healthcare
-   - *Role:* grounds the general vs. protocol distinction introduced in 1.2 in
-     the clinical literature — and establishes stability as a precondition for
-     deployment, not a byproduct of capability
-   - **The general vs. protocol distinction — conceptual grounding:**
-      - Treatment fidelity research (Webb et al., 2010; Waltz et al., 1993)
-        formalises what it means for a therapist to deliver an intervention correctly:
-        *adherence* (doing the prescribed things) and *competence* (doing them well)
-      - Fidelity is only a meaningful concept when there is a protocol to adhere to —
-        it is undefined for a general assistant
-      - For rule-based chatbots, adherence is built in by construction — responses
-        are pre-authored and reviewed once
-      - For LLM-based protocol agents, adherence becomes *probabilistic* — it must
-        be measured across runs, not assumed from a single review
-      - *This thesis measures the stability precondition:* not whether the model
-        delivers IRT correctly (no human baseline exists), but whether it delivers
-        it *consistently* — which is required before fidelity can even be assessed
-      - *→ 3.7:* each evaluation method measures one dimension of what consistency
-        means for a stochastic protocol agent
-   - Capability vs. reliability — the core gap:
-      - A model can produce high-quality individual responses while being clinically
-        unreliable across sessions — capability benchmarks cannot detect this
-      - *→ 1.3:* this is the evaluation gap the framework addresses
-   - Documented LLM failure modes in clinical settings: hallucination, strategy
-     drift, stage confusion, persona inconsistency
-      - Each maps to one evaluation method in 3.7
-   - Regulatory framing: EU AI Act high-risk classification; Medical Device
-     Regulation auditability and documentation requirements
-      - *→ 3.8:* sovereign model selection is a legal constraint, not a preference
-   - [FIG] *EU AI Act risk tier diagram — where autonomous therapeutic AI sits
-     and what certification obligations follow*
+   ### 2.2 Treatment Fidelity in LLM-Based Interventions
+   - Scope: protocol adherence in manualized interventions, not the full LLM-healthcare landscape
+   - Treatment fidelity research (Webb et al., 2010; Waltz et al., 1993)
+      \-- Adherence (doing the prescribed things) vs competence (doing them well)
+      \-- For rule-based chatbots, adherence is built in
+      \-- For LLMs, adherence becomes probabilistic and must be measured across runs
+   - Documented failure modes that map to evaluation methods:
+      \-- Strategy drift -> Method 1 (plan consistency)
+      \-- Output variability -> Method 2 (semantic stability)
+      \-- Plan-output mismatch -> Method 3 (alignment)
+   - Regulatory framing: EU AI Act high-risk classification, Medical Device Regulation auditability
+   - Tension: stability is a deployment precondition, but no existing framework measures it for protocol-driven LLM agents
+   - [FIG] *EU AI Act risk tier diagram -- where autonomous therapeutic AI sits*
 
    ### 2.3 Stochastic Behaviour in Language Models
-   - *Role:* makes "drift" mechanistically concrete — explains where instability
-     comes from at the model level
-   - Temperature sampling: at T>0, token selection is probabilistic — small
-     per-token variance compounds across a full therapeutic response
-      - *→ 3.9:* T=0.0 is the deterministic ceiling; T=0.7 is the realistic
-        clinical deployment range — both are grounded here
-   - Clinical consequence: the same patient on two different days may receive
-     strategically inconsistent care — this is not benign noise in a manualized protocol
-   - Prior stability work targets factual consistency or output diversity —
-     not therapeutic strategy stability or protocol adherence
-      - *→ 1.3:* this gap in prior work is the direct justification for a
-        domain-specific framework
-   - [FIG] *Sampling diagram — same frozen history at T=0.0 vs. T=0.7 →
-     diverging strategy distributions; intuition for why temperature is the
-     primary experimental variable*
+   - At T>0, token selection is probabilistic
+      \-- Small per-token variance compounds across a full response through autoregressive cascading
+      \-- Clinical consequence: the same patient on two different days may receive strategically inconsistent care
+   - Prior stability work targets factual consistency or output diversity, not therapeutic strategy stability
+   - Tension: the mechanical source of instability is well understood, but its impact on structured therapeutic decision-making has not been quantified (justifies temperature conditions in 3.7)
+   - [FIG] *Sampling diagram -- same frozen history at T=0.0 vs. T=0.7, diverging strategy distributions*
 
    ### 2.4 Evaluation Metrics for Text Generation
-   - *Role:* justifies the specific metrics used in Methods 1 and 2 —
-     and rules out the obvious alternatives
-   - BLEU / ROUGE: surface token overlap — therapeutically equivalent paraphrases
-     score near zero; lexically similar but strategically divergent responses score high
-      - Ruled out: therapeutic paraphrasing is the norm; surface metrics
-        penalise valid variation
-   - BERTScore (Zhang et al., 2020): contextual embedding similarity —
-     meaning equivalence independent of surface form
-      - DeBERTa-XLarge-MNLI chosen: highest WMT16 human correlation (r = 0.778);
-        NLI fine-tuning aligns with semantic equivalence over surface matching
-      - *→ 3.7.2:* BERTScore F1 is the direct operationalisation of output
-        consistency — this subsection is its full justification
-   - LLM-as-judge: evaluates criteria no scalar metric can capture
-     (e.g. "does this response implement a confrontation strategy?")
-      - Known biases: self-preference, position bias, verbosity bias
-      - *→ 3.7.3:* cross-model judging and deterministic decoding are the
-        direct mitigations for the biases named here
-   - [FIG] *ROUGE vs. BERTScore on a matched therapeutic sentence pair —
-     where surface overlap fails and why embedding similarity is needed*
-
-   ### 2.5 Chain-of-Thought and Plan Faithfulness
-   - *Role:* resolves a conceptual tension the plan mechanism creates —
-     must be understood before the plan is introduced in 3.5
-   - CoT prompting (Wei et al., 2022): step-by-step generation before answering
-     improves output structure and coherence
-      - *→ 3.4:* the fused `<plan>` + response call is a CoT-style mechanism
-   - The faithfulness problem: CoT explanations often do not reflect actual
-     computation — post-hoc rationalisation of an answer reached by other means
-     (Turpin et al., 2023; Lanham et al., 2023)
-      - *The tension:* if `<plan>` is rationalisation, measuring plan consistency
-        may not capture what the model actually decided
-   - **Resolution — declared intent framing:** the `<plan>` block is not a
-     window into model cognition; it is a structured, measurable output in its own right
-      - If strategy declarations vary across runs, clinical responses will vary —
-        this is true regardless of whether declarations reflect internal reasoning
-      - *→ 3.5:* this framing is the conceptual foundation of the plan mechanism
-   - [FIG] *Declared intent spectrum — from faithful CoT to post-hoc
-     rationalisation; where declared intent sits and why measuring it is valid either way*
+   - Surface metrics (BLEU/ROUGE)
+      \-- Why ruled out: penalize valid therapeutic paraphrasing
+   - BERTScore (Zhang et al., 2020)
+      \-- Captures semantic equivalence independent of surface form
+      \-- DeBERTa-XLarge-MNLI: highest human correlation (r = 0.778)
+      \-- Why selected for Method 2: matches the semantic equivalence question, robust to paraphrasing
+   - LLM-as-judge
+      \-- Can assess criteria no scalar metric captures (e.g. "does this response implement a confrontation strategy?")
+      \-- Known biases: self-preference, position, verbosity
+      \-- Why still used: only approach that can assess strategic intent, mitigations in 3.5.3
+   - Tension: no single metric covers what clinical stability requires, motivating the multi-method design
+   - [FIG] *ROUGE vs. BERTScore on a matched therapeutic sentence pair*
 
 ---
 
@@ -192,295 +106,282 @@ Supervisors: Moritz Hartstang, Sebastian Musslick
 
    ### 3.1 System Overview and Design Rationale
    - Two decoupled stacks: generation (dialogue creation) and evaluation (stability measurement)
-      - *Why decoupled?* Evaluation must not be contaminated by generation-side
-        randomness — reproducible entry points require frozen, pre-generated histories
-   - End-to-end data flow:
-     vignettes → generation → frozen histories → evaluation → aggregation
-   - [FIG] *Full pipeline diagram — logical data flow across all stages, stack
-     boundary marked, example artefact names at each step*
+      \-- Why decoupled: prevents generation-side randomness from contaminating stability measurement
+      \-- Any measured instability is attributable to the model under test, not upstream context differences
+   - Data flow: vignettes -> generation -> frozen histories -> evaluation -> aggregation
+      \-- Why this order: frozen histories create identical entry points, isolating the variable under test
+   - [FIG] *Full pipeline diagram -- two-stack data flow with isolation boundary and example artefact names*
 
    ### 3.2 Dialogue Generation
-   - Three-agent loop: Patient (BDI-profiled vignette), Router (stage classifier),
-     Therapist (stage-appropriate response)
-      - *Why three agents?* Mirrors clinical interaction structure; separates
-        routing logic from therapeutic content generation
-   - Six patient vignettes: anxious, avoidant, cooperative, resistant, skeptic, trauma
-      - Cover the range of clinical presentation difficulty expected in IRT deployment
-   - Full five-stage IRT traversal produces naturalistic conversation histories
-     used as frozen evaluation entry points
-   - [FIG] *Three-agent loop — single turn cycle with message passing*
-   - [Example] *Resistant vignette excerpt — BDI profile and opening patient turn*
+   - Three-agent loop: patient, router, therapist
+      \-- Patient: BDI-profiled vignette simulating clinical presentation
+      \-- Router: stage classifier determining which IRT phase the conversation is in
+      \-- Therapist: generates stage-appropriate therapeutic response
+      \-- Why three agents: separates clinical reasoning from stage classification and patient simulation, matching reDreamAI's deployment architecture
+   - Six vignettes: anxious, avoidant, cooperative, resistant, skeptic, trauma
+      \-- Why these six: cover the range of clinical presentation difficulty, from cooperative (easy) to trauma/resistant (hard)
+      \-- Tests whether model stability varies with patient complexity
+      \-- Vignette design informed by prior synthetic patient work (Roleplay-doh??, check reference). Six profiles sample the difficulty range but do not claim exhaustive coverage (limitation in 7.2)
+   - [FIG] *Three-agent loop -- single turn cycle with message passing*
+   - [Example] *Resistant vignette excerpt -- BDI profile and opening patient turn*
 
-   ### 3.3 Frozen History Design
-   - Conversations sliced at rewriting-turn boundaries: slice_1, slice_2, slice_3
-   - Each slice is a deterministic, identical entry point across all trials
-      - *Why frozen?* Any measured inconsistency is attributable solely to the
-        model under evaluation — not to upstream context differences
-   - Three slice depths test whether stability changes as therapeutic context accumulates
-   - [FIG] *Slicing diagram — P/T turn sequence with cut points; which turns are
-     in-context vs. excluded per slice*
-
-   ### 3.4 Evaluation Stack
-   - Router bypassed — rescripting prompt injected directly (stage known a priori)
-      - *Why bypass?* Isolates the therapist model from stage-classification error
-   - Fused CoT generation: `<plan>` block + response in a single model call
-      - *Why fused?* Plan must condition the response tokens — a separate call
-        would decouple intent from output
-   - 10 independent trials per condition sample the stochastic output distribution
-   - [FIG] *Evaluation stack — frozen history → injected prompt → fused generation*
+   ### 3.3 Evaluation Design (Frozen Histories and Evaluation Stack)
+   - Frozen conversation histories as deterministic entry points
+      \-- Conversations sliced at rewriting-turn boundaries: slice_1, slice_2, slice_3
+      \-- Each slice is identical across all trials and all models
+      \-- Why three depths: tests whether stability changes as therapeutic context accumulates
+      \-- Why slice at turn boundaries: clean cut points that preserve conversational coherence
+   - [FIG] *Slicing diagram -- P/T turn sequence with cut points per slice*
+   - Evaluation stack
+      \-- Router bypassed, rescripting prompt injected directly (isolates therapist model from stage-classification error)
+      \-- Fused generation: `<plan>` block declaring 1-2 strategies, then therapeutic response conditioned on that declaration
+      \-- Why fused: plan and response in a single pass, so the response is directly conditioned on the declared plan (enables Method 3)
+      \-- 10 independent trials per condition: C(10,2) = 45 pairwise comparisons, balancing statistical power with compute cost
+   - [FIG] *Evaluation stack -- frozen history, injected prompt, fused generation*
    - [Example] *Raw model output: `<plan>` block and response side by side*
 
-   ### 3.5 The Plan Mechanism
-   - `<plan>` block declares 1–2 IRT strategies before the therapeutic response
-   - Framed as **declared intent** — a structured output, not a reasoning trace
-      - *Why?* Sidesteps the CoT faithfulness problem (see 2.5); makes the plan
-        measurable regardless of whether it reflects true internal computation
-   - Enables three independent uses: strategy-level consistency scoring (Method 1),
-     plan–output alignment verification (Method 3), human-readable clinical oversight
-   - Fixed strategy taxonomy constrains declarations to the therapeutic domain —
-     prevents arbitrary strategies that cannot be clinically evaluated
-   - [FIG] *Plan mechanism — `<plan>` block feeding into three downstream uses
-     with declared-intent framing labelled*
+   ### 3.4 Plan Mechanism and Strategy Taxonomy
+   - The CoT faithfulness problem: CoT prompting (Wei et al., 2022) improves output structure, but faithfulness literature (Turpin et al., 2023; Lanham et al., 2023) shows that CoT explanations often do not reflect actual computation. If a model declares its strategy before responding, that declaration may be post-hoc rationalization rather than a window into its decision-making.
+   - Resolution: the `<plan>` block is framed as declared intent, not a reasoning trace
+      \-- Why declared intent: sidesteps the faithfulness debate entirely
+      \-- Whether or not the declaration reflects internal computation, variable declarations predict variable clinical responses
+      \-- The plan captures what the model commits to, which is what matters for clinical oversight
+   - Three downstream uses:
+      \-- Strategy-level consistency scoring (Method 1)
+      \-- Plan-output alignment verification (Method 3)
+      \-- Human-readable clinical oversight (practical deployment value)
+   - [FIG] *Plan mechanism -- `<plan>` block feeding into three downstream uses with declared-intent framing labelled*
+   - Fixed taxonomy constrains declarations to 7 discrete categories
+      \-- Why fixed: free-text plans cannot be aggregated into Jaccard scores
+      \-- Categories: confrontation, self_empowerment, safety, cognitive_reframe, emotional_regulation, social_support, sensory_modulation
+      \-- Why these: derived from legitimate IRT rescripting moves (grounded in 2.1), refined through iterative testing
+   - Development process
+      \-- v1: 8 categories, 87.7% skew on empowerment/mastery (too coarse)
+      \-- v2: merge to agency, 100% dominance (worse)
+      \-- v3: mechanism-level split distinguishing external action from internal transformation (resolved)
+      \-- Why document the iteration: shows that taxonomy design directly affects measured consistency (discussed in 6.4)
+   - [GRAPH] *Strategy frequency per taxonomy version (v1-v3) -- shows skew collapse and final distribution*
+   - [FIG] *7-category taxonomy card -- each category, definition, example phrase*
 
-   ### 3.6 Strategy Taxonomy Development
-   - *Why fixed?* Enables discrete, comparable strategy sets — free-text plans
-     cannot be aggregated into Jaccard similarity scores
-   - Iterative revision driven by observed distribution failures:
-      - v1 (8 categories): 87.7% mass on empowerment/mastery → unusable skew
-      - v2 (merge to agency): 100% dominance → goal–mechanism conflation
-      - v3 (mechanism-specific split): confrontation (external action) vs.
-        self_empowerment (internal transformation)
-   - Final 7 categories: confrontation, self_empowerment, safety, cognitive_reframe,
-     emotional_regulation, social_support, sensory_modulation
-   - Prompt-level steering encourages diversity across categories
-   - [GRAPH] *Strategy frequency per taxonomy version (v1 → v3) — shows skew
-     collapse and final distribution*
-   - [FIG] *7-category taxonomy card — each category, definition, example phrase*
+   ### 3.5 Evaluation Metrics
 
-   ### 3.7 Evaluation Metrics
-   - *Why three methods?* Each targets a distinct layer of the generation process —
-     no single metric captures the full picture of clinical stability
-      - Method 1: does the model make consistent therapeutic decisions? (planning layer)
-      - Method 2: does the model produce consistent therapeutic responses? (output layer)
-      - Method 3: does the model do what it says it will do? (alignment layer)
-   - [FIG] *Three-level framework — plan → output → alignment; inputs and outputs
-     of each method, with the clinical question each answers*
+   Three methods targeting distinct layers, addressing the multi-metric gap from 2.4.
 
-      #### 3.7.1 Method 1 — Cognitive Stability (Plan Consistency)
+   [FIG] *Three-level framework -- plan, output, alignment; inputs and outputs of each method, with the clinical question each answers*
+
+      #### 3.5.1 Method 1: Cognitive Stability (Plan Consistency)
+      - Measures: does the model make consistent therapeutic decisions?
       - Pairwise Jaccard similarity over strategy sets from `<plan>` blocks
-      - Validity rate as upstream quality gate — malformed plans excluded
-      - *Why Jaccard?* Set similarity is appropriate for unordered strategy
-        combinations; insensitive to labelling artefacts
-      - [Example] *10 plan sets → pairwise Jaccard matrix → mean score;
-        one high- and one low-consistency condition shown*
+         \-- Mean over C(10,2) = 45 trial pairs
+         \-- Why Jaccard: set similarity for unordered strategy combinations, order does not matter clinically
+      - Validity rate as upstream quality gate
+         \-- Why a quality gate: malformed plan blocks cannot be scored, validity rate shows whether the model can follow the structured output format at all
+      - [Example] *10 plan sets, pairwise Jaccard matrix, mean score; one high- and one low-consistency condition*
 
-      #### 3.7.2 Method 2 — Output Consistency (Semantic Stability)
-      - Pairwise BERTScore F1; mean over C(10,2) = 45 pairs per condition
-      - DeBERTa-XLarge-MNLI: NLI fine-tuning + disentangled attention handles
-        surface-form variation in therapeutic language (see 2.4)
-      - [Example] *Two responses from the same condition → token alignment
-        heatmap → F1; one high- and one low-similarity pair*
+      #### 3.5.2 Method 2: Output Consistency (Semantic Stability)
+      - Measures: does the model produce consistent therapeutic responses?
+      - Pairwise BERTScore F1 using DeBERTa-XLarge-MNLI
+         \-- Why this model: NLI fine-tuning aligns with semantic equivalence, highest WMT16 human correlation (grounded in 2.4)
+         \-- Why not surface metrics: therapeutic paraphrasing is the norm, surface overlap penalizes valid variation
+      - [Example] *Two responses from the same condition, token alignment heatmap, F1 score*
 
-      #### 3.7.3 Method 3 — Plan–Output Alignment (Exploratory)
-      - LLM judge (Gemini Pro, T=0.0); ternary scoring per declared strategy:
-        0 = absent / 1 = partial / 2 = implemented
-      - *Why ternary?* Borrowed from clinical fidelity literature (ENACT, NIH BCC);
-        binary scoring loses partial implementation — clinically meaningful
-      - *Why LLM judge?* Only approach capable of multi-strategy alignment with
-        a reasoning trace; NLI cross-encoders ceiling at F1 ~0.55 on this task
-      - Mitigations: cross-model judging, CoT justification, T=0.0, transparent rubric
-      - Labelled exploratory: judge reliability is itself an open question
-      - [Example] *Judge input + output — plan, response, ternary verdict with
-        CoT justification; partial and absent case shown*
+      #### 3.5.3 Method 3: Plan-Output Alignment
+      - Measures: does the model do what it says it will do?
+      - LLM judge with ternary scoring per declared strategy: 0 = absent, 1 = partial, 2 = implemented
+         \-- Why ternary: borrowed from clinical fidelity literature (ENACT, NIH BCC, grounded in 2.1)
+         \-- Why not NLI cross-encoders: tested and rejected (F1 ceiling ~0.55, no reasoning trace)
+      - Judge: Gemini 3.1 Pro (Google AI Studio, T=0.0), different model family than any evaluation target
+         \-- Why cross-family: prevents model family bias
+         \-- Why Gemini: thinking mode aids judgment accuracy, free credits, no OpenAI/Mistral/Meta models in eval targets
+      - Bias mitigations:
+         \-- Cross-model judging (judge never evaluates its own family)
+         \-- CoT justification (judge explains its rating)
+         \-- Deterministic decoding (T=0.0)
+         \-- Transparent rubric
+      - Acknowledged limitation: judge reliability is itself an open question (discussed in 6.4)
+      - Validation: human annotation of a random subset (~50 trials) scoring the same rubric. Cohen's kappa between human and judge as reliability estimate. If kappa is low, Method 3 results carry the caveat explicitly.
+      - [Example] *Judge input + output -- plan, response, ternary verdict with CoT justification*
 
-   ### 3.8 Model Selection
-   - EU data sovereignty as primary criterion — self-hostability and EU data
-     residency are legal constraints in the reDreamAI deployment context
-   - **Primary subject:** Mistral Large — sovereign, frontier-class
-   - **Proprietary ceiling:** Gemini 3.1 Pro — closed-weight frontier baseline;
-     upper bound on what stability is achievable with current best models
-   - **Open-weight comparisons:** Llama 3.3 70B, Qwen 3 32B, OLMo 3.1
-      - Size-class diversity (32B–70B); provider diversity; sovereignty status varies
-   - [FIG] *Model selection table — model, size, provider, sovereignty status,
-     role in study*
+   ### 3.6 Model Selection
+   - EU data sovereignty as primary criterion for the primary subject (legal constraint from 1.2)
+   - Primary subject: Mistral Large 3 (675B MoE, 41B active, EU-sovereign, Apache 2.0)
+      \-- Why: EU-sovereign flagship, the model reDreamAI would deploy
+   - Proprietary ceiling: GPT-5.4 (non-thinking variant, $2.50/$15.00)
+      \-- Why GPT-5.4: strongest proprietary model without thinking overhead, fair comparison with all other non-thinking targets
+   - Open-weight comparators across three size classes, all non-thinking:
+      \-- Small (24-32B dense): Qwen 3.5 27B, OLMo 3.1 32B
+      \-- Mid (70B dense): Llama 3.3 70B (continuity with prior efficacy study)
+      \-- Large (MoE): DeepSeek V3.2 671B (MoE comparator to Mistral Large)
+      \-- Why these: size-class diversity, dense vs MoE architecture, provider diversity
+   - Qwen 3.5 runs with reasoning disabled (hybrid-thinking model) for fair comparison
+   - [FIG] *Model selection table -- model, size, provider, sovereignty status, role in study*
 
-   ### 3.9 Experimental Conditions
-   - Full factorial: 6 vignettes × 3 slices × 10 trials × T∈{0.0, 0.7} × N models
-   - T=0.0: deterministic baseline — theoretical upper bound on stability
-   - T=0.7: stochastic condition — realistic clinical deployment range (see 2.3)
-   - [FIG] *Condition matrix — factorial design as a grid; total run count labelled*
+   ### 3.7 Experimental Conditions
+   - Full factorial: 6 vignettes x 3 slices x 10 trials x 2 temperatures x 6 models
+      \-- T=0.0 as deterministic upper bound on stability (grounded in 2.3)
+      \-- T=0.7 as realistic clinical deployment range
+      \-- Why both: T=0.0 shows the stability ceiling, the gap to T=0.7 quantifies the stochastic cost of realistic deployment
+   - Total per model: 360 trials. Total across all models: 2,160 trials
+   - [FIG] *Condition matrix -- factorial design as a grid; total run count labelled*
+
+   ### 3.8 Statistical Analysis
+   - Descriptive statistics: means, standard deviations, confidence intervals across 45 trial pairs per condition
+   - Bootstrap 95% confidence intervals for model comparisons
+   - Spearman rank correlations for cross-method analysis (5.5)
+      \-- Why Spearman: rank-based, robust to non-normal distributions from bounded similarity scores
+   - No fixed threshold for "stable enough." Results are interpreted comparatively (model vs model, T=0.0 vs T=0.7) rather than against an absolute cutoff. Clinical significance thresholds for LLM stability do not yet exist in the literature.
 
 ---
 
 ## 4 Implementation
 
-   > *Role:* translates Chapter 3 design decisions into concrete technical choices.
-   > Each decision here is a consequence of a methods requirement.
-
    ### 4.1 Software Architecture
-   - Python async pipeline; YAML config; Pydantic validation
-      - *Why async?* 10 parallel trials per condition — sequential would be prohibitive
-      - *Why YAML?* Every condition is a config parameter — reproducibility without
-        code changes; full experiment defined declaratively
-      - *Why Pydantic?* Malformed `<plan>` blocks must fail at parse time —
-        silent propagation would corrupt downstream metrics
-   - Provider abstraction via OpenRouter and Google
-      - Enables model swap without changing evaluation logic — critical for
-        cross-model comparison
-   - [FIG] *Component diagram — modules, interfaces, provider abstraction layer*
+   - Python async pipeline
+      \-- Why async: factorial design requires many independent API calls, parallel execution essential for feasibility
+   - YAML-driven configuration
+      \-- model swaps, temperature changes, vignette selection without code changes possible
+   - Pydantic validation at every data boundary
+      \-- Why: prevents malformed plan blocks from corrupting downstream metrics
+   - Provider abstraction (OpenRouter, Google AI Studio)
+      \-- Why: adding a new model means adding a config entry, not changing evaluation logic
+   - [FIG] *Component diagram -- modules, interfaces, provider abstraction layer*
 
-   ### 4.2 Experiment Execution
-   - Config → frozen history → parallel trials → output bundle
-   - Artefacts per run: config.yaml, frozen_history.json, trials/,
-     metrics.json, judgments.json
-      - *Why this structure?* Frozen history is the only irreplaceable artefact;
-        metrics and judgments are recomputable if evaluation logic changes
+   ### 4.2 Experiment Execution and Aggregation
+   - Config driven orchestration with parallel trial execution
+   - Artefact hierarchy per run:
+      \-- Config snapshot (reproducibility)
+      \-- Frozen history (irreplaceable, the experimental input)
+      \-- Trials (raw model outputs)
+      \-- Metrics and judgments (recomputable from trials)
+      \-- Why this distinction: frozen histories cannot be regenerated, all downstream artefacts can be recomputed
+   - Aggregation: cross-condition alignment into a single analysis frame indexed by model, vignette, slice, temperature
+      \-- Why unified: required for cross-method analysis in 5.5
    - [Example] *Output directory tree for one complete experiment run*
-
-   ### 4.3 Aggregation Pipeline
-   - Collects all model × vignette × slice × temperature results into one
-     analysis frame
-   - Produces per-model, per-vignette, per-slice, per-temperature breakdowns
-      - *→ 5.5:* cross-method correlation requires all three metric types aligned
-        on the same condition index — this pipeline produces that alignment
 
 ---
 
 ## 5 Results
 
+All main results reported at slice_2 (mid-rescripting), aggregated across vignettes. Full per-condition tables in Appendix D.
+
    ### 5.1 Plan Validity and Strategy Distribution
-   - Validity rates across models and temperatures — quality gate check before
-     any stability analysis
-   - Strategy frequency distribution; expected vs. observed per vignette
-   - [GRAPH] *Validity rate per model × temperature*
-   - [GRAPH] *Strategy frequency heatmap — expected vs. observed per vignette*
+   - Validity rates across models and temperatures (quality gate)
+   - Strategy frequency distribution: one heatmap (model x strategy category)
+   - [GRAPH] *Validity rate per model x temperature*
+   - [GRAPH] *Strategy frequency heatmap -- model x strategy category*
 
-   ### 5.2 Cognitive Stability — Method 1
-   - Mean Jaccard scores by model, vignette, temperature, and slice
-   - T=0.0 vs. T=0.7: how much does stochasticity cost in strategy stability?
-   - [GRAPH] *Mean Jaccard per model × temperature*
-   - [GRAPH] *Jaccard heatmap: vignette × slice for primary model (Mistral)*
-   - [GRAPH] *Jaccard by slice depth (slice_1 → slice_3) — does context
-     accumulation help or hurt stability?*
+   ### 5.2 Cognitive Stability (Method 1)
+   - Mean Jaccard by model x temperature (headline figure)
+   - Stochastic cost: T=0.0 vs T=0.7 gap per model
+   - [GRAPH] *Mean Jaccard per model x temperature*
 
-   ### 5.3 Output Consistency — Method 2
-   - BERTScore F1 across all conditions
-   - Does stable planning predict stable outputs, or are the two decoupled?
-   - [GRAPH] *Mean BERTScore F1 per model × temperature*
-   - [GRAPH] *Scatter: Jaccard vs. BERTScore F1 per condition —
-     coupling or decoupling between planning and output stability*
+   ### 5.3 Output Consistency (Method 2)
+   - Mean BERTScore F1 by model x temperature (same format as 5.2)
+   - [GRAPH] *Mean BERTScore F1 per model x temperature*
 
-   ### 5.4 Plan–Output Alignment — Method 3
-   - Mean alignment scores by model and vignette
-   - Which strategies are consistently implemented vs. consistently absent?
+   ### 5.4 Plan-Output Alignment (Method 3)
+   - Mean alignment score by model x temperature
+   - Per-strategy scoring distributions (absent / partial / implemented)
    - [GRAPH] *Mean alignment score per model*
    - [GRAPH] *Stacked bar: absent / partial / implemented per strategy category*
-   - [GRAPH] *Alignment heatmap: vignette × strategy category*
 
    ### 5.5 Cross-Method Analysis
-   - Correlations across all three evaluation levels — do the methods agree?
-   - Divergence cases: high plan consistency with low output consistency
-     (and vice versa) — what do these reveal about model behaviour?
-   - Stability profiles per model across all three methods
-   - Effect of conversation depth (slice_1 → slice_3)
-   - [GRAPH] *Correlation matrix: Jaccard × BERTScore × Alignment*
+   - Spearman rank correlations across all three method pairs (M1-M2, M1-M3, M2-M3)
+   - Per-model stability profiles across all three methods
+   - Divergence cases:
+      \-- High plan consistency + low output consistency = stable intent, variable execution
+      \-- Low plan consistency + high output consistency = different strategies, similar surface output
+   - [GRAPH] *Correlation matrix: Jaccard x BERTScore x Alignment*
    - [GRAPH] *Radar chart: per-model stability profile across all three methods*
-   - [Example] *Annotated divergence case — Method 1 and Method 2 disagree;
-     plan sets and response excerpts shown side by side*
+
+   ### 5.6 Secondary Effects
+   - Vignette difficulty: one heatmap (model x vignette) showing where instability concentrates
+   - Conversation depth: slice_1 vs slice_3 comparison for primary model. Early rescripting (less anchoring context) may show more variable strategy selection than later turns
+   - [GRAPH] *Per-vignette stability heatmap*
+   - [GRAPH] *Slice depth comparison for Mistral Large 3*
 
 ---
 
 ## 6 Discussion
 
    ### 6.1 Interpreting the Three-Level Framework
-   - What the three methods together reveal that no single method could show alone
-   - Cases where the levels align vs. diverge — and what each divergence type means
-   - The framework as a diagnostic tool: which layer is the source of instability?
-   - [FIG] *Stability failure taxonomy — which divergence pattern indicates which
-     type of clinical risk*
+   - Three methods as diagnostic tool for locating instability sources
+   - Divergence patterns map to different clinical risks:
+      \-- Planning instability -> unpredictable therapeutic decisions
+      \-- Output instability -> inconsistent patient experience
+      \-- Alignment failure -> model says one thing, does another
+   - Localizing the problem has direct implications for mitigation
+   - [FIG] *Stability failure taxonomy -- which divergence pattern indicates which type of clinical risk*
 
    ### 6.2 Cross-Model Comparison
-   - Mistral Large vs. GPT-class and open-weight peers across all three methods
-   - Does self-hostability come at a stability cost? — the sovereignty tradeoff
-   - Size-class effects: does more parameters mean more stability?
-   - [GRAPH] *Summary: all models × all three metrics × both temperatures —
-     the central comparative result*
+   - Does Mistral Large match the proprietary ceiling on stability?
+   - Does self-hostability come at a stability cost?
+   - Size-class effects across model range
+   - Stability as a dimension independent of capability
+   - [GRAPH] *Summary: all models x all three metrics x both temperatures*
 
    ### 6.3 Temperature and Clinical Deployment
-   - Greedy decoding as an upper-bound baseline — theoretical best case
-   - Stochastic drift patterns: which models degrade most under T=0.7?
-   - Practical deployment recommendations: when is T=0.7 acceptable?
-   - [GRAPH] *Delta chart: T=0.7 minus T=0.0 per model — the stochastic cost*
+   - T=0.0 as upper bound: which models achieve near-deterministic stability?
+   - T=0.7 degradation: which models lose the most?
+   - Practical deployment recommendations
+   - [GRAPH] *Delta chart: T=0.7 minus T=0.0 per model -- the stochastic cost*
 
-   ### 6.4 Vignette-Dependent Behaviour
-   - Which patient profiles challenge model consistency most: resistant, trauma
-   - Strategy selection patterns across clinical presentations — are some
-     strategies inherently harder to maintain consistently?
-   - Implications for deployment: not all patient profiles are equally safe
-   - [GRAPH] *Per-vignette stability ranking across all three methods*
-
-   ### 6.5 Evaluation Framework Reflections
-   - What the taxonomy design choices reveal — and what they constrain
-   - What declared intent can and cannot claim about model cognition
-   - Generalisability: can this framework apply to CBT, DBT, other manualized protocols?
-   - [FIG] *Generalisation sketch — framework mapped onto a second structured
-     protocol (e.g. CBT thought records) to show reusability*
-
-   ### 6.6 Toward In Silico Clinical Trials
-   - This framework as a reusable, reproducible validation template
-   - What stability testing can certify — and what it cannot replace
-   - The remaining gap: from benchmark stability to demonstrated clinical safety
-   - [FIG] *Positioning diagram — where this framework sits in a full clinical
-     validation pipeline; what it certifies and what remains open*
+   ### 6.4 Evaluation Framework Reflections
+   - Taxonomy sensitivity: how category design shapes measured consistency (connects back to 3.4)
+   - Declared-intent framing: what it enables and what it cannot claim about model cognition
+   - Method 3 limitations: judge reliability, cross-family mitigation effectiveness
+   - Ethical considerations
+      \-- IRT as lower-risk entry point (no diagnosis), but still requires safeguards
+      \-- Stability as necessary but not sufficient for safe deployment
+   - Generalizability to other manualized protocols (CBT, DBT)
+   - Broader perspective: framework as reusable validation template for protocol-driven AI agents. Computational evaluation complements but does not substitute clinical validation.
+   - [FIG] *Generalisation sketch -- framework mapped onto a second structured protocol*
 
 ---
 
 ## 7 Conclusion
 
    ### 7.1 Summary of Findings
-   - Key results across all three evaluation levels
-   - Direct answer to the research question: how consistent are sovereign LLMs
-     in a structured therapeutic protocol — and what does that mean clinically?
+   - Direct answer to the research question across all three levels
 
    ### 7.2 Limitations
-   - Scope: single protocol, single phase (IRT rescripting only)
-   - Simulation: synthetic patients differ from real clinical interaction in
-     ways that cannot be fully controlled
-   - Method 3 is exploratory — judge reliability is unverified and should
-     not be treated as ground truth
-   - Fixed taxonomy constrains the measurable strategy space — unmeasured
-     strategies may show different stability patterns
+   - Single protocol phase (rescripting only)
+   - Synthetic patients (no real clinical interactions)
+   - Six vignettes sample the difficulty range but cannot claim exhaustive coverage of patient variability
+   - Method 3 judge reliability
+   - Fixed taxonomy (alternative categorizations could yield different profiles)
+   - Computational stability does not equal clinical safety
 
    ### 7.3 Future Work
-   - Full IRT protocol evaluation — beyond the rescripting phase
-   - Extension to other manualized therapies (CBT, DBT, PE)
-   - Longitudinal drift: does stability degrade across model version updates?
-   - Multi-language evaluation — German therapeutic context for reDreamAI
-   - Clinical validation: human therapist ratings as external ground truth
-   - RAG-based guardrail integration for safety and alignment
-
----
-
-## References
-...
+   - Extension to other manualized therapies (CBT, DBT)
+   - Longitudinal version drift (same model across updates)
+   - Multi-language evaluation for reDreamAI
+   - Clinical validation with human therapist ratings
+   - Replication with future model generations to track whether stability improves across release cycles
 
 ---
 
 ## Appendices
 
-   ### A Strategy Taxonomy
-   - Full 7-category definitions with revision history (8 → 6 → 7)
-   - [FIG] *Taxonomy card — all 7 categories, definitions, example phrases*
+A Strategy Taxonomy: full 7-category definitions with examples, revision history (v1-v3)
+B Prompts: fused plan+response system prompt, judge rubric, patient vignette profiles
+C Architecture Diagrams: detailed pipeline diagram (expanded version of 3.1)
+D Supplementary Results: full per-condition metric tables
 
-   ### B Prompts
-   - Fused plan+response system prompt
-   - Alignment judge prompt and scoring rubric
-   - Patient vignette profiles (all six)
+---
 
-   ### C Architecture Diagrams
-   - Full pipeline diagram (high-resolution)
-   - Three-level evaluation framework (high-resolution)
-   - Three-agent loop (high-resolution)
+## Visualizations Checklist
 
-   ### D Supplementary Results
-   - Full per-condition metric tables (Jaccard, BERTScore, Alignment)
+Conceptual diagrams (draw before writing):
+\-- 3.1: Two-stack pipeline (generation/evaluation isolation and data flow)
+\-- 3.2: Three-agent loop (interaction cycle with example exchange for generation)
+\-- 3.3: Frozen history + slicing at 3 points
+\-- 3.5: Three-level framework (central figure, shows how the three methods relate)
+
+Results figures (populate when data is in):
+\-- 5.1: Validity rates + strategy frequency heatmap
+\-- 5.2: Jaccard by model x temperature
+\-- 5.3: BERTScore by model x temperature
+\-- 5.4: Alignment scores + per-strategy stacked bar
+\-- 5.5: Correlation matrix + radar chart
+\-- 5.6: Vignette heatmap + slice depth comparison

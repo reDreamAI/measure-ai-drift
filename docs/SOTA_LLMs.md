@@ -26,13 +26,13 @@
 
 ### Releases in Last 2-4 Weeks
 
-- **GPT-5.4** (Mar 5): Combines GPT-5.3-Codex coding strength with improved reasoning and computer use. 83% on GDPval (professional knowledge work). Replaces GPT-5.2 as frontier ceiling. Variants: GPT-5.4 Thinking, GPT-5.4 Pro. 1M context. $2.50/$15.00 per M tokens (cached input: $0.25/M). **Now our proprietary ceiling eval target**
-- **Gemini 3.1 Flash Lite** (Mar 3): Cheapest Gemini model. $0.25/$1.50 per M tokens. 2.5x faster TTFT than 2.5 Flash. 86.9% GPQA Diamond. Used as testing eval target
+- **GPT-5.4** (Mar 5): Combines GPT-5.3-Codex coding strength with improved reasoning and computer use. 83% on GDPval (professional knowledge work). Replaces GPT-5.2 as frontier ceiling. Variants: GPT-5.4 Thinking, GPT-5.4 Pro. 1M context. $2.50/$15.00 per M tokens (cached input: $0.25/M)
+- **Gemini 3.1 Flash Lite** (Mar 3): Cheapest Gemini model. $0.25/$1.50 per M tokens. 2.5x faster TTFT than 2.5 Flash. 86.9% GPQA Diamond
 - **Gemini 3 Flash** (~Feb 2026): Default Gemini app model. Outperforms 2.5 Pro at 3x speed. $0.50/$3.00 per M tokens
 - **DeepSeek V4** (early Mar): ~1T total / ~32B active MoE. 1M context. Native multimodal (vision + audio + text). Optimized for Huawei Ascend chips. Apache 2.0. Not EU-sovereign. Active EU GDPR issues persist
 - **GPT-5.3-Codex** (Feb 24): 400K context. Industry-leading coding. $1.75/$14.00 per M tokens
-- **Gemini 3.1 Pro** (Feb 19): Google's latest flagship. 77.1% ARC-AGI-2, 1M context, 65K output tokens. **Gemini 3 Pro Preview shut down Mar 9. Now our experiment judge (thinking aids accuracy)**
-- **Qwen 3.5** (Feb 17-24): Full family released. 397B-A17B flagship MoE, 27B dense, 35B-A3B efficient MoE. Apache 2.0. Native multimodal. **Qwen 3.5 27B replaces Qwen 3 32B as eval target**
+- **Gemini 3.1 Pro** (Feb 19): Google's latest flagship. 77.1% ARC-AGI-2, 1M context, 65K output tokens. Gemini 3 Pro Preview shut down Mar 9
+- **Qwen 3.5** (Feb 17-24): Full family released. 397B-A17B flagship MoE, 27B dense, 35B-A3B efficient MoE. Apache 2.0. Native multimodal
 - **MiniMax M2.5** (Feb 12): 230B MoE, 10B active. Lightning Attention. 205K context. 80.2% SWE-Bench Verified. Modified MIT license. Chinese origin (Shanghai). Available on OpenRouter. Extremely cheap ($0.15/$1.20 per M tokens for standard variant)
 - **GLM-5** (Feb 11): 744B MoE, 40B active, 256 experts. 205K context, 128K output. 77.8% SWE-bench, 92.7% AIME 2026. Trained entirely on Huawei Ascend (zero NVIDIA dependency). MIT license. Chinese origin (Zhipu AI / Z.ai). Available on OpenRouter
 - **GPT-5.2** (Feb 2026): 400K context, 100% AIME 2025, hallucination rate 6.2%. Superseded by GPT-5.4
@@ -43,7 +43,7 @@
 
 ### Mistral Ecosystem Updates
 
-- **Mistral acquired Koyeb** (Feb 17): Paris-based cloud startup (ex-Scaleway founders). Signals full-stack EU-sovereign AI cloud ambitions. Strengthens sovereignty narrative for thesis
+- **Mistral acquired Koyeb** (Feb 17): Paris-based cloud startup (ex-Scaleway founders). Signals full-stack EU-sovereign AI cloud ambitions
 - **Mistral Compute** (announced Jun 2025) + Koyeb = building European inference infrastructure independent of US cloud
 - **Ministral 3** (Dec 2025): 3B/8B/14B dense models, Apache 2.0. The 14B reasoning variant scores 85% on AIME '25
 - **Devstral 2** (Dec 2025): 123B dense for coding, 256K context. Devstral Small 2: 24B, Apache 2.0
@@ -66,14 +66,14 @@ GPT-4.1 was released Apr 2025 and retired from ChatGPT Feb 13, 2026, but all thr
 
 ## EU Legality and Training Data Provenance
 
-For a therapy thesis, both legal usability and data provenance matter. Models with opaque training data are harder to defend academically.
+Legal usability and data provenance vary across models. Relevant for EU deployment and research transparency.
 
 ### EU Legality by Model
 
 | Model | EU-Legal? | Training Data Transparency | Risk Notes |
 |---|---|---|---|
-| **Mistral Large 3** | Yes (EU company) | Undisclosed, but EU-origin likely compliant | Lowest risk. **Primary therapy subject.** Apache 2.0, 675B MoE |
-| **Mistral Small 3.2** | Yes (EU company) | Undisclosed, but EU-origin likely compliant | Low risk. Small-class comparator |
+| **Mistral Large 3** | Yes (EU company) | Undisclosed, but EU-origin likely compliant | Lowest risk. Apache 2.0, 675B MoE |
+| **Mistral Small 3.2** | Yes (EU company) | Undisclosed, but EU-origin likely compliant | Low risk. Apache 2.0, 24B dense |
 | **K2-V2 Instruct** | Yes (Apache 2.0) | **Fully open** - 12T tokens from TxT360, all mixtures published | Lowest risk. Best provenance story. No hosted inference |
 | **OLMo 3.1 Instruct** | Yes (Apache 2.0) | **Fully open** - 9.3T token Dolma 3 corpus, all sources documented | Lowest risk. Allen AI nonprofit |
 | **Qwen 3 / 3.5** | Yes if self-hosted (Apache 2.0) | High-level disclosure (36T tokens), but no detailed source list. No EU GDPR representative | Medium. Chinese origin, opaque data details |
@@ -99,9 +99,9 @@ For a therapy thesis, both legal usability and data provenance matter. Models wi
 
 | Model | Params | Provider | Notes |
 |---|---|---|---|
-| **Mistral Large 3** | 675B (41B active, MoE) | OpenRouter / Mistral API / Scaleway | **Primary therapy subject.** Released Dec 2025. Apache 2.0. 256K context |
+| **Mistral Large 3** | 675B (41B active, MoE) | OpenRouter / Mistral API / Scaleway | Released Dec 2025. Apache 2.0. 256K context |
 | **Mistral Medium 3.1** | undisclosed | OpenRouter / Mistral API | EU-origin, closed weights. Mistral vertical scaling |
-| **Mistral Small 3.2** | 24B dense | Scaleway (EU) | Small-class comparator. Apache 2.0 |
+| **Mistral Small 3.2** | 24B dense | Scaleway (EU) | Apache 2.0 |
 | **Ministral 3 14B** | 14B dense | Mistral API | Apache 2.0. Reasoning variant: 85% AIME '25. Edge deployment |
 | **OpenEuroLLM** | TBD | EU consortium | First versions mid-2026. 24 EU languages |
 
@@ -111,7 +111,7 @@ For a therapy thesis, both legal usability and data provenance matter. Models wi
 
 ## Best Non-Reasoning Instruct Models (Mid-to-Large)
 
-These are the most relevant models for our evaluation targets: non-reasoning, instruction-following, mid-to-large size.
+Non-reasoning, instruction-following models in the mid-to-large size range.
 
 ### Tier 1: Fully Open (weights + training data + code)
 
@@ -126,8 +126,8 @@ Best for academic defensibility. You can cite exactly what these were trained on
 
 | Model | Size | Origin | Performance | License |
 |---|---|---|---|---|
-| **Mistral Large 3** | 675B MoE (41B active) | Mistral (France) | Our primary subject. #2 open model on LMArena. Strong multilingual, 256K context | Apache 2.0 |
-| **Mistral Small 3.2** | 24B dense | Mistral (France) | Small-class comparator. Comparable to 70B models on many tasks despite 24B size | Apache 2.0 |
+| **Mistral Large 3** | 675B MoE (41B active) | Mistral (France) | #2 open model on LMArena. Strong multilingual, 256K context | Apache 2.0 |
+| **Mistral Small 3.2** | 24B dense | Mistral (France) | Comparable to 70B models on many tasks despite 24B size | Apache 2.0 |
 
 ### Tier 3: Open Weights (good license, opaque data, non-EU origin)
 
@@ -138,9 +138,9 @@ Best for academic defensibility. You can cite exactly what these were trained on
 | **GLM-5** | 744B MoE (40B active) | Zhipu AI / Z.ai (China) | NEW (Feb 2026). 205K context, 128K output. 77.8% SWE-bench, 92.7% AIME 2026. Trained on Huawei Ascend. On OpenRouter | MIT |
 | **Kimi K2.5** | 1T MoE (32B active) | Moonshot AI (China) | NEW (Jan 2026). 256K context. Native multimodal. Agent swarm mode. On OpenRouter | Modified MIT |
 | **MiniMax M2.5** | 230B MoE (10B active) | MiniMax (China) | NEW (Feb 2026). 205K context. Lightning Attention. 80.2% SWE-bench. Extremely cheap. On OpenRouter | Modified MIT |
-| **Qwen 3 32B** | 32B dense | Alibaba (China) | Current eval target. Benchmark leader at 32B. Hybrid thinking modes | Apache 2.0 |
+| **Qwen 3 32B** | 32B dense | Alibaba (China) | Benchmark leader at 32B. Hybrid thinking modes. Superseded by Qwen 3.5 27B | Apache 2.0 |
 | **Gemma 3 27B** | 27B | Google (US) | Same size class as Mistral Small. Good comparator | Open |
-| **Llama 3.3 70B** | 70B | Meta (US) | Text-only = EU-legal. Original efficacy study model | Meta license |
+| **Llama 3.3 70B** | 70B | Meta (US) | Text-only = EU-legal. Reliable 70B baseline | Meta license |
 | **GPT-oss-120B** | 120B | OpenAI (US) | Apache 2.0. OpenAI's first open-weight model. Strong reasoning | Apache 2.0 |
 
 ---
@@ -149,8 +149,8 @@ Best for academic defensibility. You can cite exactly what these were trained on
 
 | Model | Provider | Tier | Notes |
 |---|---|---|---|
-| **GPT-5.4** | OpenAI | Top | (Mar 5). $2.50/$15.00. 1M context. 83% GDPval. **Our proprietary ceiling eval target** |
-| **Gemini 3.1 Pro** | Google | Top | (Feb 19). 77.1% ARC-AGI-2, 1M context. **Our experiment judge** |
+| **GPT-5.4** | OpenAI | Top | (Mar 5). $2.50/$15.00. 1M context. 83% GDPval |
+| **Gemini 3.1 Pro** | Google | Top | (Feb 19). 77.1% ARC-AGI-2, 1M context, 65K output. Thinking mode |
 | **Claude Opus 4.6** | Anthropic | Top | Top reasoning performance. 1M context (beta). 128K output |
 | **Claude Sonnet 4.6** | Anthropic | Top | Strong reasoning, faster than Opus. Best value at frontier tier |
 | **GPT-5.2** | OpenAI | High | 400K context, 100% AIME 2025. Superseded by GPT-5.4 |
@@ -168,49 +168,12 @@ Rate limits: 20 RPM, 200 req/day without credits, higher with credits.
 | **DeepSeek R1** | 671B MoE | Strong reasoning, Chinese-origin (high EU risk) |
 | **DeepSeek V3** | 671B MoE | General purpose, same risk as R1 |
 | **Qwen3 Coder 480B** | 480B MoE | Strongest free coding model, 262K context |
-| **Mistral Small 3.1** | 24B | Slightly older than our 3.2 comparator |
-| **Gemma 3 27B** | 27B | Good size-class comparator |
+| **Mistral Small 3.1** | 24B | Slightly older than 3.2 |
+| **Gemma 3 27B** | 27B | Google, open weights, 27B class |
 | **NVIDIA Nemotron Nano 9B v2** | 9B | Fast, good for testing |
 | **GLM-5** | 744B MoE (40B active) | Frontier-class open-weight. MIT license. Chinese-origin (high EU risk) |
 | **MiniMax M2.5** | 230B MoE (10B active) | Extremely cheap. Modified MIT. Chinese-origin (high EU risk) |
-| **Dolphin Mistral Venice 24B** | 24B | Uncensored Mistral fine-tune. Current patient model |
-
----
-
-## Project-Specific Model Assignments
-
-> Cross-reference with `src/config/models.yaml` for actual configuration.
-
-### Testing (Free Tier)
-
-For pipeline development and debugging.
-
-- Eval targets: `meta-llama/llama-3.3-70b-instruct:free`, `openai/gpt-oss-120b:free`
-- Judge: Gemini 3.1 Flash Lite (Google AI Studio, T=0.0)
-- Patient: `cognitivecomputations/dolphin-mistral-24b-venice-edition:free` (always free, only uncensored option)
-- Router: `meta-llama/llama-3.3-70b-instruct:free`
-- Mistral Small removed from testing: shares Venice provider rate limit with patient
-
-### Experiment (Full Run)
-
-**Primary therapy subject:** Mistral Large 3 (OpenRouter)
-
-**Evaluation targets (compared against primary) - all non-thinking:**
-- Small EU: Mistral Small 3.2 (OpenRouter)
-- Small benchmark: Qwen 3.5 27B (OpenRouter, `reasoning.effort: none`)
-- Small provenance: OLMo 3.1 32B Instruct (OpenRouter)
-- Mid continuity: Llama 3.3 70B (OpenRouter)
-- Mid EU scaling: Mistral Medium 3.1 (OpenRouter)
-- Large open-weight: GLM-5 744B MoE / 40B active (OpenRouter, `reasoning.effort: none`)
-- Large open-weight: DeepSeek V3.2 671B MoE (OpenRouter)
-- Proprietary ceiling: GPT-5.4 (OpenRouter, non-thinking, $2.50/$15.00)
-
-**Supporting roles (not being evaluated):**
-- Patient: Dolphin Mistral Venice 24B (OpenRouter, free) - same across both modes
-- Router: Llama 3.3 70B (OpenRouter)
-- Judge: Gemini 3.1 Pro (Google AI Studio, T=0.0, free credits) - thinking aids judgment accuracy, no family overlap with any eval target
-
-> **Provider policy:** OpenRouter for everything, except Gemini via Google AI Studio (free credits). Groq no longer receives model updates since NVIDIA deal
+| **Dolphin Mistral Venice 24B** | 24B | Uncensored Mistral fine-tune. Venice-hosted |
 
 ---
 
@@ -218,12 +181,12 @@ For pipeline development and debugging.
 
 | Model | Why | Timeline |
 |---|---|---|
-| **DeepSeek V4** | ~1T MoE, ~32B active. Apache 2.0. Potential upgrade from V3.2 eval target if API becomes available | Released early Mar 2026, not yet on hosted API |
-| **DeepSeek V3.2 structured output** | Currently json_object only, no json_schema. Monitor for improvements | Ongoing |
+| **DeepSeek V4** | ~1T MoE, ~32B active. Apache 2.0. Native multimodal | Released early Mar 2026, not yet on hosted API |
+| **DeepSeek V3.2 structured output** | Currently json_object only, no json_schema | Ongoing |
 | **NVIDIA Nemotron 3 Super/Ultra** | ~100B / ~500B. Hybrid Mamba-Transformer MoE | H1 2026 |
 | **OpenEuroLLM** | EU institutional sovereign LLM | Mid-2026 |
-| **K2-V2 hosted inference** | 70B fully open, ideal comparator if hosted | No timeline |
-| **Guide Labs Steerling-8B** | Interpretable LLM, output traceable to training data. Relevant for clinical safety discussion | Available now, 8B too small for eval target |
+| **K2-V2 hosted inference** | 70B fully open, no hosted inference yet | No timeline |
+| **Guide Labs Steerling-8B** | Every output token traceable to training data origins. Interesting for interpretability | Available now, 8B only |
 
 ---
 
@@ -236,9 +199,6 @@ When updating this file, verify:
 - [ ] Are the frontier model rankings still accurate?
 - [ ] Have rate limits or pricing changed?
 - [ ] Any new open-weight models in the 24-32B range?
-- [ ] Is K2-V2 / OLMo 3.1 available on any hosted provider?
-- [ ] Is Qwen 3.5 27B available on OpenRouter?
-- [ ] Has DeepSeek V4 been released with open weights?
-- [ ] Is GPT-oss-120B still free on OpenRouter? (testing judge)
-- [x] ~~Has judge model been decided?~~ Gemini 3.1 Pro (experiment), GPT-oss-120B (testing)
-- [ ] Has models.yaml been updated to match new assignments?
+- [ ] Is K2-V2 available on any hosted provider?
+- [ ] Has DeepSeek V4 landed on hosted APIs?
+- [ ] Any new EU-sovereign options beyond Mistral?

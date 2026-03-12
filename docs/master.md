@@ -1,7 +1,7 @@
 # Measure-AI-Drift - Project Master Document
 
 > Single source of truth for thesis scope, architecture, design decisions, and model selection.
-> For chapter structure, see [thesis_outline.md](thesis_outline.md).
+> For chapter structure, see [thesis_extended_structure.md](thesis_extended_structure.md).
 > For Claude Code working instructions, see [../CLAUDE.md](../CLAUDE.md).
 
 ---
@@ -204,46 +204,42 @@ All other roles (patient, router, judge) and all other evaluation targets have *
 
 ### 6.2 Evaluation Targets (Therapist Role)
 
-These are the models being compared on the three evaluation metrics, organized by size class.
+These are the 6 models being compared on the three evaluation metrics, all running in non-thinking mode.
 
 **Primary subject:**
 
-| Model | Size | Provider | Notes | Config status |
-|-------|------|----------|-------|---------------|
-| **Mistral Large 3** | 675B MoE (41B active) | OpenRouter (Mistral API fallback) | EU-sovereign, Apache 2.0. The EU flagship this thesis evaluates | configured |
+| Model | Size | Provider | Notes |
+|-------|------|----------|-------|
+| **Mistral Large 3** | 675B MoE (41B active) | OpenRouter | EU-sovereign, Apache 2.0. The EU flagship this thesis evaluates |
 
 **Open-weight comparators (by size class):**
 
-| Class | Model | Size | Provider | Why this model | Config status |
-|-------|-------|------|----------|----------------|---------------|
-| Small | **Mistral Small 3.2** | 24B dense | Scaleway | EU-origin, Apache 2.0. Tests how far the small EU model falls behind the flagship | configured |
-| Small | **Qwen 3 32B** | 32B | Groq | Benchmark leader at this size class. Apache 2.0. Strongest open-weight comparator for raw performance | configured |
-| Small | **OLMo 3.1 Instruct** | 32B | OpenRouter (DeepInfra) | Fully open (weights + training data + code). Best provenance story for a thesis | configured |
-| Mid | **Llama 3.3 70B** | 70B | Groq / OpenRouter (free) | Original model from the efficacy study that motivated this thesis. Provides continuity with prior work | configured |
-| Mid | **Mistral Medium 3.1** | undisclosed | OpenRouter (Mistral API fallback) | EU-origin, same Mistral family as primary subject. Closed weights, API-only. Shows scaling within the Mistral line | configured |
+| Class | Model | Size | Provider | Why this model |
+|-------|-------|------|----------|----------------|
+| Small | **Qwen 3.5 27B** | 27B dense | OpenRouter | Benchmark leader at this size class. Hybrid-thinking, reasoning disabled for fair comparison |
+| Small | **OLMo 3.1 32B** | 32B dense | OpenRouter | Fully open (weights + training data + code). Best provenance story for a thesis |
+| Mid | **Llama 3.3 70B** | 70B dense | OpenRouter | Original model from the efficacy study. Provides continuity with prior work |
+| Large | **DeepSeek V3.2** | 671B MoE | OpenRouter | Similar MoE architecture to Mistral Large 3. Direct architectural comparator |
 
-**Proprietary adversary:**
+**Proprietary ceiling:**
 
-| Model | Provider | Why this model | Config status |
-|-------|----------|----------------|---------------|
-| **Gemini 3.1 Pro** | Google | Proprietary ceiling with free credits. Released Feb 19, 2026. 77.1% ARC-AGI-2, 1M context | configured |
-| **Gemini 2.5 Flash** | Google | Fast, cheap. Currently used for pipeline testing, may stay as lightweight proprietary reference | configured |
+| Model | Provider | Why this model |
+|-------|----------|----------------|
+| **GPT-5.4** | OpenRouter ($2.50/$15.00) | Strongest proprietary model without thinking overhead. Fair comparison with all other non-thinking targets |
 
 **Selection rationale:**
-- Size-class ladder: 24B (small EU) → 32B (benchmark leader + provenance baseline) → 70B (efficacy study) → mid (Mistral scaling) → 675B MoE (subject, EU flagship) → frontier (proprietary ceiling)
-- Small class has three models: Mistral Small (EU baseline), Qwen 3 (benchmark leader), OLMo 3.1 (full data provenance)
-- Llama 3.3 70B stays because it was the model used in the original efficacy study, providing direct continuity
-- Mistral Small + Medium + Large test vertical scaling within the same EU vendor
-- OLMo 3.1 has fully transparent training data (Dolma 3 corpus), making it the most defensible open-weight comparator for an academic thesis
-- Qwen 3 32B is the strongest open-weight model at this size class (Apache 2.0, 535 tok/s on Groq). Chinese origin with opaque training data, but included for raw performance comparison
-- Gemini 3.1 Pro as proprietary ceiling (released Feb 19, 2026). Free credits available
-- K2-V2 Instruct (70B, fully open) would be ideal but has no hosted inference as of Feb 2026, only self-host
+- Size-class ladder: 27-32B (small dense) -> 70B (mid dense) -> 671-675B MoE (large) -> frontier (proprietary ceiling)
+- Small class: Qwen 3.5 (benchmark leader) + OLMo 3.1 (full data provenance)
+- Llama 3.3 70B: continuity with the original efficacy study
+- DeepSeek V3.2: MoE architecture comparator for Mistral Large 3
+- GPT-5.4 as proprietary ceiling (released Mar 5, 2026)
 
-**Dropped from earlier plans:**
-- GPT-5: replaced by Gemini 3 Pro (free credits available)
-- Gemma 3 27B: no unique angle that OLMo 3.1 doesn't cover better (OLMo has full data provenance)
+**Dropped (kept as commented options in models.yaml):**
+- Mistral Small 3.2 (redundant with Qwen/OLMo at small class)
+- Mistral Medium 3.1 (closed weights, weak thesis story)
+- GLM-5 (third MoE adds little over DeepSeek V3.2)
 
-> All 8 evaluation targets are configured in `models.yaml`. See [thesis_models.md](thesis_models.md) for the full assignment table and [SOTA_LLMs.md](SOTA_LLMs.md) for current availability and pricing.
+> All 6 evaluation targets are configured in `models.yaml`. See [thesis_models.md](thesis_models.md) for the full assignment table and [SOTA_LLMs.md](SOTA_LLMs.md) for current availability and pricing.
 
 ### 6.3 Supporting Roles
 
@@ -251,26 +247,20 @@ These models are NOT being evaluated. They serve infrastructure roles:
 
 | Role | Current model | Purpose |
 |------|--------------|---------|
-| **Patient** | Dolphin Mistral Venice 24B (OpenRouter, free) | Uncensored Mistral fine-tune, good for nightmare/trauma roleplay without safety refusals |
-| **Router** | Mistral Nemo / Llama 70B | Classifies IRT stage during generation |
-| **Judge** | Gemini Flash (T=0.0) | Scores plan-output alignment (Method 3) |
+| **Patient** | Dolphin Mistral Venice 24B (OpenRouter, free) | Uncensored Mistral fine-tune for nightmare/trauma roleplay |
+| **Router** | Llama 3.3 70B (OpenRouter) | Classifies IRT stage during generation |
+| **Judge** | Gemini 3.1 Pro (Google AI Studio, T=0.0) | Scores plan-output alignment (Method 3). Thinking enabled. No family overlap with eval targets |
 
 ### 6.4 Providers
 
 | Provider | Base URL | Used for |
 |----------|----------|----------|
-| OpenRouter | `openrouter.ai/api/v1` | Mistral Large 3 (primary), Mistral Medium 3.1, OLMo 3.1, Patient (Venice) |
-| Scaleway | `api.scaleway.ai/v1` | Mistral Small 3.2 |
-| Groq | `api.groq.com/openai/v1` | Qwen 3 32B, Llama 3.3 70B, Router |
-| Gemini | `generativelanguage.googleapis.com/v1beta/openai/` | Gemini 3 Pro, Judge (Gemini Flash) |
-| Mistral API | `api.mistral.ai/v1` | Fallback for Mistral Large/Medium (direct access) |
+| OpenRouter | `openrouter.ai/api/v1` | All 6 evaluation targets, Patient (Venice), Router |
+| Google AI Studio | `generativelanguage.googleapis.com/v1beta/openai/` | Judge (Gemini 3.1 Pro) |
 
-### 6.5 OpenRouter Free Tier Constraints
+### 6.5 OpenRouter Constraints
 
-Free models (`:free` suffix) have rate limits:
-- **50 req/day** without credits, **1000 req/day** with $10+ credits purchased
-- **20 RPM** (some Venice-hosted models: 8 RPM)
-- Per experiment: 6 vignettes × 3 slices × 10 trials = 180 calls per temperature → 360 calls per model for both T=0.0 and T=0.7
+- Per experiment: 6 vignettes x 3 slices x 10 trials = 180 calls per temperature, 360 calls per model for both T=0.0 and T=0.7
 
 ---
 
@@ -284,10 +274,10 @@ Free models (`:free` suffix) have rate limits:
 | Slices | slice_1, slice_2, slice_3 |
 | Trials per condition | 10 |
 | Temperatures | T=0.0 (deterministic), T=0.7 (stochastic) |
-| Models | 8 evaluation targets (see §6.2) |
+| Models | 6 evaluation targets (see §6.2) |
 
-Total per model: 6 × 3 × 10 × 2 = **360 trials**
-Total across all models: 360 × 8 = **2,880 trials**
+Total per model: 6 x 3 x 10 x 2 = **360 trials**
+Total across all models: 360 x 6 = **2,160 trials**
 
 ### 7.2 Output Structure
 
@@ -313,14 +303,13 @@ experiments/runs/{timestamp}_{model}_{vignette}/
 
 | Document | Content |
 |----------|---------|
-| [thesis_outline.md](thesis_outline.md) | Chapter and subchapter structure with keypoints |
-| [thesis_proposal.md](thesis_proposal.md) | Original research proposal (Jan 2026) |
+| [thesis_extended_structure.md](thesis_extended_structure.md) | Canonical thesis outline with visualization markers |
+| [thesis_models.md](thesis_models.md) | Current LLM role assignments and evaluation targets |
+| [SOTA_LLMs.md](SOTA_LLMs.md) | Living reference for current model landscape (overrides LLM training data) |
+| [TODO.md](TODO.md) | Current action items and blockers |
 | [architecture_plan.md](architecture_plan.md) | Full project file tree |
-| [strategy_taxonomy_evolution.md](strategy_taxonomy_evolution.md) | Taxonomy journey: 8 → 6 → 7 categories |
+| [strategy_taxonomy_evolution.md](strategy_taxonomy_evolution.md) | Taxonomy journey: 8 -> 6 -> 7 categories |
 | [plan_mechanism_analysis.md](plan_mechanism_analysis.md) | Plan as declared intent, fused vs. chained comparison |
 | [alignment_approach_analysis.md](alignment_approach_analysis.md) | LLM judge vs. NLI rationale, ternary scoring design |
 | [bertscore_model_selection.md](bertscore_model_selection.md) | DeBERTa-XLarge-MNLI selection rationale |
-| [pipeline_flowcharts.md](pipeline_flowcharts.md) | Mermaid diagrams of full architecture |
 | [STYLE.md](STYLE.md) | Writing style rules for all markdown files |
-| [thesis_models.md](thesis_models.md) | Current LLM role assignments and evaluation targets |
-| [SOTA_LLMs.md](SOTA_LLMs.md) | Living reference for current model landscape (overrides LLM training data) |
