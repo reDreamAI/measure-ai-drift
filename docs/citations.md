@@ -72,14 +72,40 @@
   Use: structured multi-agent interview protocol. Their guided interview mechanism is analogous to our stage-based conversation flow (recording, exploring, rewriting).
 
 ### 3.4 Strategy Taxonomy
-- `34DFEBDG` Albanese et al. (2022) -- also cited in 2.1
-  Use: our 6-category taxonomy maps to *mechanism* rather than *observed patient behavior*. Cite Albanese's empirical categories to show the clinical grounding, then explain why we chose mechanism-level categories (Jaccard scoring requires discrete, non-overlapping sets).
+
+Our 6-category taxonomy (confrontation, self_empowerment, safety, cognitive_reframe, social_support, sensory_modulation) was built from two clinical foundations: Germain's mastery dimensions and Harb's empirical rescripting categories. Both classify what changes in a rescripted nightmare, but at different levels of abstraction. We chose *mechanism-level* categories (HOW the change works) rather than outcome-level (WHAT the dreamer achieves) because mechanism categories produce discrete, non-overlapping sets that Jaccard scoring requires.
+
+**Clinical grounding (mastery dimensions):**
 
 - `62ZMHBC3` Germain et al. (2004) "Increased Mastery Elements Associated With IRT for Nightmares." *Dreaming* 14(4), 195-206.
-  Use: Multidimensional Mastery Scale (Physical, Social, Environmental, Emotional, Mystical, Avoidance) provides clinical precedent for decomposing rescripting into distinct mechanism dimensions. Grounds our taxonomy in established dream research.
+  Their Multidimensional Mastery Scale has 6 dimensions. The mapping to our taxonomy:
+  - Physical Mastery (bodily action) maps to **confrontation** (action toward threat) and **self_empowerment** (dreamer transforms)
+  - Social Mastery (enlisting help) maps to **social_support**
+  - Environmental Mastery (changing surroundings) maps to **sensory_modulation** (sensory shift) and **safety** (barriers)
+  - Emotional Mastery (internal calming) maps to **sensory_modulation** (merged with emotional_regulation in v4)
+  - Mystical Mastery (supernatural transformation) maps to **cognitive_reframe** (element changes meaning) and **self_empowerment** (dreamer gains magical ability)
+  - Avoidance (escape, withdrawal) -- deliberately excluded. See rationale below.
+
+**Clinical grounding (empirical rescripting strategies):**
 
 - `25UR8BHJ` Harb et al. (2012) "Combat-Related PTSD Nightmares and Imagery Rehearsal." *Journal of Traumatic Stress* 25, 511-518.
-  Use: 5 rescripting categories coded by independent raters (alternative endings, positive image insertion, threat transformation, reality markers, distancing). Empirical baseline for how patients actually rescript nightmares.
+  5 rescripting categories coded by independent raters. The mapping:
+  - Alternative endings (58%) maps to **confrontation** or **self_empowerment** (depends on how ending changes)
+  - Positive image insertion (23%) maps to **sensory_modulation**
+  - Threat transformation (13%) maps to **cognitive_reframe**
+  - Reality markers (10%) -- excluded. Lucid dreaming cue, not a rescripting mechanism.
+  - Distancing (8%) -- excluded. See avoidance rationale below.
+
+**Why avoidance/distancing is excluded:**
+
+- `25UR8BHJ` Harb et al. (2012) found that violence in rescripted dreams predicted *worse* treatment outcomes. Effective rescripting resolves the central nightmare theme rather than escaping it. Distancing was the least-used strategy (8%) and does not resolve the threat.
+- `34DFEBDG` Albanese et al. (2022) (also cited in 2.1) reviews that IRT works by increasing mastery *over* the nightmare, not by avoiding it. Avoidance reinforces the fear memory rather than overwriting it.
+- `FGA5H3ZD` Krakow & Zadra (2006) frame IRT as "changing the nightmare" not "leaving the nightmare." The five-stage protocol targets transformation, not withdrawal.
+
+Our taxonomy captures all therapeutically desirable mechanisms from both scales. The uncovered dimensions (avoidance, reality markers) are either clinically counterproductive in single-turn rescripting or outside the scope of IRT.
+
+- `34DFEBDG` Albanese et al. (2022) -- also cited in 2.1
+  Use: empirical rescripting strategy breakdown grounds our taxonomy in observed patient behavior.
 
 ---
 
