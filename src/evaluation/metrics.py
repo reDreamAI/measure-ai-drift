@@ -101,6 +101,34 @@ def compute_validity_rate(strategy_sets: list[set[str]], max_allowed: int = 2) -
     return valid_count / len(strategy_sets)
 
 
+def compute_modal_set_agreement(strategy_sets: list[set[str]]) -> float:
+    """Compute modal-set agreement: fraction of trials matching the most common strategy set.
+
+    Complements Jaccard by measuring exact agreement rather than overlap.
+    With discrete strategy picks (1-2 from 6), this is often more informative
+    than mean pairwise Jaccard.
+
+    Args:
+        strategy_sets: List of strategy sets (one per trial).
+
+    Returns:
+        Fraction of trials matching the mode (0.0-1.0).
+
+    Example:
+        >>> sets = [{"a", "b"}, {"a", "b"}, {"a", "c"}]
+        >>> compute_modal_set_agreement(sets)
+        0.6666...
+    """
+    if not strategy_sets:
+        return 0.0
+
+    from collections import Counter
+    # Convert sets to frozensets for hashing
+    counts = Counter(frozenset(s) for s in strategy_sets)
+    mode_count = counts.most_common(1)[0][1]
+    return mode_count / len(strategy_sets)
+
+
 def compute_pairwise_jaccard(
     sets: list[set[str]],
     only_valid: bool = False,
@@ -255,6 +283,7 @@ async def compute_alignment(
     strategy_sets: list[set[str]],
     responses: list[str],
     taxonomy: dict[str, Any],
+    experiment: bool = False,
 ) -> dict[str, Any]:
     """Evaluate plan-output alignment using an LLM judge.
 
@@ -283,8 +312,8 @@ async def compute_alignment(
     taxonomy_block = _build_taxonomy_block(taxonomy)
     system_prompt = system_template.replace("{taxonomy_block}", taxonomy_block)
 
-    # Create judge provider (Gemini Flash at t=0.0 by default)
-    judge = create_provider("judge")
+    # Create judge provider: flash-lite for testing, pro for experiment
+    judge = create_provider("judge", experiment=experiment)
 
     per_trial: list[float] = []
     raw_judgments: list[dict[str, Any]] = []

@@ -163,12 +163,18 @@ def load_config(config_path: str | Path | None = None) -> dict[str, Any]:
     return config
 
 
-def create_provider(role: str, config_path: str | Path | None = None) -> LLMProvider:
+def create_provider(
+    role: str,
+    config_path: str | Path | None = None,
+    experiment: bool = False,
+) -> LLMProvider:
     """Create provider for a role (therapist/patient/router/judge).
 
     Args:
         role: Role identifier from config, or evaluation model name
         config_path: Optional path to config file
+        experiment: If True, use experiment-tier model for roles that define
+            a ``use_experiment`` key (e.g. judge upgrades to gemini31_pro).
 
     Returns:
         Configured LLMProvider instance
@@ -180,6 +186,9 @@ def create_provider(role: str, config_path: str | Path | None = None) -> LLMProv
     if role in config.get("roles", {}):
         role_config = config["roles"][role]
         use_key = role_config.get("use")
+        # Upgrade to experiment tier when available and requested
+        if experiment and "use_experiment" in role_config:
+            use_key = role_config["use_experiment"]
 
         if use_key and role in model_options:
             model_def = model_options[role].get(use_key)

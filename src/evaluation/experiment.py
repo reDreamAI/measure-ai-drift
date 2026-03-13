@@ -27,6 +27,7 @@ from src.evaluation.metrics import (
     extract_plan_strategies,
     compute_validity_rate,
     compute_pairwise_jaccard,
+    compute_modal_set_agreement,
     compute_pairwise_bertscore,
     compute_alignment,
 )
@@ -77,12 +78,16 @@ class ExperimentRun:
         therapist_provider: Any = None,
     ) -> list[TrialResult]:
         """Run the experiment and save results."""
+        # Detect slice from frozen history filename (e.g., "slice_2.json" -> 2)
+        slice_number = self._detect_slice(self.frozen_history)
+
         # Store config
         self._config = {
             "model": self.model_name,
             "vignette": self.vignette_name,
             "n_trials": n_trials,
             "temperature": temperature,
+            "slice": slice_number,
             "language": language,
             "parallel": parallel,
             "mode": mode,
@@ -135,15 +140,28 @@ class ExperimentRun:
         bertscore = compute_pairwise_bertscore(responses)
 
         # Compute alignment (Level 3.3) — LLM judge call
+        # Auto-detect experiment tier: experiment models use gemini31_pro judge
+        from src.llm.provider import load_config
+        _cfg = load_config()
+        _experiment_names = {
+            t["name"] for t in _cfg.get("evaluation_targets", [])
+            if not t.get("name", "").endswith("_test")
+        }
+        is_experiment = self.model_name in _experiment_names
+
         taxonomy = load_strategy_taxonomy()
-        alignment = await compute_alignment(strategy_sets, responses, taxonomy)
+        alignment = await compute_alignment(
+            strategy_sets, responses, taxonomy, experiment=is_experiment,
+        )
 
         metrics = {
             "n_trials": len(self._results),
             "temperature": self._config.get("temperature", 0.0),
+            "slice": self._config.get("slice"),
             "validity_rate": compute_validity_rate(strategy_sets),
             "jaccard_all": compute_pairwise_jaccard(strategy_sets, only_valid=False),
             "jaccard_valid_only": compute_pairwise_jaccard(strategy_sets, only_valid=True),
+            "modal_set_agreement": compute_modal_set_agreement(strategy_sets),
             "bertscore_f1": bertscore["f1"],
             "bertscore_precision": bertscore["precision"],
             "bertscore_recall": bertscore["recall"],
@@ -169,6 +187,24 @@ class ExperimentRun:
             for s in strategies:
                 counts[s] = counts.get(s, 0) + 1
         return dict(sorted(counts.items(), key=lambda x: -x[1]))
+
+    @staticmethod
+    def _detect_slice(conversation: Conversation) -> int | None:
+        """Detect slice number from frozen history metadata or source path."""
+        # Check if metadata carries slice info
+        meta = getattr(conversation, "metadata", {}) or {}
+        if "slice" in meta:
+            return int(meta["slice"])
+
+        # Check source_path for slice_N pattern
+        source = meta.get("source_path", "")
+        if source:
+            import re
+            m = re.search(r"slice_(\d+)", str(source))
+            if m:
+                return int(m.group(1))
+
+        return None
 
     @property
     def results(self) -> list[TrialResult]:

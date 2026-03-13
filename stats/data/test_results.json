@@ -1,0 +1,57 @@
+{
+  "temperature_effect_jaccard": {
+    "test": "wilcoxon_signed_rank",
+    "metric": "jaccard_all",
+    "n_pairs": 0,
+    "note": "too few pairs for reliable test"
+  },
+  "temperature_effect_bertscore": {
+    "test": "wilcoxon_signed_rank",
+    "metric": "bertscore_f1",
+    "n_pairs": 0,
+    "note": "too few pairs for reliable test"
+  },
+  "model_differences_jaccard": {
+    "test": "kruskal_wallis",
+    "metric": "jaccard_all",
+    "n_groups": 2,
+    "note": "fewer than 3 groups"
+  },
+  "model_differences_bertscore": {
+    "test": "kruskal_wallis",
+    "metric": "bertscore_f1",
+    "n_groups": 2,
+    "note": "fewer than 3 groups"
+  },
+  "vignette_effect_jaccard": {
+    "test": "kruskal_wallis",
+    "metric": "jaccard_all",
+    "grouping": "vignette",
+    "n_groups": 6,
+    "n_total": 13,
+    "H_statistic": 6.197771587743727,
+    "p_value": 0.28744783367165366,
+    "eta_squared": 0.5164809656453105
+  },
+  "vignette_effect_bertscore": {
+    "test": "kruskal_wallis",
+    "metric": "bertscore_f1",
+    "grouping": "vignette",
+    "n_groups": 6,
+    "n_total": 13,
+    "H_statistic": 7.64835164835165,
+    "p_value": 0.1767102013648234,
+    "eta_squared": 0.6373626373626374
+  },
+  "correlation_jaccard_bertscore": {
+    "test": "spearman",
+    "variables": [
+      "jaccard_all",
+      "bertscore_f1"
+    ],
+    "n": 13,
+    "rho": 0.3347244635476932,
+    "p_value": 0.2636100140493436
+  },
+  "note": "All tests are exploratory given sample sizes. Effect sizes reported alongside p-values."
+}

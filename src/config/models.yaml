@@ -103,7 +103,8 @@ roles:
     max_tokens: 32
 
   judge:
-    use: gemini31_flash_lite  # Switch to gemini31_pro for experiment
+    use: gemini31_flash_lite  # default (testing). Overridden to gemini31_pro for experiment models
+    use_experiment: gemini31_pro
     temperature: 0.0
     max_tokens: 4096  # Extra budget for Gemini thinking tokens
 

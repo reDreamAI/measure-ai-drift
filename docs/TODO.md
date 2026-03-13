@@ -15,7 +15,7 @@
 - [x] All eval targets in single `evaluation_targets` list (no more comment-swapping)
 
 ## Pre-experiment (blocking full run)
-- [ ] Link Zotero to `thesis/references.bib`
+- [x] Link Zotero to `thesis/references.bib` (51 BibLaTeX entries exported)
 - [x] Find Roleplay-doh citation (Wang et al., 2024, EMNLP)
 - [x] Identify "mystical mastery" IRT rescripting taxonomy paper
   - Germain et al. (2004). *Dreaming*, 14(4), 195-206. DOI: 10.1037/1053-0797.14.4.195
@@ -25,16 +25,34 @@
 - [x] Patient vignette taxonomy: N/A, vignettes are original (grounded in Roleplay-doh + Patient-Ψ)
 - [x] Add papers to Zotero: Germain (2004), Harb (2012), Chiu/BOLT (2024), Albanese (2022), Patient-Ψ (2024)
 - [ ] Identify AI therapist action-selection mechanism paper (user recalls but not yet found)
-- [ ] Refine taxonomy v4 against clinical precedent (Germain MMS + Harb rescripting categories)
-  - Map MMS dimensions to our 6 categories
-  - Map Harb categories to our 6 categories
-  - Identify gaps or misalignments, decide if any categories need renaming or splitting
-  - Document mapping rationale in strategy_taxonomy_evolution.md
+- [x] Refine taxonomy v4 against clinical precedent (Germain MMS + Harb rescripting categories)
+  - Mapped all MMS dimensions and Harb categories to our 6 categories
+  - No gaps in therapeutically desirable mechanisms
+  - Avoidance/distancing excluded (Harb: violence in rescripts predicts worse outcomes)
+  - Reality markers excluded (lucid dreaming cue, not rescripting mechanism)
+  - Documented in citations.md section 3.4
 
 ## Experiment
 
 - [ ] Run full experiment (6 models x 6 vignettes x 3 slices x 10 trials x 2 temps = 2,160 trials)
-- [ ] Judge validation: manually annotate ~50 trials, compute Cohen's kappa against Gemini
+- [ ] Judge validation: spot-check 10 random trials against Gemini judge scores
+  - Read response + judge reasoning + score for each
+  - Report agreement count (e.g., 10/10) in Methods
+  - Include table in appendix
+  - No Cohen's kappa needed: deterministic judge (t=0.0), cross-model (Gemini vs eval targets), reasoning traces published
+
+## Statistics and visualization (see docs/statistics.md)
+
+- [ ] `stats/scripts/aggregate.py` -- runs -> single CSV (test on March 12 smoke data first)
+- [ ] `stats/scripts/descriptives.py` -- medians/IQR for Jaccard, means/SD for BERTScore
+- [ ] `stats/scripts/tests.py` -- Wilcoxon (temp), Kruskal-Wallis (models, exploratory), Spearman (Jaccard vs BERTScore)
+- [ ] Figure scripts (5 figures, alignment only if variance appears):
+  - [ ] `fig_validity_strategy.py` -- Fig 5.1: validity bars + strategy stacked bars
+  - [ ] `fig_jaccard.py` -- Fig 5.2: Jaccard + modal-set by model x temperature (headline)
+  - [ ] `fig_bertscore.py` -- Fig 5.3: BERTScore F1 by model x temperature
+  - [ ] `fig_vignette_slice.py` -- Fig 5.4: vignette heatmap + slice depth
+  - [ ] `fig_correlations.py` -- Fig 5.5: Jaccard vs BERTScore scatter
+- [ ] Review figures with user before including in thesis
 
 ## Writing (priority order)
 

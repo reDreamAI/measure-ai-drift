@@ -132,7 +132,7 @@ Three levels, each measuring a distinct property:
 
 > For model selection rationale, see [bertscore_model_selection.md](bertscore_model_selection.md).
 
-### 3.3 Method 3 - Plan-Output Alignment (Exploratory)
+### 3.3 Method 3 - Plan-Output Alignment (Validation Check)
 
 **Question:** Does the model's response implement its declared therapeutic plan?
 
@@ -142,6 +142,8 @@ Three levels, each measuring a distinct property:
 **Inputs:** Both the extracted strategies AND the response text, scored against the strategy taxonomy definitions.
 
 **Mitigations:** Cross-model judging, CoT justification, deterministic decoding, transparent rubric.
+
+**Role in analysis:** Alignment serves as a validation check: if models consistently score near 1.0, it confirms they implement what they declare, which validates Jaccard as measuring genuine decision stability (not just label noise). If variance appears, alignment becomes a comparative metric in its own right.
 
 > For the full rationale (including why NLI cross-encoders were rejected), see [alignment_approach_analysis.md](alignment_approach_analysis.md).
 
