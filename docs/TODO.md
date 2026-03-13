@@ -17,9 +17,19 @@
 ## Pre-experiment (blocking full run)
 - [ ] Link Zotero to `thesis/references.bib`
 - [x] Find Roleplay-doh citation (Wang et al., 2024, EMNLP)
-- [ ] Add BOLT (Chiu et al., 2024) and Albanese et al. (2022) to Zotero
-- [ ] Identify "mystical mastery" IRT rescripting taxonomy paper
-- [ ] Identify therapist vignette/taxonomy paper
+- [x] Identify "mystical mastery" IRT rescripting taxonomy paper
+  - Germain et al. (2004). *Dreaming*, 14(4), 195-206. DOI: 10.1037/1053-0797.14.4.195
+  - Multidimensional Mastery Scale (MMS): Physical, Social, Environmental, Emotional, Mystical, Avoidance
+  - Also found: Harb et al. (2012). *J Traumatic Stress*, 25, 511-518. DOI: 10.1002/jts.21748
+  - 5 rescripting categories: alternative endings, positive image insertion, threat transformation, reality markers, distancing
+- [x] Patient vignette taxonomy: N/A, vignettes are original (grounded in Roleplay-doh + Patient-Ψ)
+- [x] Add papers to Zotero: Germain (2004), Harb (2012), Chiu/BOLT (2024), Albanese (2022), Patient-Ψ (2024)
+- [ ] Identify AI therapist action-selection mechanism paper (user recalls but not yet found)
+- [ ] Refine taxonomy v4 against clinical precedent (Germain MMS + Harb rescripting categories)
+  - Map MMS dimensions to our 6 categories
+  - Map Harb categories to our 6 categories
+  - Identify gaps or misalignments, decide if any categories need renaming or splitting
+  - Document mapping rationale in strategy_taxonomy_evolution.md
 
 ## Experiment
 
