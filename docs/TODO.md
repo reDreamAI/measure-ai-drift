@@ -34,12 +34,29 @@
 
 ## Experiment
 
-- [ ] Run full experiment (6 models x 6 vignettes x 3 slices x 10 trials x 2 temps = 2,160 trials)
+- [ ] Run full experiment (8 models x 6 vignettes x 5 temps x 10 trials = 2,400 trials + therapy_temp extra runs)
 - [ ] Judge validation: spot-check 10 random trials against Gemini judge scores
   - Read response + judge reasoning + score for each
   - Report agreement count (e.g., 10/10) in Methods
   - Include table in appendix
-  - No Cohen's kappa needed: deterministic judge (t=0.0), cross-model (Gemini vs eval targets), reasoning traces published
+  - Judge now at T=1.0 (Gemini 3 requirement), consistency from structured rubric
+
+## Source verification (docs/grounded/temperature_sources.md)
+
+- [ ] **Mistral Large 3 therapy_temp (0.15):** Query Mistral `/models` endpoint for `mistral-large-2512` actual default. Or check La Plateforme model card
+- [ ] **Llama 3.3 70B therapy_temp (0.6):** Check `generation_config.json` with gated HuggingFace access, or verify via llama-recipes repo
+- [ ] **GPT-5.4 therapy_temp (0.7):** Check OpenAI API reference while authenticated, or test empirically
+- [ ] **Gemini judge T=1.0:** Add all three sources to Zotero:
+  - Google AI for Developers (2026). Gemini 3 Developer Guide (primary)
+  - Liu & Tsai (2026). arXiv:2603.11082v1 (Gemini 3.1 Pro as LLM judge precedent)
+  - Renze (2024). EMNLP Findings. "The Effect of Sampling Temperature on Problem Solving in LLMs"
+- [ ] **Claude Sonnet 4.6:** Add sources to Zotero:
+  - Anthropic (2026). "Claude's Character" (anthropic.com/research/claude-character)
+  - Anthropic (2026). Claude Sonnet 4.6 announcement (anthropic.com/news/claude-sonnet-4-6)
+  - Anthropic (2026). Claude API Documentation (platform.claude.com/docs)
+- [ ] **Model temperature sources:** Add to Zotero:
+  - DeepSeek API Documentation (api-docs.deepseek.com/quick_start/parameter_settings)
+  - HuggingFace generation_config.json files for: Qwen 3.5, OLMo 3.1, Trinity Large
 
 ## Statistics and visualization (see docs/statistics.md)
 
@@ -53,6 +70,10 @@
   - [ ] `fig_vignette_slice.py` -- Fig 5.4: vignette heatmap + slice depth
   - [ ] `fig_correlations.py` -- Fig 5.5: Jaccard vs BERTScore scatter
 - [ ] Review figures with user before including in thesis
+
+## Future work notes (for Ch6 Discussion / Ch7 Conclusion)
+
+- [ ] **Dynamic truncation for safety**: Cite Nguyen et al. (2025), "Turning Up the Heat: Min-p Sampling for Creative and Coherent LLM Outputs," ICLR 2025 Oral (arXiv:2407.01082). Min-p sampling scales the truncation threshold based on the top token's probability, outperforming standard top-p in balancing quality and diversity at higher temperatures. Relevant for therapeutic interventions where slight narrative variance (creativity) is needed without risking hallucinatory or unsafe outputs. Add to Zotero.
 
 ## Writing (priority order)
 

@@ -172,6 +172,19 @@ def compute_pairwise_jaccard(
     return sum(scores) / len(scores) if scores else 0.0
 
 
+_BERTSCORE_CACHE: dict[str, Any] = {}
+
+
+def _get_bertscorer(model_type: str = "microsoft/deberta-xlarge-mnli") -> Any:
+    """Return a cached BERTScorer instance (loads model only once per process)."""
+    if model_type not in _BERTSCORE_CACHE:
+        from bert_score import BERTScorer
+        scorer = BERTScorer(model_type=model_type, lang="en")
+        scorer._tokenizer.model_max_length = 512
+        _BERTSCORE_CACHE[model_type] = scorer
+    return _BERTSCORE_CACHE[model_type]
+
+
 def compute_pairwise_bertscore(
     responses: list[str],
     model_type: str = "microsoft/deberta-xlarge-mnli",
@@ -202,8 +215,6 @@ def compute_pairwise_bertscore(
     if len(responses) < 2:
         return {"precision": 1.0, "recall": 1.0, "f1": 1.0}
 
-    from bert_score import BERTScorer
-
     # Build all pairs
     refs = []
     cands = []
@@ -211,11 +222,7 @@ def compute_pairwise_bertscore(
         refs.append(a)
         cands.append(b)
 
-    scorer = BERTScorer(model_type=model_type, lang="en")
-    # Fix DeBERTa tokenizer overflow (model_max_length ≈ 10^30 overflows Rust backend).
-    # All BERTScore models truncate at 510 tokens regardless.
-    scorer._tokenizer.model_max_length = 512
-
+    scorer = _get_bertscorer(model_type)
     P, R, F1 = scorer.score(cands, refs)
 
     return {
@@ -279,6 +286,52 @@ def _parse_judgment(raw: str, expected: set[str]) -> dict[str, dict[str, Any]]:
     return parsed
 
 
+async def _judge_single_trial(
+    judge: Any,
+    system_prompt: str,
+    user_msg: str,
+    strategies: set[str],
+    trial_index: int,
+    timeout_seconds: int = 120,
+) -> tuple[float, dict[str, Any], dict[str, list[int]]]:
+    """Judge one trial with a timeout. Returns (score, judgment_dict, strategy_scores)."""
+    import asyncio
+
+    try:
+        raw_output, usage = await asyncio.wait_for(
+            judge.generate([
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": user_msg},
+            ]),
+            timeout=timeout_seconds,
+        )
+
+        parsed = _parse_judgment(raw_output, strategies)
+        scores = [parsed[sid]["score"] for sid in strategies if sid in parsed]
+        trial_alignment = (sum(scores) / (len(scores) * 2)) if scores else 0.0
+
+        strat_scores: dict[str, list[int]] = {}
+        for sid in strategies:
+            if sid in parsed:
+                strat_scores.setdefault(sid, []).append(parsed[sid]["score"])
+
+        judgment = {
+            "trial": trial_index,
+            "raw_output": raw_output,
+            "parsed": {sid: parsed[sid] for sid in strategies if sid in parsed},
+            "trial_alignment": trial_alignment,
+            "usage": usage,
+        }
+        return trial_alignment, judgment, strat_scores
+
+    except asyncio.TimeoutError:
+        logger.warning("Judge call timed out for trial %d after %ds", trial_index, timeout_seconds)
+        return 0.0, {"trial": trial_index, "error": f"timeout after {timeout_seconds}s"}, {}
+    except Exception as e:
+        logger.warning("Judge call failed for trial %d: %s", trial_index, e)
+        return 0.0, {"trial": trial_index, "error": str(e)}, {}
+
+
 async def compute_alignment(
     strategy_sets: list[set[str]],
     responses: list[str],
@@ -292,6 +345,8 @@ async def compute_alignment(
     Uses a ternary scale (0=absent, 1=partial, 2=implemented) normalised
     to 0.0-1.0 per trial.
 
+    Judge calls run in parallel with a per-call timeout (120s).
+
     Args:
         strategy_sets: List of strategy sets (one per trial).
         responses: List of therapist response strings (one per trial).
@@ -300,6 +355,7 @@ async def compute_alignment(
     Returns:
         Dict with keys: mean_alignment, per_trial, per_strategy, raw_judgments.
     """
+    import asyncio
     from src.core.config_loader import load_yaml, PROMPTS_DIR
     from src.llm.provider import create_provider
 
@@ -315,52 +371,41 @@ async def compute_alignment(
     # Create judge provider: flash-lite for testing, pro for experiment
     judge = create_provider("judge", experiment=experiment)
 
+    # Build tasks for all trials
+    tasks = []
+    skip_indices: dict[int, dict] = {}
+
+    for i, (strategies, response) in enumerate(zip(strategy_sets, responses)):
+        if not strategies or not response or not response.strip():
+            skip_indices[i] = {"trial": i + 1, "skipped": True, "reason": "empty strategies or response"}
+            continue
+
+        strategies_block = _build_strategies_block(strategies, taxonomy)
+        user_msg = user_template.replace("{strategies_block}", strategies_block).replace("{response}", response)
+        tasks.append((i, _judge_single_trial(judge, system_prompt, user_msg, strategies, i + 1)))
+
+    # Run all judge calls in parallel
+    results_map: dict[int, tuple[float, dict, dict]] = {}
+    if tasks:
+        gathered = await asyncio.gather(*(t[1] for t in tasks))
+        for (idx, _), result in zip(tasks, gathered):
+            results_map[idx] = result
+
+    # Reassemble in order
     per_trial: list[float] = []
     raw_judgments: list[dict[str, Any]] = []
     strategy_scores: dict[str, list[int]] = {}
 
-    for i, (strategies, response) in enumerate(zip(strategy_sets, responses)):
-        if not strategies or not response or not response.strip():
+    for i in range(len(strategy_sets)):
+        if i in skip_indices:
             per_trial.append(0.0)
-            raw_judgments.append({"trial": i + 1, "skipped": True, "reason": "empty strategies or response"})
-            continue
-
-        # Build user message
-        strategies_block = _build_strategies_block(strategies, taxonomy)
-        user_msg = user_template.replace("{strategies_block}", strategies_block).replace("{response}", response)
-
-        try:
-            raw_output, usage = await judge.generate(
-                [
-                    {"role": "system", "content": system_prompt},
-                    {"role": "user", "content": user_msg},
-                ],
-            )
-
-            parsed = _parse_judgment(raw_output, strategies)
-
-            # Per-trial alignment = mean score / 2 (normalised to 0-1)
-            scores = [parsed[sid]["score"] for sid in strategies if sid in parsed]
-            trial_alignment = (sum(scores) / (len(scores) * 2)) if scores else 0.0
-
-            per_trial.append(trial_alignment)
-            raw_judgments.append({
-                "trial": i + 1,
-                "raw_output": raw_output,
-                "parsed": {sid: parsed[sid] for sid in strategies if sid in parsed},
-                "trial_alignment": trial_alignment,
-                "usage": usage,
-            })
-
-            # Accumulate per-strategy scores
-            for sid in strategies:
-                if sid in parsed:
-                    strategy_scores.setdefault(sid, []).append(parsed[sid]["score"])
-
-        except Exception as e:
-            logger.warning("Judge call failed for trial %d: %s", i + 1, e)
-            per_trial.append(0.0)
-            raw_judgments.append({"trial": i + 1, "error": str(e)})
+            raw_judgments.append(skip_indices[i])
+        elif i in results_map:
+            score, judgment, strat_scores = results_map[i]
+            per_trial.append(score)
+            raw_judgments.append(judgment)
+            for sid, scores_list in strat_scores.items():
+                strategy_scores.setdefault(sid, []).extend(scores_list)
 
     # Aggregate
     mean_alignment = sum(per_trial) / len(per_trial) if per_trial else 0.0

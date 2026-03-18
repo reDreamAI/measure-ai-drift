@@ -26,6 +26,8 @@ MODEL_COLORS = {
     "qwen35_27b": "#e9c46a",
     "olmo3_32b": "#f4a261",
     "gpt54": "#457b9d",
+    "trinity_large": "#9b2226",
+    "sonnet46": "#6a0dad",
     # Test
     "llama70b_test": "#a8dadc",
     "gpt_oss_test": "#6d6875",

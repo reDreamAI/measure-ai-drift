@@ -75,10 +75,12 @@ model_options:
     gemini31_pro:
       provider: gemini
       model: gemini-3.1-pro-preview
+      standard_temp: 1.0  # Gemini 3 requires T=1.0 for reasoning. See docs/grounded/temperature_sources.md
       notes: "Experiment judge. Thinking aids judgment accuracy. Free Google AI Studio credits"
     gemini31_flash_lite:
       provider: gemini
       model: gemini-3.1-flash-lite-preview
+      standard_temp: 1.0  # Gemini 3 requires T=1.0 for reasoning. See docs/grounded/temperature_sources.md
       notes: "Testing judge. Cheapest Gemini. Free Google AI Studio credits"
 
 # =============================================================================
@@ -105,7 +107,7 @@ roles:
   judge:
     use: gemini31_flash_lite  # default (testing). Overridden to gemini31_pro for experiment models
     use_experiment: gemini31_pro
-    temperature: 0.0
+    temperature: 1.0  # Gemini 3 requires T=1.0. Lower causes looping/degraded reasoning (Google docs)
     max_tokens: 4096  # Extra budget for Gemini thinking tokens
 
 # =============================================================================
@@ -116,22 +118,31 @@ evaluation_targets:
   - name: llama70b_test
     provider: openrouter
     model: meta-llama/llama-3.3-70b-instruct
+    therapy_temp: 0.6  # see docs/grounded/temperature_sources.md
     notes: "Llama 3.3 70B. Smoke testing and taxonomy validation"
 
   - name: gpt_oss_test
     provider: openrouter
     model: openai/gpt-oss-120b
+    therapy_temp: 1.0  # see docs/grounded/temperature_sources.md
     notes: "GPT-oss 120B. Smoke testing and taxonomy validation"
 
   # --- Experiment ---
+  # therapy_temp: vendor-recommended temperature for clinical/therapeutic use.
+  #   Derived from official defaults and the "lower bound" rule: when a vendor
+  #   recommends a range, choose the lower end for clinical stability.
+  #   Sources and verification status: docs/grounded/temperature_sources.md
+
   - name: mistral_large
     provider: openrouter
     model: mistralai/mistral-large-2512
+    therapy_temp: 0.15  # see docs/grounded/temperature_sources.md [NEEDS VERIFICATION]
     notes: "Primary subject. EU-sovereign, Apache 2.0. 675B MoE (41B active). 256K context"
 
   - name: qwen35_27b
     provider: openrouter
     model: qwen/qwen3.5-27b
+    therapy_temp: 0.6  # see docs/grounded/temperature_sources.md [VERIFIED]
     extra_params:
       reasoning:
         effort: "none"
@@ -140,22 +151,48 @@ evaluation_targets:
   - name: olmo3_32b
     provider: openrouter
     model: allenai/olmo-3.1-32b-instruct
+    therapy_temp: 0.6  # see docs/grounded/temperature_sources.md [VERIFIED]
     notes: "Fully open (weights + training data + code). Best provenance for thesis"
 
   - name: llama70b
     provider: openrouter
     model: meta-llama/llama-3.3-70b-instruct
+    therapy_temp: 0.6  # see docs/grounded/temperature_sources.md [NEEDS VERIFICATION]
     notes: "Original efficacy study model. Continuity with prior work"
 
   - name: deepseek_v32
     provider: openrouter
-    model: deepseek/deepseek-chat-v3-0324
-    notes: "DeepSeek V3.2 671B MoE. MIT. Chinese origin. MoE comparator to Mistral Large"
+    model: deepseek/deepseek-v3.2
+    # model: deepseek/deepseek-chat-v3-0324  # old V3 0324 ID, before V3.2 release
+    provider_options:
+      order: ["deepseek"]
+      allow_fallbacks: false
+    # provider_options:  # fallback: let OpenRouter pick provider (no temp scaling guarantee)
+    #   order: ["deepinfra"]
+    #   allow_fallbacks: true
+    therapy_temp: 1.0  # see docs/grounded/temperature_sources.md [VERIFIED]. API temp, internally scaled to 0.3
+    notes: "DeepSeek V3.2 671B MoE. MIT. Chinese origin. MoE comparator to Mistral Large. Pinned to DeepSeek backend (internal temp scaling)"
 
   - name: gpt54
     provider: openrouter
     model: openai/gpt-5.4
-    notes: "Proprietary ceiling. Non-thinking. $2.50/$15.00"
+    therapy_temp: 0.7  # see docs/grounded/temperature_sources.md [NEEDS VERIFICATION]
+    extra_params:
+      reasoning:
+        effort: "none"
+    notes: "Proprietary ceiling. Non-thinking mode (reasoning: none ensures temperature control). $2.50/$15.00"
+
+  - name: trinity_large
+    provider: openrouter
+    model: arcee-ai/trinity-large-preview:free
+    therapy_temp: 0.8  # see docs/grounded/temperature_sources.md [VERIFIED]
+    notes: "398B MoE (13B active). Apache 2.0. Free only, 10 RPM rate limit. 128K context (8-bit quant)"
+
+  - name: sonnet46
+    provider: openrouter
+    model: anthropic/claude-sonnet-4.6
+    therapy_temp: 0.7  # see docs/grounded/temperature_sources.md [VERIFIED]
+    notes: "Anthropic Sonnet 4.6. Character-trained for thoughtful, safety-aware interaction. $3/$15. Max temp 1.0"
 
   # --- Dropped (available if needed) ---
   # - name: mistral_small

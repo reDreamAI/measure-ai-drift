@@ -58,8 +58,8 @@ Per model (collapsed across vignettes):
 Per vignette (collapsed across models):
 - Same metrics, to identify "hard" vs "easy" vignettes
 
-Per temperature:
-- Paired comparison: same model+vignette at t=0.0 vs t=0.7
+Per temperature (5-point scale: 0.0, 0.25, 0.5, 0.7, 1.0):
+- Summary stats at each temperature level, collapsed across models and vignettes
 
 Alignment: report overall mean as validation check. Only break down per-model if variance appears in the full run.
 
@@ -77,19 +77,19 @@ Two subplots side by side:
 - **Left:** Bar chart of validity rate per model (should be near 100% for all). Simple sanity check.
 - **Right:** Stacked bar chart of strategy frequency per model. Each bar is one model, segments are the 6 categories. Shows which strategies each model favors.
 
-### Figure 5.2: Jaccard and modal-set stability by model and temperature (headline figure)
+### Figure 5.2: Jaccard and modal-set stability by temperature (headline figure)
 
 **Script:** `stats/scripts/fig_jaccard.py`
 
 Two subplots:
-- **Left:** Grouped bar chart: x-axis = models, two bars per model (t=0.0, t=0.7), y-axis = median Jaccard (with error bars = IQR across vignettes). Horizontal reference lines at 1.0 (perfect) and ~0.2 (random baseline for 2-of-6 picks).
-- **Right:** Same layout but for modal-set agreement rate. This complements Jaccard by showing what fraction of trials pick the exact same strategy set.
+- **Left:** Line plot: x-axis = temperature (0.0, 0.25, 0.5, 0.7, 1.0), one line per model, y-axis = median Jaccard (IQR shading). Reference lines at 1.0 (perfect) and ~0.2 (random baseline for 2-of-6 picks). Shows the stability curve per model across the full temperature scale.
+- **Right:** Same layout for modal-set agreement rate. Complements Jaccard by showing exact agreement.
 
 ### Figure 5.3: BERTScore by model and temperature
 
 **Script:** `stats/scripts/fig_bertscore.py`
 
-Grouped bar chart: x-axis = models, two bars per model (t=0.0, t=0.7), y-axis = mean BERTScore F1 (with error bars = SD). Interpret alongside Jaccard (high BERTScore alone may reflect formulaic IRT structure).
+Line plot: x-axis = temperature (0.0, 0.25, 0.5, 0.7, 1.0), one line per model, y-axis = mean BERTScore F1 (SD shading). Shows where semantic consistency degrades as temperature increases. Interpret alongside Jaccard (high BERTScore alone may reflect formulaic IRT structure).
 
 ### Figure 5.4: Vignette difficulty and slice depth
 
@@ -113,7 +113,7 @@ Scatter: median Jaccard (x) vs mean BERTScore F1 (y), one colored point per mode
 
 Keep simple (bachelor's thesis scope). All tests are **exploratory** given sample sizes.
 
-- **Temperature effect:** Wilcoxon signed-rank test (paired by model+vignette). Report p-value and effect size (r = Z/sqrt(N)). This is the best-powered test (N = 6 models x 6 vignettes = 36 pairs).
+- **Temperature effect:** Spearman correlation (metric vs temperature) for monotonic trend, plus Kruskal-Wallis across the 5 temperature groups. Best-powered test (N = 6 models x 6 vignettes x 5 temps = 180 observations).
 - **Model differences:** Kruskal-Wallis H test across models. Low power with 6 groups. Report effect size (eta-squared). Pairwise Mann-Whitney U with Bonferroni only if H is significant.
 - **Vignette effect:** Same as model but grouped by vignette.
 - **Correlation:** Spearman rank correlation between Jaccard and BERTScore F1. Do not correlate alignment (likely at ceiling).

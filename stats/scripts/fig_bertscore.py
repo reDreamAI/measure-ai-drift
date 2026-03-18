@@ -1,10 +1,10 @@
 """Figure 5.3: BERTScore F1 by model and temperature.
 
-Grouped bar chart: x-axis = models, two bars per model (t=0.0, t=0.7),
-y-axis = mean BERTScore F1 (error bars = SD).
+Line plot: x-axis = temperature, one line per model, y-axis = mean BERTScore F1
+(shaded SD band).
 
 Usage:
-    python stats/scripts/fig_bertscore.py [--input stats/data/all_runs.csv]
+    python stats/scripts/fig_bertscore.py [--tier test|experiment]
 """
 
 from __future__ import annotations
@@ -15,6 +15,20 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+
+MODEL_COLORS = {
+    "mistral_large": "#e63946",
+    "llama70b": "#2a9d8f",
+    "deepseek_v32": "#264653",
+    "qwen35_27b": "#e9c46a",
+    "olmo3_32b": "#f4a261",
+    "gpt54": "#457b9d",
+    "trinity_large": "#9b2226",
+    "sonnet46": "#6a0dad",
+    "llama70b_test": "#a8dadc",
+    "gpt_oss_test": "#6d6875",
+}
+
 
 def main() -> None:
     parser = argparse.ArgumentParser()
@@ -29,41 +43,37 @@ def main() -> None:
     df = pd.read_csv(args.input)
     models = sorted(df["model"].unique())
     temps = sorted(df["temperature"].unique())
-    n_models = len(models)
-    bar_width = 0.35
-    x = np.arange(n_models)
-
-    colors = ["#264653", "#e9c46a"]
 
     fig, ax = plt.subplots(figsize=(8, 5))
 
-    for i, temp in enumerate(temps):
-        subset = df[df["temperature"] == temp]
+    for model in models:
+        mdf = df[df["model"] == model]
         means = []
         sds = []
-        for model in models:
-            vals = subset[subset["model"] == model]["bertscore_f1"].dropna()
-            means.append(vals.mean() if not vals.empty else 0)
+        valid_temps = []
+
+        for temp in temps:
+            vals = mdf[mdf["temperature"] == temp]["bertscore_f1"].dropna()
+            if vals.empty:
+                continue
+            valid_temps.append(temp)
+            means.append(vals.mean())
             sds.append(vals.std() if len(vals) > 1 else 0)
 
-        offset = (i - (len(temps) - 1) / 2) * bar_width
-        ax.bar(
-            x + offset,
-            means,
-            bar_width,
-            yerr=sds,
-            label=f"T={temp}",
-            color=colors[i % len(colors)],
-            edgecolor="white",
-            capsize=3,
-        )
+        if not valid_temps:
+            continue
 
-    ax.set_xticks(x)
-    ax.set_xticklabels(models, rotation=45, ha="right", fontsize=9)
+        color = MODEL_COLORS.get(model, "#888888")
+        means_arr = np.array(means)
+        sds_arr = np.array(sds)
+        ax.plot(valid_temps, means, marker="o", label=model, color=color, linewidth=2)
+        ax.fill_between(valid_temps, means_arr - sds_arr, means_arr + sds_arr, alpha=0.15, color=color)
+
+    ax.set_xlabel("Temperature")
     ax.set_ylabel("Mean BERTScore F1 (SD)")
     ax.set_ylim(0.5, 1.0)
     ax.set_title("BERTScore F1 by model and temperature")
-    ax.legend(fontsize=9)
+    ax.legend(fontsize=8)
 
     fig.tight_layout()
     output_dir.mkdir(parents=True, exist_ok=True)

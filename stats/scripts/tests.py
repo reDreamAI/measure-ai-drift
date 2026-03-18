@@ -22,43 +22,44 @@ from scipy import stats as sp
 
 
 def temperature_effect(df: pd.DataFrame, metric: str = "jaccard_all") -> dict:
-    """Wilcoxon signed-rank test for temperature effect (paired by model+vignette).
+    """Temperature effect: Spearman correlation (metric vs temperature) + Kruskal-Wallis across temperature groups.
 
-    Pairs: same model+vignette at t=0.0 vs t=0.7.
+    With a 5-point temperature scale (0.0, 0.25, 0.5, 0.75, 1.0), Spearman captures
+    the monotonic trend while Kruskal-Wallis tests for any group differences.
     """
-    t0 = df[df["temperature"] == 0.0].set_index(["model", "vignette"])[metric]
-    t7 = df[df["temperature"] == 0.7].set_index(["model", "vignette"])[metric]
+    valid = df[["temperature", metric]].dropna()
+    temps = sorted(valid["temperature"].unique())
 
-    # Only keep pairs that exist at both temperatures
-    common = t0.index.intersection(t7.index)
-    if len(common) < 5:
-        return {
-            "test": "wilcoxon_signed_rank",
-            "metric": metric,
-            "n_pairs": len(common),
-            "note": "too few pairs for reliable test",
-        }
-
-    x = t0.loc[common].values
-    y = t7.loc[common].values
-
-    stat, p = sp.wilcoxon(x, y, alternative="two-sided")
-    n = len(common)
-    # Effect size: r = Z / sqrt(N), approximate Z from the statistic
-    z = sp.norm.ppf(p / 2)  # two-sided p -> Z
-    r = abs(z) / np.sqrt(n)
-
-    return {
-        "test": "wilcoxon_signed_rank",
+    result: dict = {
+        "test": "temperature_effect",
         "metric": metric,
-        "n_pairs": n,
-        "statistic": float(stat),
-        "p_value": float(p),
-        "effect_size_r": float(r),
-        "direction": "t0.0 > t0.7" if np.median(x) > np.median(y) else "t0.7 >= t0.0",
-        "median_t0": float(np.median(x)),
-        "median_t7": float(np.median(y)),
+        "n_temperatures": len(temps),
+        "temperatures": [float(t) for t in temps],
     }
+
+    # Spearman: monotonic trend of metric with temperature
+    if len(valid) >= 5:
+        rho, p = sp.spearmanr(valid["temperature"], valid[metric])
+        result["spearman_rho"] = float(rho)
+        result["spearman_p"] = float(p)
+
+    # Kruskal-Wallis: differences across temperature groups
+    groups = [g[metric].values for _, g in valid.groupby("temperature")]
+    groups = [g for g in groups if len(g) > 0]
+    if len(groups) >= 3:
+        stat, p = sp.kruskal(*groups)
+        n_total = sum(len(g) for g in groups)
+        result["kruskal_H"] = float(stat)
+        result["kruskal_p"] = float(p)
+        result["kruskal_eta_sq"] = float(stat) / (n_total - 1)
+
+    # Per-temperature medians for descriptive context
+    result["medians_by_temp"] = {
+        str(t): float(valid[valid["temperature"] == t][metric].median())
+        for t in temps
+    }
+
+    return result
 
 
 def model_differences(df: pd.DataFrame, metric: str = "jaccard_all") -> dict:

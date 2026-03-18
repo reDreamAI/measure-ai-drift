@@ -1,11 +1,11 @@
-"""Figure 5.2: Jaccard and modal-set stability by model and temperature (headline figure).
+"""Figure 5.2: Jaccard and modal-set stability by temperature (headline figure).
 
-Left subplot: grouped bars of median Jaccard per model x temperature, with IQR error bars.
+Left subplot: line plot of median Jaccard per model across temperature scale,
+with IQR shading. Reference lines for perfect (1.0) and random baseline (~0.2).
 Right subplot: same layout for modal-set agreement rate.
-Both include reference lines for perfect stability (1.0) and random baseline (~0.2).
 
 Usage:
-    python stats/scripts/fig_jaccard.py [--input stats/data/all_runs.csv]
+    python stats/scripts/fig_jaccard.py [--tier test|experiment]
 """
 
 from __future__ import annotations
@@ -19,55 +19,55 @@ import pandas as pd
 
 RANDOM_BASELINE = 0.2  # Expected Jaccard for random 2-of-6 picks
 
+MODEL_COLORS = {
+    "mistral_large": "#e63946",
+    "llama70b": "#2a9d8f",
+    "deepseek_v32": "#264653",
+    "qwen35_27b": "#e9c46a",
+    "olmo3_32b": "#f4a261",
+    "gpt54": "#457b9d",
+    "trinity_large": "#9b2226",
+    "sonnet46": "#6a0dad",
+    "llama70b_test": "#a8dadc",
+    "gpt_oss_test": "#6d6875",
+}
+
 
 def plot_metric(ax, df, metric, title, ylabel):
-    """Plot grouped bars for a metric by model x temperature."""
+    """Plot lines for a metric by model across temperatures."""
     models = sorted(df["model"].unique())
     temps = sorted(df["temperature"].unique())
-    n_models = len(models)
-    n_temps = len(temps)
-    bar_width = 0.35
-    x = np.arange(n_models)
 
-    colors = ["#264653", "#e9c46a"]
-
-    for i, temp in enumerate(temps):
-        subset = df[df["temperature"] == temp]
+    for model in models:
+        mdf = df[df["model"] == model]
         medians = []
         q1s = []
         q3s = []
-        for model in models:
-            vals = subset[subset["model"] == model][metric].dropna()
-            if vals.empty:
-                medians.append(0)
-                q1s.append(0)
-                q3s.append(0)
-            else:
-                med = vals.median()
-                medians.append(med)
-                q1s.append(med - vals.quantile(0.25))
-                q3s.append(vals.quantile(0.75) - med)
+        valid_temps = []
 
-        offset = (i - (n_temps - 1) / 2) * bar_width
-        ax.bar(
-            x + offset,
-            medians,
-            bar_width,
-            yerr=[q1s, q3s],
-            label=f"T={temp}",
-            color=colors[i % len(colors)],
-            edgecolor="white",
-            capsize=3,
-        )
+        for temp in temps:
+            vals = mdf[mdf["temperature"] == temp][metric].dropna()
+            if vals.empty:
+                continue
+            valid_temps.append(temp)
+            medians.append(vals.median())
+            q1s.append(vals.quantile(0.25))
+            q3s.append(vals.quantile(0.75))
+
+        if not valid_temps:
+            continue
+
+        color = MODEL_COLORS.get(model, "#888888")
+        ax.plot(valid_temps, medians, marker="o", label=model, color=color, linewidth=2)
+        ax.fill_between(valid_temps, q1s, q3s, alpha=0.15, color=color)
 
     ax.axhline(y=1.0, color="green", linestyle="--", alpha=0.4, label="Perfect")
     ax.axhline(y=RANDOM_BASELINE, color="red", linestyle=":", alpha=0.4, label=f"Random (~{RANDOM_BASELINE})")
-    ax.set_xticks(x)
-    ax.set_xticklabels(models, rotation=45, ha="right", fontsize=9)
+    ax.set_xlabel("Temperature")
     ax.set_ylabel(ylabel)
     ax.set_ylim(0, 1.1)
     ax.set_title(title)
-    ax.legend(fontsize=8)
+    ax.legend(fontsize=8, loc="lower left")
 
 
 def main() -> None:
