@@ -19,14 +19,19 @@ from scipy import stats as sp
 
 # One color per model -- will fall back to gray for unknown models
 MODEL_COLORS = {
-    # Experiment
-    "mistral_large": "#e63946",
-    "llama70b": "#2a9d8f",
-    "deepseek_v32": "#264653",
-    "qwen35_27b": "#e9c46a",
+    # Mistral EU-sovereign (reds)
+    "mistral_small4": "#e63946",
+    "mistral_large": "#9b2226",
+    "mistral_small32": "#d4756b",
+    # Qwen family (yellows/ambers)
+    "qwen35_122b": "#e9c46a",
+    "qwen35_397b": "#c8961e",
+    "qwen35_27b": "#f4d08f",
+    # Dense comparators
     "olmo3_32b": "#f4a261",
+    "llama70b": "#2a9d8f",
+    # Proprietary ceiling
     "gpt54": "#457b9d",
-    "trinity_large": "#9b2226",
     "sonnet46": "#6a0dad",
     # Test
     "llama70b_test": "#a8dadc",

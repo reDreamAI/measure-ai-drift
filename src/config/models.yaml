@@ -133,12 +133,49 @@ evaluation_targets:
   #   recommends a range, choose the lower end for clinical stability.
   #   Sources and verification status: docs/grounded/temperature_sources.md
 
+  # --- Main targets (Mistral EU-sovereign) ---
+  - name: mistral_small4
+    provider: openrouter
+    model: mistralai/mistral-small-2603
+    therapy_temp: 0.15  # same Mistral default as Large [NEEDS VERIFICATION]
+    extra_params:
+      reasoning:
+        effort: "none"
+    notes: "Primary subject. EU-sovereign, Apache 2.0. 119B MoE (6.5B active, 128 experts). Non-thinking mode. $0.15/$0.60"
+
   - name: mistral_large
     provider: openrouter
     model: mistralai/mistral-large-2512
     therapy_temp: 0.15  # see docs/grounded/temperature_sources.md [NEEDS VERIFICATION]
-    notes: "Primary subject. EU-sovereign, Apache 2.0. 675B MoE (41B active). 256K context"
+    notes: "EU-sovereign, Apache 2.0. 675B MoE (41B active). 256K context. EU scaling comparison"
 
+  - name: mistral_small32
+    provider: openrouter
+    model: mistralai/mistral-small-3.2-24b-instruct
+    therapy_temp: 0.15  # HF generation_config default 0.15 [VERIFIED]
+    notes: "EU-sovereign, Apache 2.0. 24B dense. Predecessor to Small 4. $0.075/$0.20"
+
+  # --- ~120B MoE weight class (peer comparators to Mistral Small 4) ---
+  - name: qwen35_122b
+    provider: openrouter
+    model: qwen/qwen3.5-122b-a10b
+    therapy_temp: 0.6  # see docs/grounded/temperature_sources.md [VERIFIED]
+    extra_params:
+      reasoning:
+        effort: "none"
+    notes: "Qwen 3.5 122B MoE (10B active, 256 experts). Apache 2.0. Non-thinking mode. $0.26/$2.08"
+
+  # --- ~400B MoE weight class ---
+  - name: qwen35_397b
+    provider: openrouter
+    model: qwen/qwen3.5-397b-a17b
+    therapy_temp: 0.6  # same Qwen 3.5 family default [VERIFIED]
+    extra_params:
+      reasoning:
+        effort: "none"
+    notes: "Qwen 3.5 397B MoE (17B active, 512 experts). Apache 2.0. Non-thinking mode. Large MoE comparator to Mistral Large. $0.39/$2.34"
+
+  # --- Dense comparators ---
   - name: qwen35_27b
     provider: openrouter
     model: qwen/qwen3.5-27b
@@ -160,47 +197,54 @@ evaluation_targets:
     therapy_temp: 0.6  # see docs/grounded/temperature_sources.md [NEEDS VERIFICATION]
     notes: "Original efficacy study model. Continuity with prior work"
 
-  - name: deepseek_v32
-    provider: openrouter
-    model: deepseek/deepseek-v3.2
-    # model: deepseek/deepseek-chat-v3-0324  # old V3 0324 ID, before V3.2 release
-    provider_options:
-      order: ["deepseek"]
-      allow_fallbacks: false
-    # provider_options:  # fallback: let OpenRouter pick provider (no temp scaling guarantee)
-    #   order: ["deepinfra"]
-    #   allow_fallbacks: true
-    therapy_temp: 1.0  # see docs/grounded/temperature_sources.md [VERIFIED]. API temp, internally scaled to 0.3
-    notes: "DeepSeek V3.2 671B MoE. MIT. Chinese origin. MoE comparator to Mistral Large. Pinned to DeepSeek backend (internal temp scaling)"
-
-  - name: gpt54
-    provider: openrouter
-    model: openai/gpt-5.4
-    therapy_temp: 0.7  # see docs/grounded/temperature_sources.md [NEEDS VERIFICATION]
-    extra_params:
-      reasoning:
-        effort: "none"
-    notes: "Proprietary ceiling. Non-thinking mode (reasoning: none ensures temperature control). $2.50/$15.00"
-
-  - name: trinity_large
-    provider: openrouter
-    model: arcee-ai/trinity-large-preview:free
-    therapy_temp: 0.8  # see docs/grounded/temperature_sources.md [VERIFIED]
-    notes: "398B MoE (13B active). Apache 2.0. Free only, 10 RPM rate limit. 128K context (8-bit quant)"
-
-  - name: sonnet46
-    provider: openrouter
-    model: anthropic/claude-sonnet-4.6
-    therapy_temp: 0.7  # see docs/grounded/temperature_sources.md [VERIFIED]
-    notes: "Anthropic Sonnet 4.6. Character-trained for thoughtful, safety-aware interaction. $3/$15. Max temp 1.0"
+  # --- Proprietary ceiling (commented out for now, run later if needed) ---
+  # - name: gpt54
+  #   provider: openrouter
+  #   model: openai/gpt-5.4
+  #   therapy_temp: 0.7  # see docs/grounded/temperature_sources.md [NEEDS VERIFICATION]
+  #   extra_params:
+  #     reasoning:
+  #       effort: "none"
+  #   notes: "Proprietary ceiling. Non-thinking mode. $2.50/$15.00"
+  #
+  # - name: sonnet46
+  #   provider: openrouter
+  #   model: anthropic/claude-sonnet-4.6
+  #   therapy_temp: 0.7  # see docs/grounded/temperature_sources.md [VERIFIED]
+  #   notes: "Anthropic Sonnet 4.6. Character-trained. $3/$15. Max temp 1.0"
 
   # --- Dropped (available if needed) ---
-  # - name: mistral_small
+  # - name: trinity_large
   #   provider: openrouter
-  #   model: mistralai/mistral-small-3.2-24b-instruct
-  #   notes: "EU-origin, Apache 2.0. Dropped: redundant with Qwen/OLMo at small class"
+  #   model: arcee-ai/trinity-large-preview:free
+  #   therapy_temp: 0.8  # [VERIFIED]
+  #   notes: "Dropped: free only, 10 RPM rate limit, complicates parallel execution"
+  #
+  # - name: deepseek_v32
+  #   provider: openrouter
+  #   model: deepseek/deepseek-v3.2
+  #   provider_options:
+  #     order: ["deepseek"]
+  #     allow_fallbacks: false
+  #   therapy_temp: 1.0  # API temp, internally scaled to 0.3
+  #   notes: "Dropped: replaced by Qwen 3.5 397B (similar MoE class, no internal temp scaling complexity)"
+  #
+  # - name: nemotron3_super
+  #   provider: openrouter
+  #   model: nvidia/nemotron-3-super-120b-a12b
+  #   therapy_temp: 1.0  # VERIFIED (HF generation_config + NVIDIA docs: T=1.0 for all modes)
+  #   extra_params:
+  #     reasoning:
+  #       effort: "none"
+  #   notes: "Dropped: requires T=1.0 universally (Mamba-Transformer hybrid), complicates cross-model temp comparison"
+  #
+  # - name: gpt_oss
+  #   provider: openrouter
+  #   model: openai/gpt-oss-120b
+  #   therapy_temp: 1.0
+  #   notes: "Dropped: mandatory reasoning (cannot set effort=none), breaks non-thinking experimental condition"
   #
   # - name: glm5
   #   provider: openrouter
   #   model: z-ai/glm-5
-  #   notes: "744B MoE (40B active). MIT. Dropped: third MoE adds little over DeepSeek"
+  #   notes: "744B MoE (40B active). MIT. Dropped: third MoE adds little"

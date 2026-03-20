@@ -1,6 +1,7 @@
 """Run the full experiment: all evaluation targets x all vignettes x temperature scale.
 
-Temperatures run in parallel for each model x vignette combination.
+Temperatures run SEQUENTIALLY for each model x vignette combination.
+Judge calls use a semaphore to stay within Gemini rate limits (25 RPM).
 Optionally includes a therapy_temp run per model (vendor-recommended clinical temperature).
 
 Usage:
@@ -31,10 +32,7 @@ from src.llm.provider import load_config, create_provider
 
 FROZEN_HISTORIES = Path("data/synthetic/frozen_histories")
 VIGNETTES = ["anxious", "avoidant", "cooperative", "resistant", "skeptic", "trauma"]
-DEFAULT_TEMPS = [0.0, 0.25, 0.5, 0.7, 1.0]
-
-# Models with strict rate limits that cannot run temps in parallel
-RATE_LIMITED_MODELS = {"trinity_large"}
+DEFAULT_TEMPS = [0.0, 0.15, 0.3, 0.6]
 
 
 def load_therapy_temps(config: dict) -> dict[str, float]:
@@ -102,32 +100,13 @@ async def run_single(
     }
 
 
-async def run_temps_parallel(
-    model_name: str,
-    vignette: str,
-    history_path: Path,
-    n_trials: int,
-    temps: list[float],
-) -> list[dict]:
-    """Run all temperatures for one model x vignette in parallel."""
-    tasks = [
-        run_single(model_name, vignette, history_path, n_trials, temp)
-        for temp in temps
-    ]
-    raw_results = await asyncio.gather(*tasks, return_exceptions=True)
-
-    results = []
-    for temp, result in zip(temps, raw_results):
-        if isinstance(result, Exception):
-            results.append({
-                "model": model_name,
-                "vignette": vignette,
-                "temperature": temp,
-                "error": str(result),
-            })
-        else:
-            results.append(result)
-    return results
+def format_time(seconds: float) -> str:
+    """Format seconds as h:mm:ss or m:ss."""
+    m, s = divmod(int(seconds), 60)
+    h, m = divmod(m, 60)
+    if h > 0:
+        return f"{h}:{m:02d}:{s:02d}"
+    return f"{m}:{s:02d}"
 
 
 def print_result(r: dict) -> None:
@@ -142,11 +121,32 @@ def print_result(r: dict) -> None:
         )
 
 
+def print_progress(done: int, total: int, elapsed: float, failed: int) -> None:
+    """Print a progress bar and ETA."""
+    pct = done / total * 100 if total > 0 else 0
+    bar_len = 30
+    filled = int(bar_len * done / total) if total > 0 else 0
+    bar = "█" * filled + "░" * (bar_len - filled)
+
+    if done > 0:
+        eta = elapsed / done * (total - done)
+        eta_str = format_time(eta)
+    else:
+        eta_str = "??:??"
+
+    fail_str = f" ({failed} failed)" if failed > 0 else ""
+    print(
+        f"\n  [{bar}] {done}/{total} runs ({pct:.0f}%) "
+        f"elapsed {format_time(elapsed)} ETA {eta_str}{fail_str}\n",
+        flush=True,
+    )
+
+
 async def main() -> None:
     parser = argparse.ArgumentParser(description="Run full experiment")
     parser.add_argument("--trials", "-n", type=int, default=10)
     parser.add_argument("--temps", type=float, nargs="+", default=DEFAULT_TEMPS,
-                        help="Temperature scale (default: 0.0 0.25 0.5 0.75 1.0)")
+                        help="Temperature scale (default: 0.0 0.15 0.3 0.6)")
     parser.add_argument("--slice", "-s", type=int, default=2)
     parser.add_argument("--no-therapy-temp", action="store_true",
                         help="Skip the extra therapy_temp run per model")
@@ -163,7 +163,6 @@ async def main() -> None:
     therapy_temps = load_therapy_temps(config)
 
     # Determine which therapy_temps actually add a new data point
-    # (skip if the therapy_temp already matches one of the scale temps)
     extra_therapy = {}
     if not args.no_therapy_temp:
         for model in targets:
@@ -171,66 +170,71 @@ async def main() -> None:
             if tt is not None and tt not in temps:
                 extra_therapy[model] = tt
 
-    combos = len(targets) * len(VIGNETTES)
-    scale_runs = combos * len(temps)
-    extra_runs = len(extra_therapy) * len(VIGNETTES)
-    total = scale_runs + extra_runs
+    # Count total runs
+    total_runs = 0
+    for model in targets:
+        model_temps = list(temps)
+        if model in extra_therapy:
+            model_temps = sorted(set(model_temps + [extra_therapy[model]]))
+        total_runs += len(VIGNETTES) * len(model_temps)
 
     print(f"Experiment: {len(targets)} models x {len(VIGNETTES)} vignettes x {len(temps)} temps x slice_{args.slice}")
     print(f"  Models: {targets}")
-    print(f"  Scale temps: {temps} (parallel per model x vignette)")
+    print(f"  Scale temps: {temps} (sequential per model x vignette)")
     if extra_therapy:
         print(f"  Extra therapy_temp runs: {extra_therapy}")
     print(f"  Trials per run: {args.trials}")
-    print(f"  Total runs: {total} ({total * args.trials} trials)")
+    print(f"  Total runs: {total_runs} ({total_runs * args.trials} trials)")
     print()
 
     results = []
-    done_combos = 0
+    done_runs = 0
+    failed_runs = 0
+    experiment_start = time.time()
 
-    for model in targets:
-        # Build the temperature list for this model: scale + optional therapy_temp
+    for model_idx, model in enumerate(targets):
         model_temps = list(temps)
         has_extra = model in extra_therapy
         if has_extra:
             model_temps = sorted(set(model_temps + [extra_therapy[model]]))
 
+        print(f"=== [{model_idx+1}/{len(targets)}] {model} ({len(model_temps)} temps x {len(VIGNETTES)} vignettes) ===")
+
         for vignette in VIGNETTES:
             history_path = find_slice_path(vignette, args.slice)
             if history_path is None:
                 print(f"  SKIP {model} x {vignette}: no slice_{args.slice} found")
+                for _ in model_temps:
+                    done_runs += 1
                 continue
 
-            done_combos += 1
-            sequential = model in RATE_LIMITED_MODELS
-            mode_label = "sequential, rate-limited" if sequential else "parallel"
             extra_label = f" +rec {extra_therapy[model]}" if has_extra else ""
-            print(f"  [{done_combos}/{combos}] {model} x {vignette} x {len(model_temps)} temps ({mode_label}{extra_label}) ...", flush=True)
+            print(f"  {model} x {vignette}{extra_label}:", flush=True)
 
-            start = time.time()
-            if sequential:
-                batch = []
-                for temp in model_temps:
-                    try:
-                        result = await run_single(model, vignette, history_path, args.trials, temp)
-                        batch.append(result)
-                    except Exception as e:
-                        batch.append({"model": model, "vignette": vignette, "temperature": temp, "error": str(e)})
-            else:
-                batch = await run_temps_parallel(
-                    model, vignette, history_path, args.trials, model_temps,
-                )
-            batch_elapsed = time.time() - start
+            # Run each temperature sequentially
+            for temp in model_temps:
+                try:
+                    result = await run_single(model, vignette, history_path, args.trials, temp)
+                    results.append(result)
+                    print_result(result)
+                except Exception as e:
+                    err_result = {"model": model, "vignette": vignette, "temperature": temp, "error": str(e)}
+                    results.append(err_result)
+                    print_result(err_result)
+                    failed_runs += 1
 
-            for r in batch:
-                results.append(r)
-                print_result(r)
+                done_runs += 1
 
-            print(f"    batch wall-clock: {batch_elapsed:.0f}s")
+            # Progress update after each vignette
+            if done_runs % (len(model_temps) * 2) == 0 or done_runs == total_runs:
+                print_progress(done_runs, total_runs, time.time() - experiment_start, failed_runs)
 
-    # Summary
+    # Final summary
+    total_elapsed = time.time() - experiment_start
     successful = [r for r in results if "jaccard" in r]
-    print(f"\nCompleted {len(successful)}/{total} runs")
+    print(f"\nCompleted {len(successful)}/{total_runs} runs in {format_time(total_elapsed)}")
+    if failed_runs:
+        print(f"  {failed_runs} runs failed")
     if successful:
         avg_j = sum(r["jaccard"] for r in successful) / len(successful)
         avg_b = sum(r["bertscore"] for r in successful) / len(successful)
@@ -247,6 +251,15 @@ async def main() -> None:
             if rec_models:
                 marker = f" (rec for: {', '.join(rec_models)})"
             print(f"  T={temp}: J={t_j:.3f} B={t_b:.3f} ({len(temp_runs)} runs){marker}")
+
+        # Per-model summary
+        print("\nPer-model summary:")
+        for model in targets:
+            model_runs = [r for r in successful if r["model"] == model]
+            if model_runs:
+                m_j = sum(r["jaccard"] for r in model_runs) / len(model_runs)
+                m_b = sum(r["bertscore"] for r in model_runs) / len(model_runs)
+                print(f"  {model}: J={m_j:.3f} B={m_b:.3f} ({len(model_runs)} runs)")
 
 
 if __name__ == "__main__":

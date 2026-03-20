@@ -3,7 +3,7 @@
 > **Purpose:** This file overrides Claude's training data on model availability and performance.
 > LLM landscape changes faster than any training cutoff can track. Before recommending or configuring models, **always check live sources first** rather than relying on built-in knowledge.
 >
-> **Last verified:** 2026-03-11
+> **Last verified:** 2026-03-19
 >
 > **Live sources to check before any model decision:**
 > - [Artificial Analysis Leaderboard](https://artificialanalysis.ai/leaderboards/models) - intelligence, speed, price rankings
@@ -32,19 +32,22 @@
 - **DeepSeek V4** (early Mar): ~1T total / ~32B active MoE. 1M context. Native multimodal (vision + audio + text). Optimized for Huawei Ascend chips. Apache 2.0. Not EU-sovereign. Active EU GDPR issues persist
 - **GPT-5.3-Codex** (Feb 24): 400K context. Industry-leading coding. $1.75/$14.00 per M tokens
 - **Gemini 3.1 Pro** (Feb 19): Google's latest flagship. 77.1% ARC-AGI-2, 1M context, 65K output tokens. Gemini 3 Pro Preview shut down Mar 9
-- **Qwen 3.5** (Feb 17-24): Full family released. 397B-A17B flagship MoE, 27B dense, 35B-A3B efficient MoE. Apache 2.0. Native multimodal
+- **Qwen 3.5** (Feb 16-24): Full family released. 397B-A17B flagship (512 experts, 10+1 active, Gated DeltaNet hybrid), 122B-A10B (256 experts), 35B-A3B, 27B dense. All 262K-1M context. Apache 2.0. Native multimodal
 - **MiniMax M2.5** (Feb 12): 230B MoE, 10B active. Lightning Attention. 205K context. 80.2% SWE-Bench Verified. Modified MIT license. Chinese origin (Shanghai). Available on OpenRouter. Extremely cheap ($0.15/$1.20 per M tokens for standard variant)
 - **GLM-5** (Feb 11): 744B MoE, 40B active, 256 experts. 205K context, 128K output. 77.8% SWE-bench, 92.7% AIME 2026. Trained entirely on Huawei Ascend (zero NVIDIA dependency). MIT license. Chinese origin (Zhipu AI / Z.ai). Available on OpenRouter
 - **GPT-5.2** (Feb 2026): 400K context, 100% AIME 2025, hallucination rate 6.2%. Superseded by GPT-5.4
 - **Kimi K2.5** (Jan 27): 1T MoE, 32B active, 384 experts. 256K context. Native multimodal (MoonViT 400M vision encoder). Agent swarm mode (up to 100 sub-agents). Modified MIT license. Chinese origin (Moonshot AI). Available on OpenRouter
 - **Guide Labs Steerling-8B** (Feb 23): Every output token traceable to training data origins. Interesting for clinical interpretability arguments
 - **Inception Mercury 2** (Feb 24): First reasoning diffusion LLM (dLLM). 1,000 tok/s. Not relevant for stability evaluation
-- **NVIDIA Nemotron 3 Nano** (available): 3.2B active / 31.6B total, hybrid Mamba-Transformer MoE, 1M context. Nemotron 3 Super (~100B) and Ultra (~500B) expected H1 2026
+- **Mistral Small 4** (Mar 16): 119B MoE (6.5B active, 128 experts, 4 active per token). Multimodal. Unifies Small/Magistral/Pixtral/Devstral lines. Configurable `reasoning_effort`. 256K context. Apache 2.0. $0.15/$0.60 per M tokens. On OpenRouter (`mistralai/mistral-small-2603`)
+- **NVIDIA Nemotron 3 Super** (Mar 11): 120B MoE (12B active, 512 routed + 1 shared expert, 22 active per token). Hybrid Mamba-Transformer LatentMoE. 1M context. Nemotron Open license (permissive, not Apache 2.0). On OpenRouter (free tier available). Nemotron 3 Ultra (~500B) expected H1 2026
+- **NVIDIA Nemotron 3 Nano** (available): 3.2B active / 31.6B total, hybrid Mamba-Transformer MoE, 1M context
 
 ### Mistral Ecosystem Updates
 
 - **Mistral acquired Koyeb** (Feb 17): Paris-based cloud startup (ex-Scaleway founders). Signals full-stack EU-sovereign AI cloud ambitions
 - **Mistral Compute** (announced Jun 2025) + Koyeb = building European inference infrastructure independent of US cloud
+- **Mistral Small 4** (Mar 16): 119B MoE replaces Small 3.x. Unifies instruct, reasoning, multimodal, and coding into one model. 128 experts (4 active, 6.5B active params). Configurable `reasoning_effort` parameter. Apache 2.0. $0.15/$0.60 per M tokens
 - **Ministral 3** (Dec 2025): 3B/8B/14B dense models, Apache 2.0. The 14B reasoning variant scores 85% on AIME '25
 - **Devstral 2** (Dec 2025): 123B dense for coding, 256K context. Devstral Small 2: 24B, Apache 2.0
 
@@ -101,7 +104,8 @@ Legal usability and data provenance vary across models. Relevant for EU deployme
 |---|---|---|---|
 | **Mistral Large 3** | 675B (41B active, MoE) | OpenRouter / Mistral API / Scaleway | Released Dec 2025. Apache 2.0. 256K context |
 | **Mistral Medium 3.1** | undisclosed | OpenRouter / Mistral API | EU-origin, closed weights. Mistral vertical scaling |
-| **Mistral Small 3.2** | 24B dense | Scaleway (EU) | Apache 2.0 |
+| **Mistral Small 4** | 119B (6.5B active, MoE) | OpenRouter / Mistral API | Released Mar 2026. Apache 2.0. 256K context. Replaces Small 3.x |
+| **Mistral Small 3.2** | 24B dense | Scaleway (EU) | Apache 2.0. Superseded by Small 4 |
 | **Ministral 3 14B** | 14B dense | Mistral API | Apache 2.0. Reasoning variant: 85% AIME '25. Edge deployment |
 | **OpenEuroLLM** | TBD | EU consortium | First versions mid-2026. 24 EU languages |
 
@@ -127,12 +131,14 @@ Best for academic defensibility. You can cite exactly what these were trained on
 | Model | Size | Origin | Performance | License |
 |---|---|---|---|---|
 | **Mistral Large 3** | 675B MoE (41B active) | Mistral (France) | #2 open model on LMArena. Strong multilingual, 256K context | Apache 2.0 |
-| **Mistral Small 3.2** | 24B dense | Mistral (France) | Comparable to 70B models on many tasks despite 24B size | Apache 2.0 |
+| **Mistral Small 4** | 119B MoE (6.5B active) | Mistral (France) | NEW (Mar 2026). Replaces Small 3.x. 128 experts. Multimodal. Configurable reasoning. 256K context. $0.15/$0.60 | Apache 2.0 |
+| **Mistral Small 3.2** | 24B dense | Mistral (France) | Superseded by Small 4. Comparable to 70B models despite 24B size | Apache 2.0 |
 
 ### Tier 3: Open Weights (good license, opaque data, non-EU origin)
 
 | Model | Size | Origin | Performance | License |
 |---|---|---|---|---|
+| **Qwen 3.5 397B-A17B** | 397B MoE (17B active) | Alibaba (China) | NEW (Feb 2026). 512 experts (10+1 active), Gated DeltaNet hybrid. 262K-1M context. Multimodal. On OpenRouter ($0.39/$2.34) | Apache 2.0 |
 | **Qwen 3.5 27B** | 27B dense | Alibaba (China) | NEW (Feb 2026). 800K+ context. Successor to Qwen 3 32B | Apache 2.0 |
 | **Qwen 3.5 35B-A3B** | 35B (3B active, MoE) | Alibaba (China) | NEW (Feb 2026). Exceeds 1M context on 32GB VRAM. Extremely efficient | Apache 2.0 |
 | **GLM-5** | 744B MoE (40B active) | Zhipu AI / Z.ai (China) | NEW (Feb 2026). 205K context, 128K output. 77.8% SWE-bench, 92.7% AIME 2026. Trained on Huawei Ascend. On OpenRouter | MIT |
@@ -140,6 +146,8 @@ Best for academic defensibility. You can cite exactly what these were trained on
 | **MiniMax M2.5** | 230B MoE (10B active) | MiniMax (China) | NEW (Feb 2026). 205K context. Lightning Attention. 80.2% SWE-bench. Extremely cheap. On OpenRouter | Modified MIT |
 | **Qwen 3 32B** | 32B dense | Alibaba (China) | Benchmark leader at 32B. Hybrid thinking modes. Superseded by Qwen 3.5 27B | Apache 2.0 |
 | **Gemma 3 27B** | 27B | Google (US) | Same size class as Mistral Small. Good comparator | Open |
+| **Qwen 3.5 122B-A10B** | 122B MoE (10B active) | Alibaba (China) | NEW (Feb 2026). 256 experts, Gated DeltaNet hybrid. 262K-1M context. On OpenRouter | Apache 2.0 |
+| **Nemotron 3 Super** | 120B MoE (12B active) | NVIDIA (US) | NEW (Mar 2026). 512 experts, hybrid Mamba-Transformer LatentMoE. 1M context. On OpenRouter (free tier) | Nemotron Open |
 | **Llama 3.3 70B** | 70B | Meta (US) | Text-only = EU-legal. Reliable 70B baseline | Meta license |
 | **GPT-oss-120B** | 120B | OpenAI (US) | Apache 2.0. OpenAI's first open-weight model. Strong reasoning | Apache 2.0 |
 
@@ -183,7 +191,7 @@ Rate limits: 20 RPM, 200 req/day without credits, higher with credits.
 |---|---|---|
 | **DeepSeek V4** | ~1T MoE, ~32B active. Apache 2.0. Native multimodal | Released early Mar 2026, not yet on hosted API |
 | **DeepSeek V3.2 structured output** | Currently json_object only, no json_schema | Ongoing |
-| **NVIDIA Nemotron 3 Super/Ultra** | ~100B / ~500B. Hybrid Mamba-Transformer MoE | H1 2026 |
+| **NVIDIA Nemotron 3 Ultra** | ~500B. Hybrid Mamba-Transformer MoE. Super counterpart released Mar 11 | H1 2026 |
 | **OpenEuroLLM** | EU institutional sovereign LLM | Mid-2026 |
 | **K2-V2 hosted inference** | 70B fully open, no hosted inference yet | No timeline |
 | **Guide Labs Steerling-8B** | Every output token traceable to training data origins. Interesting for interpretability | Available now, 8B only |

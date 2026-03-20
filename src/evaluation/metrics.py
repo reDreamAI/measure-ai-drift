@@ -8,6 +8,7 @@ Implements the three-level evaluation framework from the thesis:
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import re
 from itertools import combinations
@@ -286,6 +287,17 @@ def _parse_judgment(raw: str, expected: set[str]) -> dict[str, dict[str, Any]]:
     return parsed
 
 
+# Semaphore to limit concurrent judge calls (Gemini free tier: 25 RPM)
+_JUDGE_SEMAPHORE: asyncio.Semaphore | None = None
+
+def _get_judge_semaphore(max_concurrent: int = 5) -> asyncio.Semaphore:
+    """Get or create the judge semaphore (lazy init for the current event loop)."""
+    global _JUDGE_SEMAPHORE
+    if _JUDGE_SEMAPHORE is None:
+        _JUDGE_SEMAPHORE = asyncio.Semaphore(max_concurrent)
+    return _JUDGE_SEMAPHORE
+
+
 async def _judge_single_trial(
     judge: Any,
     system_prompt: str,
@@ -293,43 +305,52 @@ async def _judge_single_trial(
     strategies: set[str],
     trial_index: int,
     timeout_seconds: int = 120,
+    max_retries: int = 3,
 ) -> tuple[float, dict[str, Any], dict[str, list[int]]]:
-    """Judge one trial with a timeout. Returns (score, judgment_dict, strategy_scores)."""
-    import asyncio
+    """Judge one trial with a timeout, semaphore, and retry on 429. Returns (score, judgment_dict, strategy_scores)."""
+    sem = _get_judge_semaphore()
 
-    try:
-        raw_output, usage = await asyncio.wait_for(
-            judge.generate([
-                {"role": "system", "content": system_prompt},
-                {"role": "user", "content": user_msg},
-            ]),
-            timeout=timeout_seconds,
-        )
+    for attempt in range(max_retries + 1):
+        try:
+            async with sem:
+                raw_output, usage = await asyncio.wait_for(
+                    judge.generate([
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_msg},
+                    ]),
+                    timeout=timeout_seconds,
+                )
 
-        parsed = _parse_judgment(raw_output, strategies)
-        scores = [parsed[sid]["score"] for sid in strategies if sid in parsed]
-        trial_alignment = (sum(scores) / (len(scores) * 2)) if scores else 0.0
+            parsed = _parse_judgment(raw_output, strategies)
+            scores = [parsed[sid]["score"] for sid in strategies if sid in parsed]
+            trial_alignment = (sum(scores) / (len(scores) * 2)) if scores else 0.0
 
-        strat_scores: dict[str, list[int]] = {}
-        for sid in strategies:
-            if sid in parsed:
-                strat_scores.setdefault(sid, []).append(parsed[sid]["score"])
+            strat_scores: dict[str, list[int]] = {}
+            for sid in strategies:
+                if sid in parsed:
+                    strat_scores.setdefault(sid, []).append(parsed[sid]["score"])
 
-        judgment = {
-            "trial": trial_index,
-            "raw_output": raw_output,
-            "parsed": {sid: parsed[sid] for sid in strategies if sid in parsed},
-            "trial_alignment": trial_alignment,
-            "usage": usage,
-        }
-        return trial_alignment, judgment, strat_scores
+            judgment = {
+                "trial": trial_index,
+                "raw_output": raw_output,
+                "parsed": {sid: parsed[sid] for sid in strategies if sid in parsed},
+                "trial_alignment": trial_alignment,
+                "usage": usage,
+            }
+            return trial_alignment, judgment, strat_scores
 
-    except asyncio.TimeoutError:
-        logger.warning("Judge call timed out for trial %d after %ds", trial_index, timeout_seconds)
-        return 0.0, {"trial": trial_index, "error": f"timeout after {timeout_seconds}s"}, {}
-    except Exception as e:
-        logger.warning("Judge call failed for trial %d: %s", trial_index, e)
-        return 0.0, {"trial": trial_index, "error": str(e)}, {}
+        except asyncio.TimeoutError:
+            logger.warning("Judge call timed out for trial %d after %ds", trial_index, timeout_seconds)
+            return 0.0, {"trial": trial_index, "error": f"timeout after {timeout_seconds}s"}, {}
+        except Exception as e:
+            err_str = str(e)
+            if "429" in err_str and attempt < max_retries:
+                wait = 15 * (attempt + 1)
+                logger.info("Judge 429 for trial %d, retry %d/%d in %ds", trial_index, attempt + 1, max_retries, wait)
+                await asyncio.sleep(wait)
+                continue
+            logger.warning("Judge call failed for trial %d: %s", trial_index, e)
+            return 0.0, {"trial": trial_index, "error": err_str}, {}
 
 
 async def compute_alignment(
@@ -355,7 +376,6 @@ async def compute_alignment(
     Returns:
         Dict with keys: mean_alignment, per_trial, per_strategy, raw_judgments.
     """
-    import asyncio
     from src.core.config_loader import load_yaml, PROMPTS_DIR
     from src.llm.provider import create_provider
 
