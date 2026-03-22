@@ -76,12 +76,17 @@ model_options:
       provider: gemini
       model: gemini-3.1-pro-preview
       standard_temp: 1.0  # Gemini 3 requires T=1.0 for reasoning. See docs/grounded/temperature_sources.md
-      notes: "Experiment judge. Thinking aids judgment accuracy. Free Google AI Studio credits"
+      notes: "Best judge. 250 RPD Tier 1 limit. Switch back when Tier 2"
+    gemini3_flash:
+      provider: gemini
+      model: gemini-3-flash-preview
+      standard_temp: 1.0  # Gemini 3 requires T=1.0 for reasoning
+      notes: "Near-Pro reasoning, high rate limits. $0.50/$3.00. Recommended for experiment"
     gemini31_flash_lite:
       provider: gemini
       model: gemini-3.1-flash-lite-preview
       standard_temp: 1.0  # Gemini 3 requires T=1.0 for reasoning. See docs/grounded/temperature_sources.md
-      notes: "Testing judge. Cheapest Gemini. Free Google AI Studio credits"
+      notes: "Testing judge. Cheapest Gemini. $0.25/$1.50"
 
 # =============================================================================
 # ACTIVE ROLES - Current selection (change these to swap models)
@@ -105,8 +110,9 @@ roles:
     max_tokens: 32
 
   judge:
-    use: gemini31_flash_lite  # default (testing). Overridden to gemini31_pro for experiment models
-    use_experiment: gemini31_pro
+    use: gemini31_flash_lite  # default (testing)
+    use_experiment: gemini3_flash  # near-Pro reasoning, high rate limits
+    # use_experiment: gemini31_pro  # Tier 2 needed (1,000 RPM, no daily cap)
     temperature: 1.0  # Gemini 3 requires T=1.0. Lower causes looping/degraded reasoning (Google docs)
     max_tokens: 4096  # Extra budget for Gemini thinking tokens
 

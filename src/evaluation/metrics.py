@@ -179,8 +179,12 @@ _BERTSCORE_CACHE: dict[str, Any] = {}
 def _get_bertscorer(model_type: str = "microsoft/deberta-xlarge-mnli") -> Any:
     """Return a cached BERTScorer instance (loads model only once per process)."""
     if model_type not in _BERTSCORE_CACHE:
+        import warnings
         from bert_score import BERTScorer
-        scorer = BERTScorer(model_type=model_type, lang="en")
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", message=".*UNEXPECTED.*")
+            warnings.filterwarnings("ignore", category=FutureWarning)
+            scorer = BERTScorer(model_type=model_type, lang="en")
         scorer._tokenizer.model_max_length = 512
         _BERTSCORE_CACHE[model_type] = scorer
     return _BERTSCORE_CACHE[model_type]
@@ -237,10 +241,15 @@ def compute_pairwise_bertscore(
 # Level 3.3 — Plan-Output Alignment
 # ---------------------------------------------------------------------------
 
-# Matches lines like: "agency: reasoning text | score: 2"
+# Primary: "agency: reasoning text | score: 2"
 _JUDGMENT_LINE_RE = re.compile(
-    r"^(\w+):\s*(.+?)\s*\|\s*score:\s*([012])\s*$",
+    r"^[\s*-]*(\w+):\s*(.+?)\s*\|\s*score:\s*([012])\s*$",
     re.IGNORECASE | re.MULTILINE,
+)
+# Fallback: "score: 2" on a separate line or "| 2" at end
+_SCORE_NEARBY_RE = re.compile(
+    r"(\w+).*?(?:\|\s*score:\s*([012])|score\s*[:=]\s*([012]))",
+    re.IGNORECASE,
 )
 
 
@@ -268,17 +277,50 @@ def _build_strategies_block(strategies: set[str], taxonomy: dict[str, Any]) -> s
 def _parse_judgment(raw: str, expected: set[str]) -> dict[str, dict[str, Any]]:
     """Parse judge output into per-strategy scores.
 
+    Handles common format variations from different judge models:
+    - Leading whitespace, bullets, or markdown bold
+    - strategy_id literal instead of actual name (maps by position)
+    - Thinking tags stripped before parsing
+
     Returns dict mapping strategy_id -> {"reasoning": str, "score": int}.
     Missing or unparseable strategies default to score 0.
     """
+    # Strip thinking tags if present
+    cleaned = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
+    # Strip markdown bold from strategy names
+    cleaned = re.sub(r"\*\*(\w+)\*\*", r"\1", cleaned)
+
     parsed: dict[str, dict[str, Any]] = {}
-    for match in _JUDGMENT_LINE_RE.finditer(raw):
+
+    # Primary regex pass
+    for match in _JUDGMENT_LINE_RE.finditer(cleaned):
         sid = match.group(1).lower()
         reasoning = match.group(2).strip()
         score = int(match.group(3))
-        parsed[sid] = {"reasoning": reasoning, "score": score}
+        # Skip generic "strategy_id" literal — will handle below
+        if sid != "strategy_id":
+            parsed[sid] = {"reasoning": reasoning, "score": score}
 
-    # Fill missing strategies with score 0
+    # If primary pass missed strategies, try to recover from "strategy_id:" lines
+    # by matching scores to expected strategies in order
+    if len(parsed) < len(expected):
+        missing = expected - set(parsed.keys())
+        # Look for lines with "strategy_id" literal or unmatched score patterns
+        generic_scores = []
+        for match in _JUDGMENT_LINE_RE.finditer(cleaned):
+            sid = match.group(1).lower()
+            if sid == "strategy_id" or sid not in expected:
+                generic_scores.append({
+                    "reasoning": match.group(2).strip(),
+                    "score": int(match.group(3)),
+                })
+
+        # Assign generic scores to missing strategies in sorted order
+        for sid, generic in zip(sorted(missing), generic_scores):
+            parsed[sid] = generic
+            logger.info("Mapped generic judge line to strategy '%s' (score=%d)", sid, generic["score"])
+
+    # Fill any still-missing strategies with score 0
     for sid in expected:
         if sid not in parsed:
             logger.warning("Judge did not score strategy '%s' — defaulting to 0", sid)
@@ -411,10 +453,81 @@ async def compute_alignment(
         for (idx, _), result in zip(tasks, gathered):
             results_map[idx] = result
 
+    # --- Pro fallback for suspect trials ---
+    # Re-judge with Pro if: trial scores 0.0 OR any strategy was not scored by judge.
+    # Keeps the original Flash judgment as a note, uses only the Pro score.
+    suspect_indices = []
+    for idx, (score, judgment, _) in results_map.items():
+        if "error" in judgment:
+            continue
+        if score == 0.0:
+            suspect_indices.append(idx)
+            continue
+        # Check for partial parse failures (strategy defaulted to 0 because judge didn't output it)
+        parsed = judgment.get("parsed", {})
+        if any(v.get("reasoning") == "not scored by judge" for v in parsed.values()):
+            suspect_indices.append(idx)
+
+    if suspect_indices and experiment:
+        try:
+            pro_judge = create_provider("judge", config_path=None, experiment=False)
+            # Check if the experiment judge is already Pro (avoid double-judging with same model)
+            is_already_pro = judge.config.model == pro_judge.config.model
+            if is_already_pro:
+                # Try loading gemini31_pro explicitly
+                from src.llm.provider import load_config as _lc
+                _cfg = _lc()
+                _pro_def = _cfg.get("model_options", {}).get("judge", {}).get("gemini31_pro")
+                if not _pro_def:
+                    is_already_pro = True  # no Pro available, skip fallback
+                else:
+                    import os
+                    _prov_cfg = _cfg["providers"][_pro_def["provider"]]
+                    from src.llm.provider import LLMConfig, LLMProvider
+                    pro_judge = LLMProvider(LLMConfig(
+                        provider=_pro_def["provider"],
+                        model=_pro_def["model"],
+                        temperature=1.0,
+                        max_tokens=4096,
+                        api_key=os.environ.get(_prov_cfg.get("api_key_env", ""), ""),
+                        base_url=_prov_cfg.get("base_url", ""),
+                    ))
+                    is_already_pro = False
+        except Exception:
+            is_already_pro = True  # can't create Pro judge, skip fallback
+
+        if not is_already_pro and suspect_indices:
+            logger.info("Re-judging %d zero-scored trials with Pro fallback", len(suspect_indices))
+            for idx in suspect_indices:
+                strategies = strategy_sets[idx]
+                response = responses[idx]
+                strategies_block = _build_strategies_block(strategies, taxonomy)
+                user_msg = user_template.replace("{strategies_block}", strategies_block).replace("{response}", response)
+
+                pro_score, pro_judgment, pro_strat_scores = await _judge_single_trial(
+                    pro_judge, system_prompt, user_msg, strategies, idx + 1,
+                )
+
+                # Keep original Flash result as a note
+                original_score, original_judgment, _ = results_map[idx]
+                pro_judgment["pro_fallback"] = True
+                pro_judgment["original_flash_score"] = original_score
+                pro_judgment["original_flash_judgment"] = original_judgment
+
+                if pro_score > 0.0:
+                    logger.info("Pro fallback trial %d: %.2f (was %.2f from Flash)", idx + 1, pro_score, original_score)
+                    results_map[idx] = (pro_score, pro_judgment, pro_strat_scores)
+                else:
+                    # Pro also scored 0 - keep it but note the double failure
+                    pro_judgment["double_zero"] = True
+                    logger.warning("Pro fallback also scored 0.0 for trial %d", idx + 1)
+                    results_map[idx] = (pro_score, pro_judgment, pro_strat_scores)
+
     # Reassemble in order
     per_trial: list[float] = []
     raw_judgments: list[dict[str, Any]] = []
     strategy_scores: dict[str, list[int]] = {}
+    pro_fallback_count = 0
 
     for i in range(len(strategy_sets)):
         if i in skip_indices:
@@ -424,6 +537,8 @@ async def compute_alignment(
             score, judgment, strat_scores = results_map[i]
             per_trial.append(score)
             raw_judgments.append(judgment)
+            if judgment.get("pro_fallback"):
+                pro_fallback_count += 1
             for sid, scores_list in strat_scores.items():
                 strategy_scores.setdefault(sid, []).extend(scores_list)
 
@@ -434,9 +549,14 @@ async def compute_alignment(
         for sid, scores in strategy_scores.items()
     }
 
-    return {
+    result = {
         "mean_alignment": mean_alignment,
         "per_trial": per_trial,
         "per_strategy": per_strategy,
         "raw_judgments": raw_judgments,
     }
+    if pro_fallback_count:
+        result["pro_fallback_count"] = pro_fallback_count
+        logger.info("Alignment complete: %d/%d trials used Pro fallback", pro_fallback_count, len(per_trial))
+
+    return result

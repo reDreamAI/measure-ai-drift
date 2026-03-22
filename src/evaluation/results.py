@@ -1,6 +1,6 @@
 """Results aggregation for experiment analysis.
 
-Aggregates metrics from individual experiment runs in experiments/runs/
+Aggregates metrics from individual experiment runs in experiments/latest/
 and outputs consolidated results to data/synthetic/results/.
 
 Output files:
@@ -20,7 +20,7 @@ from src.evaluation.experiment import load_experiment
 
 
 def aggregate_experiments(
-    runs_dir: str | Path = "experiments/runs",
+    runs_dir: str | Path = "experiments/latest",
 ) -> dict[str, Any]:
     """Scan experiment runs and aggregate metrics.
 
@@ -130,7 +130,7 @@ def _compute_group_stats(grouped: dict[str, list[dict]]) -> dict[str, dict]:
 
 def save_results(
     output_dir: str | Path = "data/synthetic/results",
-    runs_dir: str | Path = "experiments/runs",
+    runs_dir: str | Path = "experiments/latest",
 ) -> Path:
     """Aggregate experiments and save results to output directory.
 

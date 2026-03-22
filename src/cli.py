@@ -525,7 +525,7 @@ def main() -> int:
     
     # Aggregate command
     agg_parser = subparsers.add_parser('aggregate', help='Aggregate experiment results')
-    agg_parser.add_argument('--runs-dir', '-r', default='experiments/runs', help='Experiment runs directory')
+    agg_parser.add_argument('--runs-dir', '-r', default='experiments/latest', help='Experiment runs directory')
     agg_parser.add_argument('--output', '-o', default='data/synthetic/results', help='Output directory for results')
 
     # Test setup command

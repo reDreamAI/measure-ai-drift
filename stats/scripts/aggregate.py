@@ -143,7 +143,7 @@ def main() -> None:
     parser.add_argument(
         "--runs-dir",
         type=Path,
-        default=Path("experiments/runs"),
+        default=Path("experiments/latest"),
     )
     parser.add_argument(
         "--output",

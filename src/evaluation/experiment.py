@@ -1,7 +1,7 @@
 """Experiment runner with structured output for reproducibility.
 
 Creates experiment runs in the format:
-    experiments/runs/{timestamp}_{model}_{vignette}/
+    experiments/runs/{batch}/{timestamp}_{model}_{vignette}/
         config.yaml
         frozen_history.json
         trials/
@@ -41,7 +41,7 @@ class ExperimentRun:
         frozen_history: Conversation,
         model_name: str,
         vignette_name: str,
-        base_dir: str | Path = "experiments/runs",
+        base_dir: str | Path = "experiments/latest",
     ) -> None:
         self.frozen_history = frozen_history
         self.model_name = model_name

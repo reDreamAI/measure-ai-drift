@@ -60,6 +60,7 @@ async def run_single(
     history_path: Path,
     n_trials: int,
     temperature: float,
+    batch_dir: Path | None = None,
 ) -> dict:
     """Run one experiment (model x vignette x temperature) and return summary."""
     with open(history_path) as f:
@@ -68,10 +69,15 @@ async def run_single(
     frozen_history = Conversation.from_dict(history_data)
     provider = create_provider(model_name)
 
+    kwargs = {}
+    if batch_dir:
+        kwargs["base_dir"] = batch_dir
+
     experiment = ExperimentRun(
         frozen_history=frozen_history,
         model_name=model_name,
         vignette_name=vignette,
+        **kwargs,
     ).setup()
 
     start = time.time()
@@ -178,7 +184,19 @@ async def main() -> None:
             model_temps = sorted(set(model_temps + [extra_therapy[model]]))
         total_runs += len(VIGNETTES) * len(model_temps)
 
+    # Create batch directory
+    from datetime import datetime
+    batch_name = datetime.now().strftime("batch_%Y%m%d_%H%M%S")
+    batch_dir = Path("experiments/runs") / batch_name
+    batch_dir.mkdir(parents=True, exist_ok=True)
+
+    # Update latest symlink
+    latest_link = Path("experiments/latest")
+    latest_link.unlink(missing_ok=True)
+    latest_link.symlink_to(batch_dir.resolve())
+
     print(f"Experiment: {len(targets)} models x {len(VIGNETTES)} vignettes x {len(temps)} temps x slice_{args.slice}")
+    print(f"  Batch: {batch_dir}")
     print(f"  Models: {targets}")
     print(f"  Scale temps: {temps} (sequential per model x vignette)")
     if extra_therapy:
@@ -214,7 +232,7 @@ async def main() -> None:
             # Run each temperature sequentially
             for temp in model_temps:
                 try:
-                    result = await run_single(model, vignette, history_path, args.trials, temp)
+                    result = await run_single(model, vignette, history_path, args.trials, temp, batch_dir)
                     results.append(result)
                     print_result(result)
                 except Exception as e:

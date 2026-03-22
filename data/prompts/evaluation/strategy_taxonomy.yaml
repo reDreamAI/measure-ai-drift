@@ -65,7 +65,7 @@ strategies:
       - becomes
 
   - id: social_support
-    description: "A new person, companion, or ally is introduced into the dream to help or accompany the dreamer"
+    description: "People in the dream become supportive, or a new ally is introduced. Existing characters can shift from threatening to encouraging. Any form of interpersonal support counts (NOT just adding new characters)"
     keywords:
       - ally
       - allies
