@@ -16,6 +16,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from model_display import display_name
+
 STRATEGY_CATEGORIES = [
     "confrontation",
     "self_empowerment",
@@ -53,7 +55,7 @@ def main() -> None:
     validity = df.groupby("model")["validity_rate"].mean().reindex(models)
     ax1.bar(range(len(models)), validity.values, color="#457b9d", edgecolor="white")
     ax1.set_xticks(range(len(models)))
-    ax1.set_xticklabels(models, rotation=45, ha="right", fontsize=9)
+    ax1.set_xticklabels([display_name(m) for m in models], rotation=45, ha="right", fontsize=8)
     ax1.set_ylabel("Validity rate")
     ax1.set_ylim(0, 1.05)
     ax1.set_title("Plan validity rate")
@@ -84,7 +86,7 @@ def main() -> None:
         bottom += values
 
     ax2.set_xticks(range(len(models)))
-    ax2.set_xticklabels(models, rotation=45, ha="right", fontsize=9)
+    ax2.set_xticklabels([display_name(m) for m in models], rotation=45, ha="right", fontsize=8)
     ax2.set_ylabel("Strategy share (%)")
     ax2.set_title("Strategy distribution")
     ax2.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=8)

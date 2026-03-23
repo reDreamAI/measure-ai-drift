@@ -50,3 +50,6 @@ thesis/*.glg
 thesis/*.glo
 thesis/*.gls
 thesis/*.ist
+
+# Ignore screenshots
+screenshots/

@@ -19,25 +19,7 @@ import pandas as pd
 
 RANDOM_BASELINE = 0.2  # Expected Jaccard for random 2-of-6 picks
 
-MODEL_COLORS = {
-    # Mistral EU-sovereign (reds)
-    "mistral_small4": "#e63946",
-    "mistral_large": "#9b2226",
-    "mistral_small32": "#d4756b",
-    # Qwen family (yellows/ambers)
-    "qwen35_122b": "#e9c46a",
-    "qwen35_397b": "#c8961e",
-    "qwen35_27b": "#f4d08f",
-    # Dense comparators
-    "olmo3_32b": "#f4a261",
-    "llama70b": "#2a9d8f",
-    # Proprietary ceiling
-    "gpt54": "#457b9d",
-    "sonnet46": "#6a0dad",
-    # Test
-    "llama70b_test": "#a8dadc",
-    "gpt_oss_test": "#6d6875",
-}
+from model_display import MODEL_COLORS, display_name
 
 
 def plot_metric(ax, df, metric, title, ylabel):
@@ -65,7 +47,7 @@ def plot_metric(ax, df, metric, title, ylabel):
             continue
 
         color = MODEL_COLORS.get(model, "#888888")
-        ax.plot(valid_temps, medians, marker="o", label=model, color=color, linewidth=2)
+        ax.plot(valid_temps, medians, marker="o", label=display_name(model), color=color, linewidth=2)
         ax.fill_between(valid_temps, q1s, q3s, alpha=0.15, color=color)
 
     ax.axhline(y=1.0, color="green", linestyle="--", alpha=0.4, label="Perfect")

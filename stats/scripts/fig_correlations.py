@@ -1,8 +1,7 @@
-"""Figure 5.5: Metric correlation -- median Jaccard vs median BERTScore per model.
+"""Figure 5.5: Metric correlation -- median Jaccard vs mean BERTScore per model.
 
-Scatter with one point per model, colored by model. Jaccard on x-axis,
-BERTScore on y-axis, each with its own scale. Spearman rho on model-level
-medians (one value per model).
+Scatter with one point per model, colored by model. Labels use display names
+with smart placement to avoid overlaps. No redundant legend.
 
 Usage:
     python stats/scripts/fig_correlations.py [--tier test|experiment]
@@ -14,29 +13,11 @@ import argparse
 from pathlib import Path
 
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 from scipy import stats as sp
 
-# One color per model -- will fall back to gray for unknown models
-MODEL_COLORS = {
-    # Mistral EU-sovereign (reds)
-    "mistral_small4": "#e63946",
-    "mistral_large": "#9b2226",
-    "mistral_small32": "#d4756b",
-    # Qwen family (yellows/ambers)
-    "qwen35_122b": "#e9c46a",
-    "qwen35_397b": "#c8961e",
-    "qwen35_27b": "#f4d08f",
-    # Dense comparators
-    "olmo3_32b": "#f4a261",
-    "llama70b": "#2a9d8f",
-    # Proprietary ceiling
-    "gpt54": "#457b9d",
-    "sonnet46": "#6a0dad",
-    # Test
-    "llama70b_test": "#a8dadc",
-    "gpt_oss_test": "#6d6875",
-}
+from model_display import MODEL_COLORS, display_name
 
 
 def main() -> None:
@@ -51,36 +32,60 @@ def main() -> None:
 
     df = pd.read_csv(args.input).dropna(subset=["jaccard_all", "bertscore_f1"])
 
-    # Aggregate to one value per model
-    # Median for Jaccard (ordinal/discrete), mean for BERTScore (continuous)
     model_stats = df.groupby("model").agg(
         jaccard=("jaccard_all", "median"),
         bertscore=("bertscore_f1", "mean"),
     )
 
-    fig, ax = plt.subplots(figsize=(7, 6))
+    fig, ax = plt.subplots(figsize=(8, 6))
 
+    # Plot points
     for model, row in model_stats.iterrows():
         color = MODEL_COLORS.get(model, "#888888")
         ax.scatter(
             row["jaccard"],
             row["bertscore"],
             color=color,
-            s=120,
+            s=140,
             zorder=3,
             edgecolors="white",
-            linewidth=1,
-            label=model,
-        )
-        ax.annotate(
-            model,
-            (row["jaccard"], row["bertscore"]),
-            textcoords="offset points",
-            xytext=(8, -4),
-            fontsize=8,
+            linewidth=1.5,
         )
 
-    # Spearman on model-level medians
+    # Smart label placement: try to avoid overlaps
+    points = [(row["jaccard"], row["bertscore"], model) for model, row in model_stats.iterrows()]
+    points.sort(key=lambda p: (p[0], p[1]))
+
+    for x, y, model in points:
+        name = display_name(model)
+        color = MODEL_COLORS.get(model, "#888888")
+
+        # Default: label to the right
+        ha, dx, dy = "left", 10, 0
+
+        # Adjust for specific crowded regions
+        if model == "qwen35_27b":
+            dx, dy = 10, 8
+        elif model == "qwen35_397b":
+            dx, dy = 10, -8
+        elif model == "llama70b":
+            dx, dy = -10, 8
+            ha = "right"
+        elif model == "mistral_small4":
+            dx, dy = 10, -10
+
+        ax.annotate(
+            name,
+            (x, y),
+            textcoords="offset points",
+            xytext=(dx, dy),
+            fontsize=8,
+            ha=ha,
+            color=color,
+            fontweight="bold",
+        )
+
+    # Spearman on model-level aggregates
     n = len(model_stats)
     if n >= 3:
         rho, p = sp.spearmanr(model_stats["jaccard"], model_stats["bertscore"])
@@ -100,14 +105,12 @@ def main() -> None:
             bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8),
         )
 
-    ax.set_xlabel("Median Jaccard similarity", fontsize=10)
-    ax.set_ylabel("Mean BERTScore F1", fontsize=10)
+    ax.set_xlabel("Median Jaccard similarity (strategy consistency)", fontsize=10)
+    ax.set_ylabel("Mean BERTScore F1 (semantic consistency)", fontsize=10)
     ax.set_title("Strategy consistency vs semantic consistency")
 
-    ax.set_xlim(0, 1.1)
-    ax.set_ylim(0.5, 1.0)
-
-    ax.legend(fontsize=8, loc="lower right")
+    ax.set_xlim(0.3, 1.05)
+    ax.set_ylim(0.65, 1.0)
 
     fig.tight_layout()
     output_dir.mkdir(parents=True, exist_ok=True)

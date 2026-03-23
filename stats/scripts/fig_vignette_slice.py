@@ -18,11 +18,14 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
+from model_display import display_name
+
 
 def make_heatmap(ax, df, models, vignettes, title):
     """Draw a model x vignette heatmap on the given axis."""
     pivot = df.groupby(["model", "vignette"])["jaccard_all"].median().unstack(fill_value=np.nan)
     pivot = pivot.reindex(index=models, columns=vignettes)
+    pivot.index = [display_name(m) for m in pivot.index]
 
     sns.heatmap(
         pivot,

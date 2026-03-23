@@ -16,25 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-MODEL_COLORS = {
-    # Mistral EU-sovereign (reds)
-    "mistral_small4": "#e63946",
-    "mistral_large": "#9b2226",
-    "mistral_small32": "#d4756b",
-    # Qwen family (yellows/ambers)
-    "qwen35_122b": "#e9c46a",
-    "qwen35_397b": "#c8961e",
-    "qwen35_27b": "#f4d08f",
-    # Dense comparators
-    "olmo3_32b": "#f4a261",
-    "llama70b": "#2a9d8f",
-    # Proprietary ceiling
-    "gpt54": "#457b9d",
-    "sonnet46": "#6a0dad",
-    # Test
-    "llama70b_test": "#a8dadc",
-    "gpt_oss_test": "#6d6875",
-}
+from model_display import MODEL_COLORS, display_name
 
 
 def main() -> None:
@@ -73,7 +55,7 @@ def main() -> None:
         color = MODEL_COLORS.get(model, "#888888")
         means_arr = np.array(means)
         sds_arr = np.array(sds)
-        ax.plot(valid_temps, means, marker="o", label=model, color=color, linewidth=2)
+        ax.plot(valid_temps, means, marker="o", label=display_name(model), color=color, linewidth=2)
         ax.fill_between(valid_temps, means_arr - sds_arr, means_arr + sds_arr, alpha=0.15, color=color)
 
     ax.set_xlabel("Temperature")
