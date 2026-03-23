@@ -1,13 +1,14 @@
 """Statistical tests (exploratory, bachelor's thesis scope).
 
 Tests:
-- Temperature effect: Wilcoxon signed-rank (paired by model+vignette)
+- Temperature effect: Spearman correlation + Kruskal-Wallis (pooled and per-model)
 - Model differences: Kruskal-Wallis H (across models)
 - Vignette effect: Kruskal-Wallis H (across vignettes)
-- Correlation: Spearman between Jaccard and BERTScore F1
+- Correlation: Spearman between Jaccard, BERTScore, and Alignment
+- Alignment: Kruskal-Wallis across models
 
 Usage:
-    python stats/scripts/tests.py [--input stats/data/all_runs.csv] [--output stats/data/test_results.json]
+    python stats/scripts/tests.py [--tier experiment]
 """
 
 from __future__ import annotations
@@ -22,10 +23,10 @@ from scipy import stats as sp
 
 
 def temperature_effect(df: pd.DataFrame, metric: str = "jaccard_all") -> dict:
-    """Temperature effect: Spearman correlation (metric vs temperature) + Kruskal-Wallis across temperature groups.
+    """Temperature effect: Spearman correlation + Kruskal-Wallis.
 
-    With a 5-point temperature scale (0.0, 0.25, 0.5, 0.75, 1.0), Spearman captures
-    the monotonic trend while Kruskal-Wallis tests for any group differences.
+    Scale: [0.0, 0.15, 0.3, 0.6]. Tests whether stability degrades
+    monotonically with temperature.
     """
     valid = df[["temperature", metric]].dropna()
     temps = sorted(valid["temperature"].unique())
@@ -42,6 +43,8 @@ def temperature_effect(df: pd.DataFrame, metric: str = "jaccard_all") -> dict:
         rho, p = sp.spearmanr(valid["temperature"], valid[metric])
         result["spearman_rho"] = float(rho)
         result["spearman_p"] = float(p)
+        result["p_value"] = float(p)  # for summary printer
+        result["statistic"] = f"rho={rho:.3f}"
 
     # Kruskal-Wallis: differences across temperature groups
     groups = [g[metric].values for _, g in valid.groupby("temperature")]
@@ -53,7 +56,7 @@ def temperature_effect(df: pd.DataFrame, metric: str = "jaccard_all") -> dict:
         result["kruskal_p"] = float(p)
         result["kruskal_eta_sq"] = float(stat) / (n_total - 1)
 
-    # Per-temperature medians for descriptive context
+    # Per-temperature medians
     result["medians_by_temp"] = {
         str(t): float(valid[valid["temperature"] == t][metric].median())
         for t in temps
@@ -62,22 +65,39 @@ def temperature_effect(df: pd.DataFrame, metric: str = "jaccard_all") -> dict:
     return result
 
 
+def temperature_effect_per_model(df: pd.DataFrame, metric: str = "jaccard_all") -> dict:
+    """Per-model Spearman correlation of metric vs temperature."""
+    models = sorted(df["model"].unique())
+    per_model = {}
+
+    for model in models:
+        mdf = df[df["model"] == model][["temperature", metric]].dropna()
+        if len(mdf) >= 4:
+            rho, p = sp.spearmanr(mdf["temperature"], mdf[metric])
+            per_model[model] = {
+                "rho": float(rho),
+                "p_value": float(p),
+                "n": len(mdf),
+                "significant": bool(p < 0.05),
+            }
+
+    return {
+        "test": "temperature_effect_per_model",
+        "metric": metric,
+        "per_model": per_model,
+    }
+
+
 def model_differences(df: pd.DataFrame, metric: str = "jaccard_all") -> dict:
     """Kruskal-Wallis H test across models."""
     groups = [group[metric].dropna().values for _, group in df.groupby("model")]
     groups = [g for g in groups if len(g) > 0]
 
     if len(groups) < 3:
-        return {
-            "test": "kruskal_wallis",
-            "metric": metric,
-            "n_groups": len(groups),
-            "note": "fewer than 3 groups",
-        }
+        return {"test": "kruskal_wallis", "metric": metric, "note": "fewer than 3 groups"}
 
     stat, p = sp.kruskal(*groups)
     n_total = sum(len(g) for g in groups)
-    # Eta-squared approximation: H / (N - 1)
     eta_sq = float(stat) / (n_total - 1)
 
     result = {
@@ -118,12 +138,7 @@ def vignette_effect(df: pd.DataFrame, metric: str = "jaccard_all") -> dict:
     groups = [g for g in groups if len(g) > 0]
 
     if len(groups) < 3:
-        return {
-            "test": "kruskal_wallis",
-            "metric": metric,
-            "grouping": "vignette",
-            "note": "fewer than 3 groups",
-        }
+        return {"test": "kruskal_wallis", "metric": metric, "grouping": "vignette", "note": "fewer than 3 groups"}
 
     stat, p = sp.kruskal(*groups)
     n_total = sum(len(g) for g in groups)
@@ -142,34 +157,48 @@ def vignette_effect(df: pd.DataFrame, metric: str = "jaccard_all") -> dict:
 
 
 def metric_correlation(df: pd.DataFrame) -> dict:
-    """Spearman rank correlation between Jaccard and BERTScore F1."""
-    valid = df[["jaccard_all", "bertscore_f1"]].dropna()
-    if len(valid) < 5:
-        return {"test": "spearman", "note": "too few observations"}
+    """Spearman correlations between all metric pairs."""
+    metrics = ["jaccard_all", "bertscore_f1", "alignment_mean"]
+    available = [m for m in metrics if m in df.columns]
 
-    rho, p = sp.spearmanr(valid["jaccard_all"], valid["bertscore_f1"])
+    correlations = {}
+    for i, m1 in enumerate(available):
+        for m2 in available[i + 1:]:
+            valid = df[[m1, m2]].dropna()
+            if len(valid) >= 5:
+                rho, p = sp.spearmanr(valid[m1], valid[m2])
+                correlations[f"{m1}_vs_{m2}"] = {
+                    "rho": float(rho),
+                    "p_value": float(p),
+                    "n": len(valid),
+                }
 
     return {
-        "test": "spearman",
-        "variables": ["jaccard_all", "bertscore_f1"],
-        "n": len(valid),
-        "rho": float(rho),
-        "p_value": float(p),
+        "test": "spearman_correlations",
+        "pairs": correlations,
     }
 
 
 def run_all_tests(df: pd.DataFrame) -> dict:
     """Run all statistical tests and return results."""
-    return {
+    results = {
         "temperature_effect_jaccard": temperature_effect(df, "jaccard_all"),
         "temperature_effect_bertscore": temperature_effect(df, "bertscore_f1"),
+        "temperature_per_model_jaccard": temperature_effect_per_model(df, "jaccard_all"),
         "model_differences_jaccard": model_differences(df, "jaccard_all"),
         "model_differences_bertscore": model_differences(df, "bertscore_f1"),
         "vignette_effect_jaccard": vignette_effect(df, "jaccard_all"),
         "vignette_effect_bertscore": vignette_effect(df, "bertscore_f1"),
-        "correlation_jaccard_bertscore": metric_correlation(df),
+        "correlations": metric_correlation(df),
         "note": "All tests are exploratory given sample sizes. Effect sizes reported alongside p-values.",
     }
+
+    # Alignment tests if available
+    if "alignment_mean" in df.columns:
+        results["model_differences_alignment"] = model_differences(df, "alignment_mean")
+        results["temperature_effect_alignment"] = temperature_effect(df, "alignment_mean")
+
+    return results
 
 
 def main() -> None:
@@ -196,12 +225,32 @@ def main() -> None:
     for key, val in results.items():
         if key == "note":
             continue
+
+        # Standard test with p_value
         p = val.get("p_value")
         if p is not None:
-            sig = "*" if p < 0.05 else ""
-            print(f"  {key:40s}  p={p:.4f}{sig}")
-        else:
-            print(f"  {key:40s}  {val.get('note', 'n/a')}")
+            sig = "***" if p < 0.001 else ("**" if p < 0.01 else ("*" if p < 0.05 else ""))
+            extra = f" {val['statistic']}" if "statistic" in val else ""
+            print(f"  {key:45s} p={p:.6f}{sig}{extra}")
+            continue
+
+        # Per-model temperature trends
+        if "per_model" in val:
+            print(f"  {key}:")
+            for model, data in sorted(val["per_model"].items()):
+                sig = "*" if data["significant"] else ""
+                print(f"    {model:20s} rho={data['rho']:+.3f} p={data['p_value']:.4f}{sig}")
+            continue
+
+        # Correlations
+        if "pairs" in val:
+            print(f"  {key}:")
+            for pair, data in val["pairs"].items():
+                sig = "***" if data["p_value"] < 0.001 else ""
+                print(f"    {pair:40s} rho={data['rho']:.3f} p={data['p_value']:.6f}{sig}")
+            continue
+
+        print(f"  {key:45s} {val.get('note', 'n/a')}")
 
 
 if __name__ == "__main__":
