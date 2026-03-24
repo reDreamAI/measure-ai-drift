@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from model_display import MODEL_COLORS, display_name
+from model_display import MODEL_COLORS, display_name, sort_models
 
 
 def main() -> None:
@@ -30,7 +30,7 @@ def main() -> None:
     output_dir = Path(f"stats/visuals_{args.tier}")
 
     df = pd.read_csv(args.input)
-    models = sorted(df["model"].unique())
+    models = sort_models(list(df["model"].unique()))
     temps = sorted(df["temperature"].unique())
 
     fig, ax = plt.subplots(figsize=(8, 5))
@@ -56,7 +56,7 @@ def main() -> None:
         means_arr = np.array(means)
         sds_arr = np.array(sds)
         ax.plot(valid_temps, means, marker="o", label=display_name(model), color=color, linewidth=2)
-        ax.fill_between(valid_temps, means_arr - sds_arr, means_arr + sds_arr, alpha=0.15, color=color)
+        ax.fill_between(valid_temps, means_arr - sds_arr, means_arr + sds_arr, alpha=0.07, color=color)
 
     ax.set_xlabel("Temperature")
     ax.set_ylabel("Mean BERTScore F1 (SD)")

@@ -69,10 +69,10 @@ a rescripting strategy without developing it (partial) delivers a different
 intervention from one who fully guides the patient through it (implemented).
 
 This ternary framework provides a scoring foundation that transfers directly
-to computational evaluation (see \autoref{sec:meth-m3}). However, fidelity
-assessment as it stands assumes a human clinician. No equivalent instrument
-exists for \gls{llm}-based agents, where the therapist is a probabilistic
-text generator rather than a trained professional.
+to computational evaluation (see \autoref{sec:meth-m3}). However, existing
+fidelity instruments assume a human clinician. They have not been adapted for
+\gls{llm}-based agents, where the therapist is a probabilistic text generator
+rather than a trained professional.
 
 % [Example] Nightmare excerpt -> rescripted version with strategy labels
 %   overlaid (cognitive_reframe, confrontation)
@@ -141,11 +141,11 @@ present work focuses on a narrower problem: the probabilistic nature of
 \gls{llm} outputs creates drift even in identical therapeutic contexts. When
 the same patient presents the same nightmare, stochastic sampling can produce
 different strategy selections, different therapeutic responses, and
-mismatches between declared and executed strategies. Each of these failure
-modes corresponds to a distinct layer of the generation process and requires
-a targeted evaluation method. Strategy drift maps to plan-level measurement
-(\autoref{sec:meth-m1}), output variability to semantic comparison
-(\autoref{sec:meth-m2}), and plan-output mismatch to alignment verification
+mismatches between declared and executed strategies. Each of these failure modes corresponds to a distinct layer of the
+generation process and requires a targeted evaluation method. Variable
+strategy selection maps to plan-level measurement (\autoref{sec:meth-m1}),
+variable response content to semantic comparison (\autoref{sec:meth-m2}),
+and plan-response mismatch to alignment verification
 (\autoref{sec:meth-m3}).
 
 Regulatory frameworks reinforce the need for stability measurement. The
@@ -157,15 +157,15 @@ deployment scenarios, data sovereignty requirements push toward self-hosted,
 \gls{eu}-resident models \parencite{2QMKF3RM}, constraining the model
 selection space (see \autoref{sec:meth-models}).
 
-Despite these requirements, stability remains unmeasured in practice. Prior
-therapeutic AI evaluation is largely qualitative, post-hoc, or
-single-session. \textcite{B97RI7GA} represent the closest prior work with
-their BOLT framework, which assesses \gls{llm} therapist behaviour across
-13 behavioural codes drawn from motivational interviewing. BOLT asks whether
+Despite these requirements, stability remains largely unmeasured. Prior
+therapeutic AI evaluation is qualitative, post-hoc, or single-session.
+\textcite{B97RI7GA} represent the closest prior work with their BOLT
+framework, which assesses \gls{llm} therapist behaviour across 13
+behavioural codes drawn from motivational interviewing. BOLT asks whether
 the model does the right thing. The present study asks a different question:
-whether the model does the \emph{same} thing across repeated runs. No
-existing framework measures this cross-run consistency for protocol-driven
-\gls{llm} agents.
+whether the model does the \emph{same} thing across repeated runs. Existing
+frameworks, including BOLT, evaluate single responses rather than the
+distribution of responses across repeated trials.
 
 % [FIG] EU AI Act risk tier diagram
 
@@ -216,17 +216,17 @@ In a manualized therapeutic protocol, where the therapist is expected to
 deliver consistent, evidence-based interventions, it represents a potential
 clinical failure.
 
-Prior work on \gls{llm} stability targets different concerns. Factual
-consistency studies measure whether models produce the same answers to
-knowledge questions across runs. Output diversity research quantifies
-lexical and semantic variation in creative generation. Benchmark
-reproducibility work examines whether evaluation scores are stable across
-random seeds.
+Prior work on \gls{llm} stability addresses different questions than
+therapeutic consistency. Factual consistency studies measure whether models
+produce the same answers to knowledge questions across runs. Output
+diversity research quantifies lexical and semantic variation in creative
+generation. Benchmark reproducibility work examines whether evaluation
+scores are stable across random seeds.
 % TODO: add specific citations for factual consistency, output diversity,
 %   and benchmark reproducibility studies once identified
-None of these lines of research address therapeutic strategy stability:
-whether a model makes the same clinical decisions when presented with
-identical patient contexts.
+These lines of research share the concern for cross-run variation but do
+not address whether a model makes the same \emph{clinical decisions} when
+presented with identical patient contexts.
 
 The mechanical source of instability is well understood. What remains
 unquantified is its impact on structured therapeutic decision-making. How
@@ -322,9 +322,10 @@ this study is detailed in \autoref{sec:meth-m3}.
 No single metric covers what clinical stability requires. Embedding
 similarity captures semantic equivalence but misses strategic intent.
 \gls{llm} judges can assess intent but introduce their own reliability
-concerns. Surface metrics capture neither. A multi-level approach is needed,
-but no such framework exists for therapeutic AI evaluation. This gap
-motivates the three-method design presented in \autoref{chap:methods}.
+concerns. Surface metrics capture neither. Existing therapeutic AI
+evaluations rely on a single metric type, leaving the gap between semantic
+equivalence and strategic intent unaddressed. This motivates the
+three-method design presented in \autoref{chap:methods}.
 
 % NOTE: Chain-of-Thought and Plan Faithfulness content folded into
 % Section 3.4 (The Plan Mechanism) where the declared-intent resolution

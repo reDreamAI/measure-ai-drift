@@ -19,12 +19,12 @@ import pandas as pd
 
 RANDOM_BASELINE = 0.2  # Expected Jaccard for random 2-of-6 picks
 
-from model_display import MODEL_COLORS, display_name
+from model_display import MODEL_COLORS, display_name, sort_models
 
 
 def plot_metric(ax, df, metric, title, ylabel):
     """Plot lines for a metric by model across temperatures."""
-    models = sorted(df["model"].unique())
+    models = sort_models(list(df["model"].unique()))
     temps = sorted(df["temperature"].unique())
 
     for model in models:
@@ -48,7 +48,7 @@ def plot_metric(ax, df, metric, title, ylabel):
 
         color = MODEL_COLORS.get(model, "#888888")
         ax.plot(valid_temps, medians, marker="o", label=display_name(model), color=color, linewidth=2)
-        ax.fill_between(valid_temps, q1s, q3s, alpha=0.15, color=color)
+        ax.fill_between(valid_temps, q1s, q3s, alpha=0.07, color=color)
 
     ax.axhline(y=1.0, color="green", linestyle="--", alpha=0.4, label="Perfect")
     ax.axhline(y=RANDOM_BASELINE, color="red", linestyle=":", alpha=0.4, label=f"Random (~{RANDOM_BASELINE})")

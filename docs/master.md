@@ -45,7 +45,7 @@ Three-agent loop that produces synthetic therapy sessions.
 Runs stability tests on frozen conversation histories.
 - Bypasses the router → the rescripting prompt is injected directly (stage is known a priori)
 - Fused CoT generation: `<plan>` block declares 1–2 strategies, then the therapeutic response follows
-- Runs N independent trials per condition (default: 10)
+- Runs N independent trials per condition (default: 20)
 - Computes three evaluation metrics per experiment run
 
 ### 2.2 Data Flow
@@ -58,7 +58,7 @@ Generation Stack (Patient ↔ Router ↔ Therapist)
 Frozen Histories: frozen_{vignette}_{hash}/
     full.json, slice_1.json, slice_2.json, slice_3.json
     ↓
-Evaluation Stack (rescripting prompt → Therapist LLM × 10 trials × 2 temperatures)
+Evaluation Stack (rescripting prompt → Therapist LLM × 20 trials × 5 temperatures)
     ↓
 Experiment Runs: {timestamp}_{model}_{vignette}/
     config.yaml, frozen_history.json, trials/, metrics.json, judgments.json
@@ -110,7 +110,7 @@ Slicing uses `slice_at_rewriting_turn(n)`, which cuts after the Nth therapist re
 
 Three levels, each measuring a distinct property:
 
-### 3.1 Method 1 - Cognitive Stability (Plan Consistency)
+### 3.1 Method 1 - Plan Consistency
 
 **Question:** Do stochastic runs produce the same therapeutic decisions?
 
@@ -120,7 +120,7 @@ Three levels, each measuring a distinct property:
 
 **Quality gate:** Plan validity rate, i.e. percentage of trials where the `<plan>` block parses correctly.
 
-### 3.2 Method 2 - Output Consistency (Semantic Stability)
+### 3.2 Method 2 - Response Similarity
 
 **Question:** Do stochastic runs produce therapeutically equivalent responses?
 
@@ -132,7 +132,7 @@ Three levels, each measuring a distinct property:
 
 > For model selection rationale, see [bertscore_model_selection.md](bertscore_model_selection.md).
 
-### 3.3 Method 3 - Plan-Output Alignment (Validation Check)
+### 3.3 Method 3 - Plan-Response Alignment (Validation Check)
 
 **Question:** Does the model's response implement its declared therapeutic plan?
 

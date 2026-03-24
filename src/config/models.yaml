@@ -203,21 +203,21 @@ evaluation_targets:
     therapy_temp: 0.6  # see docs/grounded/temperature_sources.md [NEEDS VERIFICATION]
     notes: "Original efficacy study model. Continuity with prior work"
 
-  # --- Proprietary ceiling (commented out for now, run later if needed) ---
-  # - name: gpt54
-  #   provider: openrouter
-  #   model: openai/gpt-5.4
-  #   therapy_temp: 0.7  # see docs/grounded/temperature_sources.md [NEEDS VERIFICATION]
-  #   extra_params:
-  #     reasoning:
-  #       effort: "none"
-  #   notes: "Proprietary ceiling. Non-thinking mode. $2.50/$15.00"
-  #
-  # - name: sonnet46
-  #   provider: openrouter
-  #   model: anthropic/claude-sonnet-4.6
-  #   therapy_temp: 0.7  # see docs/grounded/temperature_sources.md [VERIFIED]
-  #   notes: "Anthropic Sonnet 4.6. Character-trained. $3/$15. Max temp 1.0"
+  # --- Proprietary ceiling ---
+  - name: sonnet46
+    provider: openrouter
+    model: anthropic/claude-sonnet-4.6
+    therapy_temp: 0.7  # see docs/grounded/temperature_sources.md [VERIFIED]
+    notes: "Anthropic Sonnet 4.6. Character-trained for thoughtful, safety-aware interaction. $3/$15. Max temp 1.0"
+
+  - name: gpt54
+    provider: openrouter
+    model: openai/gpt-5.4
+    therapy_temp: 0.7  # see docs/grounded/temperature_sources.md [NEEDS VERIFICATION]
+    extra_params:
+      reasoning:
+        effort: "none"
+    notes: "Proprietary ceiling. Non-thinking mode. $2.50/$15.00"
 
   # --- Dropped (available if needed) ---
   # - name: trinity_large

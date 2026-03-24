@@ -169,7 +169,7 @@ Each section establishes one conceptual prerequisite and ends with an open tensi
 
    [FIG] *Three-level framework -- plan, output, alignment; inputs and outputs of each method, with the clinical question each answers*
 
-      #### 3.5.1 Method 1: Cognitive Stability (Plan Consistency)
+      #### 3.5.1 Method 1: Plan Consistency
       - Measures: does the model make consistent therapeutic decisions?
       - Pairwise Jaccard similarity over strategy sets from `<plan>` blocks
          \-- Mean over C(10,2) = 45 trial pairs
@@ -178,14 +178,14 @@ Each section establishes one conceptual prerequisite and ends with an open tensi
          \-- Why a quality gate: malformed plan blocks cannot be scored, validity rate shows whether the model can follow the structured output format at all
       - [Example] *10 plan sets, pairwise Jaccard matrix, mean score; one high- and one low-consistency condition*
 
-      #### 3.5.2 Method 2: Output Consistency (Semantic Stability)
+      #### 3.5.2 Method 2: Response Similarity
       - Measures: does the model produce consistent therapeutic responses?
       - Pairwise BERTScore F1 using DeBERTa-XLarge-MNLI
          \-- Why this model: NLI fine-tuning aligns with semantic equivalence, highest WMT16 human correlation (grounded in 2.4)
          \-- Why not surface metrics: therapeutic paraphrasing is the norm, surface overlap penalizes valid variation
       - [Example] *Two responses from the same condition, token alignment heatmap, F1 score*
 
-      #### 3.5.3 Method 3: Plan-Output Alignment
+      #### 3.5.3 Method 3: Plan-Response Alignment
       - Measures: does the model do what it says it will do?
       - LLM judge with ternary scoring per declared strategy: 0 = absent, 1 = partial, 2 = implemented
          \-- Why ternary: borrowed from clinical fidelity literature (ENACT, NIH BCC, grounded in 2.1)
@@ -270,16 +270,16 @@ All main results reported at slice_2 (mid-rescripting), aggregated across vignet
    - [GRAPH] *Validity rate per model x temperature*
    - [GRAPH] *Strategy frequency heatmap -- model x strategy category*
 
-   ### 5.2 Cognitive Stability (Method 1)
+   ### 5.2 Plan Consistency (Method 1)
    - Mean Jaccard by model x temperature (headline figure)
    - Stochastic cost: T=0.0 vs T=0.7 gap per model
    - [GRAPH] *Mean Jaccard per model x temperature*
 
-   ### 5.3 Output Consistency (Method 2)
+   ### 5.3 Response Similarity (Method 2)
    - Mean BERTScore F1 by model x temperature (same format as 5.2)
    - [GRAPH] *Mean BERTScore F1 per model x temperature*
 
-   ### 5.4 Plan-Output Alignment (Method 3)
+   ### 5.4 Plan-Response Alignment (Method 3)
    - Mean alignment score by model x temperature
    - Per-strategy scoring distributions (absent / partial / implemented)
    - [GRAPH] *Mean alignment score per model*

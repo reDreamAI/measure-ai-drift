@@ -2,101 +2,117 @@
   "temperature_effect_jaccard": {
     "test": "temperature_effect",
     "metric": "jaccard_all",
-    "n_temperatures": 4,
+    "n_temperatures": 5,
     "temperatures": [
       0.0,
+      0.075,
       0.15,
       0.3,
       0.6
     ],
-    "spearman_rho": -0.3099350971352415,
-    "spearman_p": 1.2156892109235637e-05,
-    "p_value": 1.2156892109235637e-05,
-    "statistic": "rho=-0.310",
-    "kruskal_H": 19.801098600100307,
-    "kruskal_p": 0.0001866387345477437,
-    "kruskal_eta_sq": 0.10367067329895449,
+    "spearman_rho": -0.21463230364981326,
+    "spearman_p": 0.0001798436754792217,
+    "p_value": 0.0001798436754792217,
+    "statistic": "rho=-0.215",
+    "kruskal_H": 18.22215447444297,
+    "kruskal_p": 0.0011166237468469655,
+    "kruskal_eta_sq": 0.06094366044964204,
     "medians_by_temp": {
-      "0.0": 0.9333333333333333,
-      "0.15": 0.8666666666666667,
-      "0.3": 0.7148148148148148,
-      "0.6": 0.6370370370370368
+      "0.0": 0.903508771929825,
+      "0.075": 0.9333333333333337,
+      "0.15": 0.8543859649122805,
+      "0.3": 0.7754385964912283,
+      "0.6": 0.6964912280701747
     }
   },
   "temperature_effect_bertscore": {
     "test": "temperature_effect",
     "metric": "bertscore_f1",
-    "n_temperatures": 4,
+    "n_temperatures": 5,
     "temperatures": [
       0.0,
+      0.075,
       0.15,
       0.3,
       0.6
     ],
-    "spearman_rho": -0.5480919632267222,
-    "spearman_p": 1.89875045751384e-16,
-    "p_value": 1.89875045751384e-16,
-    "statistic": "rho=-0.548",
-    "kruskal_H": 60.26917080290329,
-    "kruskal_p": 5.149180244550549e-13,
-    "kruskal_eta_sq": 0.3155453968738392,
+    "spearman_rho": -0.4672835892920893,
+    "spearman_p": 1.1177901608147943e-17,
+    "p_value": 1.1177901608147943e-17,
+    "statistic": "rho=-0.467",
+    "kruskal_H": 73.45699667774102,
+    "kruskal_p": 4.223625105512714e-15,
+    "kruskal_eta_sq": 0.2456755741730469,
     "medians_by_temp": {
-      "0.0": 0.777336597442627,
-      "0.15": 0.7446336448192596,
-      "0.3": 0.7269083261489868,
-      "0.6": 0.6961036920547485
+      "0.0": 0.7748864591121674,
+      "0.075": 0.7645070552825928,
+      "0.15": 0.7475098073482513,
+      "0.3": 0.7320612668991089,
+      "0.6": 0.7004123628139496
     }
   },
   "temperature_per_model_jaccard": {
     "test": "temperature_effect_per_model",
     "metric": "jaccard_all",
     "per_model": {
+      "gpt54": {
+        "rho": 0.026207787587790708,
+        "p_value": 0.8906594397795384,
+        "n": 30,
+        "significant": false
+      },
       "llama70b": {
-        "rho": -0.1325389711381302,
-        "p_value": 0.536986234501253,
-        "n": 24,
+        "rho": -0.1612961327850734,
+        "p_value": 0.39448514828692693,
+        "n": 30,
         "significant": false
       },
       "mistral_large": {
-        "rho": -0.3257646585232013,
-        "p_value": 0.12031708463165214,
-        "n": 24,
+        "rho": -0.08056681797010479,
+        "p_value": 0.6721340131041356,
+        "n": 30,
         "significant": false
       },
       "mistral_small32": {
-        "rho": -0.20213499118997796,
-        "p_value": 0.3435270938204126,
-        "n": 24,
+        "rho": -0.23210025988953628,
+        "p_value": 0.21713356469132336,
+        "n": 30,
         "significant": false
       },
       "mistral_small4": {
-        "rho": -0.160407161300109,
-        "p_value": 0.4540080934952482,
-        "n": 24,
+        "rho": -0.2164663275885358,
+        "p_value": 0.25057995057263166,
+        "n": 30,
         "significant": false
       },
       "olmo3_32b": {
-        "rho": -0.5606986457886056,
-        "p_value": 0.004370754740522868,
-        "n": 24,
+        "rho": -0.6495159438598593,
+        "p_value": 0.00010284224911588198,
+        "n": 30,
         "significant": true
       },
       "qwen35_122b": {
-        "rho": -0.49791646737423617,
-        "p_value": 0.013285634354667316,
-        "n": 24,
+        "rho": -0.5598702913503466,
+        "p_value": 0.0012948361971746691,
+        "n": 30,
         "significant": true
       },
       "qwen35_27b": {
-        "rho": -0.651725522039569,
-        "p_value": 0.0005600810311676309,
-        "n": 24,
+        "rho": -0.4848318762372613,
+        "p_value": 0.006620613632609962,
+        "n": 30,
         "significant": true
       },
       "qwen35_397b": {
-        "rho": -0.2426590971034818,
-        "p_value": 0.2532467216281037,
-        "n": 24,
+        "rho": -0.15045148737498587,
+        "p_value": 0.4274435535106197,
+        "n": 30,
+        "significant": false
+      },
+      "sonnet46": {
+        "rho": 0.02842676218074806,
+        "p_value": 0.8814638911639334,
+        "n": 30,
         "significant": false
       }
     }
@@ -104,358 +120,562 @@
   "model_differences_jaccard": {
     "test": "kruskal_wallis",
     "metric": "jaccard_all",
-    "n_groups": 8,
-    "n_total": 192,
-    "H_statistic": 30.946221296372986,
-    "p_value": 6.360995978913045e-05,
-    "eta_squared": 0.1620221010281308,
+    "n_groups": 10,
+    "n_total": 300,
+    "H_statistic": 57.182917585833685,
+    "p_value": 4.6619117274927644e-09,
+    "eta_squared": 0.19124721600613273,
     "pairwise": [
       {
+        "pair": "gpt54 vs llama70b",
+        "U_statistic": 675.5,
+        "p_value": 0.0006731665674831948,
+        "p_bonferroni": 0.030292495536743763
+      },
+      {
+        "pair": "gpt54 vs mistral_large",
+        "U_statistic": 632.0,
+        "p_value": 0.006234957320487983,
+        "p_bonferroni": 0.2805730794219592
+      },
+      {
+        "pair": "gpt54 vs mistral_small32",
+        "U_statistic": 428.0,
+        "p_value": 0.7320580860049806,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "gpt54 vs mistral_small4",
+        "U_statistic": 597.0,
+        "p_value": 0.024520945476655946,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "gpt54 vs olmo3_32b",
+        "U_statistic": 412.5,
+        "p_value": 0.545289878532214,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "gpt54 vs qwen35_122b",
+        "U_statistic": 439.5,
+        "p_value": 0.8724706469188369,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "gpt54 vs qwen35_27b",
+        "U_statistic": 766.5,
+        "p_value": 2.4878818156620445e-06,
+        "p_bonferroni": 0.000111954681704792
+      },
+      {
+        "pair": "gpt54 vs qwen35_397b",
+        "U_statistic": 621.5,
+        "p_value": 0.008967755058642378,
+        "p_bonferroni": 0.403548977638907
+      },
+      {
+        "pair": "gpt54 vs sonnet46",
+        "U_statistic": 482.5,
+        "p_value": 0.6176263939385656,
+        "p_bonferroni": 1.0
+      },
+      {
         "pair": "llama70b vs mistral_large",
-        "U_statistic": 207.0,
-        "p_value": 0.09058064996557738,
+        "U_statistic": 349.0,
+        "p_value": 0.13607060931424972,
         "p_bonferroni": 1.0
       },
       {
         "pair": "llama70b vs mistral_small32",
-        "U_statistic": 146.0,
-        "p_value": 0.002299397101129741,
-        "p_bonferroni": 0.06438311883163275
+        "U_statistic": 221.0,
+        "p_value": 0.0005306026070128034,
+        "p_bonferroni": 0.023877117315576155
       },
       {
         "pair": "llama70b vs mistral_small4",
-        "U_statistic": 264.5,
-        "p_value": 0.6309387191576985,
+        "U_statistic": 373.0,
+        "p_value": 0.25350413916026593,
         "p_bonferroni": 1.0
       },
       {
         "pair": "llama70b vs olmo3_32b",
-        "U_statistic": 188.0,
-        "p_value": 0.03497742784568129,
-        "p_bonferroni": 0.9793679796790761
+        "U_statistic": 209.0,
+        "p_value": 0.00022284316374251458,
+        "p_bonferroni": 0.010027942368413156
       },
       {
         "pair": "llama70b vs qwen35_122b",
-        "U_statistic": 184.5,
-        "p_value": 0.029722015508840283,
-        "p_bonferroni": 0.8322164342475279
+        "U_statistic": 233.5,
+        "p_value": 0.0010116939238743205,
+        "p_bonferroni": 0.04552622657434442
       },
       {
         "pair": "llama70b vs qwen35_27b",
-        "U_statistic": 372.0,
-        "p_value": 0.08462528942537988,
+        "U_statistic": 518.0,
+        "p_value": 0.31805533908703254,
         "p_bonferroni": 1.0
       },
       {
         "pair": "llama70b vs qwen35_397b",
-        "U_statistic": 284.0,
-        "p_value": 0.9419766383184112,
+        "U_statistic": 426.0,
+        "p_value": 0.7262007657902585,
         "p_bonferroni": 1.0
+      },
+      {
+        "pair": "llama70b vs sonnet46",
+        "U_statistic": 248.5,
+        "p_value": 0.0025251122720014625,
+        "p_bonferroni": 0.11363005224006581
       },
       {
         "pair": "mistral_large vs mistral_small32",
-        "U_statistic": 228.5,
-        "p_value": 0.1795430024603416,
-        "p_bonferroni": 1.0
+        "U_statistic": 247.5,
+        "p_value": 0.0022619280593337066,
+        "p_bonferroni": 0.1017867626700168
       },
       {
         "pair": "mistral_large vs mistral_small4",
-        "U_statistic": 349.5,
-        "p_value": 0.1914599096307127,
+        "U_statistic": 455.0,
+        "p_value": 0.9465307178974578,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_large vs olmo3_32b",
-        "U_statistic": 270.5,
-        "p_value": 0.7077871076754063,
-        "p_bonferroni": 1.0
+        "U_statistic": 252.0,
+        "p_value": 0.0025404019586517867,
+        "p_bonferroni": 0.1143180881393304
       },
       {
         "pair": "mistral_large vs qwen35_122b",
-        "U_statistic": 268.0,
-        "p_value": 0.6698396508092479,
-        "p_bonferroni": 1.0
+        "U_statistic": 274.5,
+        "p_value": 0.007961642832364299,
+        "p_bonferroni": 0.3582739274563934
       },
       {
         "pair": "mistral_large vs qwen35_27b",
-        "U_statistic": 443.0,
-        "p_value": 0.0013177635441557294,
-        "p_bonferroni": 0.036897379236360425
+        "U_statistic": 615.5,
+        "p_value": 0.014666320193570948,
+        "p_bonferroni": 0.6599844087106926
       },
       {
         "pair": "mistral_large vs qwen35_397b",
-        "U_statistic": 367.5,
-        "p_value": 0.09404800269459365,
+        "U_statistic": 503.5,
+        "p_value": 0.4302760101465315,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "mistral_large vs sonnet46",
+        "U_statistic": 317.5,
+        "p_value": 0.04780866635256145,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_small32 vs mistral_small4",
-        "U_statistic": 389.0,
-        "p_value": 0.02531620508949214,
-        "p_bonferroni": 0.7088537425057799
+        "U_statistic": 595.0,
+        "p_value": 0.025797615359990412,
+        "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_small32 vs olmo3_32b",
-        "U_statistic": 328.0,
-        "p_value": 0.3561711478156452,
+        "U_statistic": 433.0,
+        "p_value": 0.7852411624949945,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_small32 vs qwen35_122b",
-        "U_statistic": 338.0,
-        "p_value": 0.25417579636476006,
+        "U_statistic": 455.5,
+        "p_value": 0.9354686853172554,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_small32 vs qwen35_27b",
-        "U_statistic": 492.0,
-        "p_value": 1.764047137941518e-05,
-        "p_bonferroni": 0.000493933198623625
+        "U_statistic": 785.0,
+        "p_value": 5.942848171168869e-07,
+        "p_bonferroni": 2.674281677025991e-05
       },
       {
         "pair": "mistral_small32 vs qwen35_397b",
-        "U_statistic": 415.0,
-        "p_value": 0.005686424681165218,
-        "p_bonferroni": 0.1592198910726261
+        "U_statistic": 629.0,
+        "p_value": 0.006142285656580674,
+        "p_bonferroni": 0.27640285454613034
       },
       {
-        "pair": "mistral_small4 vs olmo3_32b",
-        "U_statistic": 213.0,
-        "p_value": 0.10609902486161696,
+        "pair": "mistral_small32 vs sonnet46",
+        "U_statistic": 515.0,
+        "p_value": 0.3111989413269788,
         "p_bonferroni": 1.0
       },
       {
+        "pair": "mistral_small4 vs olmo3_32b",
+        "U_statistic": 283.0,
+        "p_value": 0.008959664427441966,
+        "p_bonferroni": 0.4031848992348885
+      },
+      {
         "pair": "mistral_small4 vs qwen35_122b",
-        "U_statistic": 225.0,
-        "p_value": 0.17812912504250744,
+        "U_statistic": 316.0,
+        "p_value": 0.0384110370066749,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_small4 vs qwen35_27b",
-        "U_statistic": 392.0,
-        "p_value": 0.032019581023696855,
-        "p_bonferroni": 0.896548268663512
+        "U_statistic": 613.0,
+        "p_value": 0.01603448035382238,
+        "p_bonferroni": 0.7215516159220071
       },
       {
         "pair": "mistral_small4 vs qwen35_397b",
-        "U_statistic": 309.5,
-        "p_value": 0.6589461275501955,
+        "U_statistic": 494.0,
+        "p_value": 0.5133793494609208,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "mistral_small4 vs sonnet46",
+        "U_statistic": 339.0,
+        "p_value": 0.09258401599068282,
         "p_bonferroni": 1.0
       },
       {
         "pair": "olmo3_32b vs qwen35_122b",
-        "U_statistic": 289.5,
-        "p_value": 0.982242968108416,
+        "U_statistic": 473.5,
+        "p_value": 0.7009494392447161,
         "p_bonferroni": 1.0
       },
       {
         "pair": "olmo3_32b vs qwen35_27b",
-        "U_statistic": 460.5,
-        "p_value": 0.00032726735631288746,
-        "p_bonferroni": 0.009163485976760848
+        "U_statistic": 765.5,
+        "p_value": 2.2123512582669956e-06,
+        "p_bonferroni": 9.95558066220148e-05
       },
       {
         "pair": "olmo3_32b vs qwen35_397b",
-        "U_statistic": 385.5,
-        "p_value": 0.037784266458762414,
+        "U_statistic": 645.5,
+        "p_value": 0.0023529764206129027,
+        "p_bonferroni": 0.10588393892758062
+      },
+      {
+        "pair": "olmo3_32b vs sonnet46",
+        "U_statistic": 530.0,
+        "p_value": 0.2018682893732433,
         "p_bonferroni": 1.0
       },
       {
         "pair": "qwen35_122b vs qwen35_27b",
-        "U_statistic": 462.0,
-        "p_value": 0.00030013401300337867,
-        "p_bonferroni": 0.008403752364094602
+        "U_statistic": 758.0,
+        "p_value": 4.247201592885047e-06,
+        "p_bonferroni": 0.00019112407167982712
       },
       {
         "pair": "qwen35_122b vs qwen35_397b",
-        "U_statistic": 379.5,
-        "p_value": 0.052608345432529464,
+        "U_statistic": 617.0,
+        "p_value": 0.010221134115365696,
+        "p_bonferroni": 0.4599510351914563
+      },
+      {
+        "pair": "qwen35_122b vs sonnet46",
+        "U_statistic": 506.0,
+        "p_value": 0.3803591539920924,
         "p_bonferroni": 1.0
       },
       {
         "pair": "qwen35_27b vs qwen35_397b",
-        "U_statistic": 207.5,
-        "p_value": 0.09809552101086966,
+        "U_statistic": 353.0,
+        "p_value": 0.15296363343518316,
         "p_bonferroni": 1.0
+      },
+      {
+        "pair": "qwen35_27b vs sonnet46",
+        "U_statistic": 203.0,
+        "p_value": 0.00024879526961821264,
+        "p_bonferroni": 0.011195787132819568
+      },
+      {
+        "pair": "qwen35_397b vs sonnet46",
+        "U_statistic": 298.5,
+        "p_value": 0.02203151245940008,
+        "p_bonferroni": 0.9914180606730036
       }
     ]
   },
   "model_differences_bertscore": {
     "test": "kruskal_wallis",
     "metric": "bertscore_f1",
-    "n_groups": 8,
-    "n_total": 192,
-    "H_statistic": 29.649825437395638,
-    "p_value": 0.00011007903127963296,
-    "eta_squared": 0.15523468815390387,
+    "n_groups": 10,
+    "n_total": 300,
+    "H_statistic": 65.58119158361012,
+    "p_value": 1.111929254298945e-10,
+    "eta_squared": 0.21933508890839506,
     "pairwise": [
       {
+        "pair": "gpt54 vs llama70b",
+        "U_statistic": 463.0,
+        "p_value": 0.8533817367547931,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "gpt54 vs mistral_large",
+        "U_statistic": 431.0,
+        "p_value": 0.7844597689495465,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "gpt54 vs mistral_small32",
+        "U_statistic": 373.0,
+        "p_value": 0.25805149508623637,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "gpt54 vs mistral_small4",
+        "U_statistic": 728.0,
+        "p_value": 4.0839534518280284e-05,
+        "p_bonferroni": 0.0018377790533226127
+      },
+      {
+        "pair": "gpt54 vs olmo3_32b",
+        "U_statistic": 304.0,
+        "p_value": 0.03146563257725609,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "gpt54 vs qwen35_122b",
+        "U_statistic": 220.0,
+        "p_value": 0.0006912516925845255,
+        "p_bonferroni": 0.031106326166303645
+      },
+      {
+        "pair": "gpt54 vs qwen35_27b",
+        "U_statistic": 378.0,
+        "p_value": 0.2904721494938346,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "gpt54 vs qwen35_397b",
+        "U_statistic": 410.0,
+        "p_value": 0.5592305357919067,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "gpt54 vs sonnet46",
+        "U_statistic": 151.0,
+        "p_value": 1.018768935242708e-05,
+        "p_bonferroni": 0.0004584460208592186
+      },
+      {
         "pair": "llama70b vs mistral_large",
-        "U_statistic": 305.0,
-        "p_value": 0.7336876455731964,
+        "U_statistic": 427.0,
+        "p_value": 0.7393988193114496,
         "p_bonferroni": 1.0
       },
       {
         "pair": "llama70b vs mistral_small32",
-        "U_statistic": 273.0,
-        "p_value": 0.7649515205278014,
+        "U_statistic": 386.0,
+        "p_value": 0.3478277829758114,
         "p_bonferroni": 1.0
       },
       {
         "pair": "llama70b vs mistral_small4",
-        "U_statistic": 476.0,
-        "p_value": 0.00011055116443956475,
-        "p_bonferroni": 0.003095432604307813
+        "U_statistic": 715.0,
+        "p_value": 9.211268793716519e-05,
+        "p_bonferroni": 0.004145070957172433
       },
       {
         "pair": "llama70b vs olmo3_32b",
-        "U_statistic": 254.0,
-        "p_value": 0.4897056257566349,
+        "U_statistic": 305.0,
+        "p_value": 0.03265093917842126,
         "p_bonferroni": 1.0
       },
       {
         "pair": "llama70b vs qwen35_122b",
-        "U_statistic": 205.0,
-        "p_value": 0.08892020657765105,
-        "p_bonferroni": 1.0
+        "U_statistic": 217.0,
+        "p_value": 0.0005873732857736315,
+        "p_bonferroni": 0.02643179785981342
       },
       {
         "pair": "llama70b vs qwen35_27b",
-        "U_statistic": 317.0,
-        "p_value": 0.5567604652232558,
+        "U_statistic": 384.0,
+        "p_value": 0.3328546915727283,
         "p_bonferroni": 1.0
       },
       {
         "pair": "llama70b vs qwen35_397b",
-        "U_statistic": 299.0,
-        "p_value": 0.8285930752186466,
+        "U_statistic": 412.0,
+        "p_value": 0.5792942105819812,
         "p_bonferroni": 1.0
       },
       {
+        "pair": "llama70b vs sonnet46",
+        "U_statistic": 170.0,
+        "p_value": 3.5923423112696804e-05,
+        "p_bonferroni": 0.0016165540400713563
+      },
+      {
         "pair": "mistral_large vs mistral_small32",
-        "U_statistic": 254.0,
-        "p_value": 0.48971740875937286,
+        "U_statistic": 429.0,
+        "p_value": 0.7618283459354748,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_large vs mistral_small4",
-        "U_statistic": 428.0,
-        "p_value": 0.004021867123993527,
-        "p_bonferroni": 0.11261227947181876
+        "U_statistic": 662.0,
+        "p_value": 0.0017665641434145185,
+        "p_bonferroni": 0.07949538645365334
       },
       {
         "pair": "mistral_large vs olmo3_32b",
-        "U_statistic": 236.0,
-        "p_value": 0.28826250589640046,
+        "U_statistic": 326.0,
+        "p_value": 0.06786886081944324,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_large vs qwen35_122b",
-        "U_statistic": 199.0,
-        "p_value": 0.06802529185208155,
-        "p_bonferroni": 1.0
+        "U_statistic": 269.0,
+        "p_value": 0.007617064306244221,
+        "p_bonferroni": 0.34276789378098993
       },
       {
         "pair": "mistral_large vs qwen35_27b",
-        "U_statistic": 299.0,
-        "p_value": 0.8285930752186466,
+        "U_statistic": 399.0,
+        "p_value": 0.4552969069031376,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_large vs qwen35_397b",
-        "U_statistic": 284.0,
-        "p_value": 0.9424675874144188,
+        "U_statistic": 463.0,
+        "p_value": 0.8533817367547931,
         "p_bonferroni": 1.0
       },
       {
+        "pair": "mistral_large vs sonnet46",
+        "U_statistic": 250.0,
+        "p_value": 0.0031829591616507357,
+        "p_bonferroni": 0.14323316227428312
+      },
+      {
         "pair": "mistral_small32 vs mistral_small4",
-        "U_statistic": 489.0,
-        "p_value": 3.5613067076212477e-05,
-        "p_bonferroni": 0.0009971658781339494
+        "U_statistic": 747.0,
+        "p_value": 1.167436036255161e-05,
+        "p_bonferroni": 0.0005253462163148224
       },
       {
         "pair": "mistral_small32 vs olmo3_32b",
-        "U_statistic": 273.0,
-        "p_value": 0.7649453292340562,
+        "U_statistic": 356.0,
+        "p_value": 0.1668661704632597,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_small32 vs qwen35_122b",
-        "U_statistic": 221.0,
-        "p_value": 0.17031047118644138,
-        "p_bonferroni": 1.0
+        "U_statistic": 278.0,
+        "p_value": 0.01122776446668884,
+        "p_bonferroni": 0.5052494010009978
       },
       {
         "pair": "mistral_small32 vs qwen35_27b",
-        "U_statistic": 332.0,
-        "p_value": 0.36974299252616816,
+        "U_statistic": 435.0,
+        "p_value": 0.8302552839111963,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_small32 vs qwen35_397b",
-        "U_statistic": 319.0,
-        "p_value": 0.5294149186577493,
+        "U_statistic": 477.0,
+        "p_value": 0.6952153990669099,
         "p_bonferroni": 1.0
       },
       {
+        "pair": "mistral_small32 vs sonnet46",
+        "U_statistic": 222.0,
+        "p_value": 0.0007697288698323856,
+        "p_bonferroni": 0.034637799142457355
+      },
+      {
         "pair": "mistral_small4 vs olmo3_32b",
-        "U_statistic": 98.0,
-        "p_value": 9.324439376737793e-05,
-        "p_bonferroni": 0.0026108430254865823
+        "U_statistic": 147.0,
+        "p_value": 7.73868568857661e-06,
+        "p_bonferroni": 0.0003482408559859475
       },
       {
         "pair": "mistral_small4 vs qwen35_122b",
-        "U_statistic": 78.0,
-        "p_value": 1.5615850610006668e-05,
-        "p_bonferroni": 0.0004372438170801867
+        "U_statistic": 96.0,
+        "p_value": 1.7294093690511444e-07,
+        "p_bonferroni": 7.78234216073015e-06
       },
       {
         "pair": "mistral_small4 vs qwen35_27b",
-        "U_statistic": 162.0,
-        "p_value": 0.009660047071220694,
-        "p_bonferroni": 0.2704813179941794
+        "U_statistic": 192.0,
+        "p_value": 0.00014066868942295475,
+        "p_bonferroni": 0.0063300910240329635
       },
       {
         "pair": "mistral_small4 vs qwen35_397b",
-        "U_statistic": 87.0,
-        "p_value": 3.5613067076212477e-05,
-        "p_bonferroni": 0.0009971658781339494
+        "U_statistic": 175.0,
+        "p_value": 4.942599819037002e-05,
+        "p_bonferroni": 0.002224169918566651
+      },
+      {
+        "pair": "mistral_small4 vs sonnet46",
+        "U_statistic": 45.0,
+        "p_value": 2.227269264069776e-09,
+        "p_bonferroni": 1.0022711688313992e-07
       },
       {
         "pair": "olmo3_32b vs qwen35_122b",
-        "U_statistic": 260.0,
-        "p_value": 0.5706762494529736,
+        "U_statistic": 401.0,
+        "p_value": 0.47334655725844954,
         "p_bonferroni": 1.0
       },
       {
         "pair": "olmo3_32b vs qwen35_27b",
-        "U_statistic": 350.0,
-        "p_value": 0.2047468727144266,
+        "U_statistic": 532.0,
+        "p_value": 0.22823006680742364,
         "p_bonferroni": 1.0
       },
       {
         "pair": "olmo3_32b vs qwen35_397b",
-        "U_statistic": 314.0,
-        "p_value": 0.5990164679259267,
+        "U_statistic": 560.0,
+        "p_value": 0.10546994652177778,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "olmo3_32b vs sonnet46",
+        "U_statistic": 379.0,
+        "p_value": 0.2972716890893069,
         "p_bonferroni": 1.0
       },
       {
         "pair": "qwen35_122b vs qwen35_27b",
-        "U_statistic": 359.0,
-        "p_value": 0.1460335202810438,
+        "U_statistic": 582.0,
+        "p_value": 0.051877131053959046,
         "p_bonferroni": 1.0
       },
       {
         "pair": "qwen35_122b vs qwen35_397b",
-        "U_statistic": 380.0,
-        "p_value": 0.0592009297805028,
+        "U_statistic": 653.0,
+        "p_value": 0.0027548482120546463,
+        "p_bonferroni": 0.12396816954245908
+      },
+      {
+        "pair": "qwen35_122b vs sonnet46",
+        "U_statistic": 440.0,
+        "p_value": 0.8883028421533887,
         "p_bonferroni": 1.0
       },
       {
         "pair": "qwen35_27b vs qwen35_397b",
-        "U_statistic": 278.0,
-        "p_value": 0.8446988486564181,
+        "U_statistic": 499.0,
+        "p_value": 0.47334655725844954,
         "p_bonferroni": 1.0
+      },
+      {
+        "pair": "qwen35_27b vs sonnet46",
+        "U_statistic": 272.0,
+        "p_value": 0.008684371229240618,
+        "p_bonferroni": 0.3907967053158278
+      },
+      {
+        "pair": "qwen35_397b vs sonnet46",
+        "U_statistic": 192.0,
+        "p_value": 0.00014066868942295475,
+        "p_bonferroni": 0.0063300910240329635
       }
     ]
   },
@@ -464,38 +684,38 @@
     "metric": "jaccard_all",
     "grouping": "vignette",
     "n_groups": 6,
-    "n_total": 192,
-    "H_statistic": 9.449067396395266,
-    "p_value": 0.09243823320383268,
-    "eta_squared": 0.049471557049189874
+    "n_total": 300,
+    "H_statistic": 9.402131725620134,
+    "p_value": 0.09406010431149535,
+    "eta_squared": 0.0314452566074252
   },
   "vignette_effect_bertscore": {
     "test": "kruskal_wallis",
     "metric": "bertscore_f1",
     "grouping": "vignette",
     "n_groups": 6,
-    "n_total": 192,
-    "H_statistic": 8.65076733192613,
-    "p_value": 0.12383122252994128,
-    "eta_squared": 0.045291975559822666
+    "n_total": 300,
+    "H_statistic": 12.143138870431812,
+    "p_value": 0.03287822392759721,
+    "eta_squared": 0.04061250458338399
   },
   "correlations": {
     "test": "spearman_correlations",
     "pairs": {
       "jaccard_all_vs_bertscore_f1": {
-        "rho": 0.5484916324759569,
-        "p_value": 1.787750776018119e-16,
-        "n": 192
+        "rho": 0.5164345313323512,
+        "p_value": 7.483791046157495e-22,
+        "n": 300
       },
       "jaccard_all_vs_alignment_mean": {
-        "rho": 0.24792392484571427,
-        "p_value": 0.0005259251693105464,
-        "n": 192
+        "rho": 0.22600631610409755,
+        "p_value": 7.834007412176848e-05,
+        "n": 300
       },
       "bertscore_f1_vs_alignment_mean": {
-        "rho": 0.3937558224612974,
-        "p_value": 1.6012465701889488e-08,
-        "n": 192
+        "rho": 0.3925895313436618,
+        "p_value": 1.7038066018326284e-12,
+        "n": 300
       }
     }
   },
@@ -503,204 +723,308 @@
   "model_differences_alignment": {
     "test": "kruskal_wallis",
     "metric": "alignment_mean",
-    "n_groups": 8,
-    "n_total": 192,
-    "H_statistic": 62.947269261061244,
-    "p_value": 3.883331634501994e-11,
-    "eta_squared": 0.3295668547699542,
+    "n_groups": 10,
+    "n_total": 300,
+    "H_statistic": 137.62492861009952,
+    "p_value": 3.1889146874209623e-25,
+    "eta_squared": 0.4602840421742459,
     "pairwise": [
       {
-        "pair": "llama70b vs mistral_large",
-        "U_statistic": 97.0,
-        "p_value": 4.982310939109984e-05,
-        "p_bonferroni": 0.0013950470629507954
+        "pair": "gpt54 vs llama70b",
+        "U_statistic": 858.0,
+        "p_value": 2.006266926268937e-10,
+        "p_bonferroni": 9.028201168210216e-09
       },
       {
-        "pair": "llama70b vs mistral_small32",
-        "U_statistic": 181.5,
-        "p_value": 0.02594428772701169,
-        "p_bonferroni": 0.7264400563563274
+        "pair": "gpt54 vs mistral_large",
+        "U_statistic": 634.0,
+        "p_value": 0.000994450911421088,
+        "p_bonferroni": 0.04475029101394896
       },
       {
-        "pair": "llama70b vs mistral_small4",
-        "U_statistic": 414.0,
-        "p_value": 0.009378517845380971,
-        "p_bonferroni": 0.2625984996706672
+        "pair": "gpt54 vs mistral_small32",
+        "U_statistic": 727.0,
+        "p_value": 4.7890965368682034e-06,
+        "p_bonferroni": 0.00021550934415906915
       },
       {
-        "pair": "llama70b vs olmo3_32b",
-        "U_statistic": 202.0,
-        "p_value": 0.07241590646260061,
+        "pair": "gpt54 vs mistral_small4",
+        "U_statistic": 882.0,
+        "p_value": 2.1830326949775524e-11,
+        "p_bonferroni": 9.823647127398987e-10
+      },
+      {
+        "pair": "gpt54 vs olmo3_32b",
+        "U_statistic": 638.0,
+        "p_value": 0.0007786310627099451,
+        "p_bonferroni": 0.03503839782194753
+      },
+      {
+        "pair": "gpt54 vs qwen35_122b",
+        "U_statistic": 671.0,
+        "p_value": 0.00015349652059686117,
+        "p_bonferroni": 0.006907343426858753
+      },
+      {
+        "pair": "gpt54 vs qwen35_27b",
+        "U_statistic": 767.0,
+        "p_value": 2.901959185408914e-07,
+        "p_bonferroni": 1.3058816334340115e-05
+      },
+      {
+        "pair": "gpt54 vs qwen35_397b",
+        "U_statistic": 504.0,
+        "p_value": 0.24090382286675394,
         "p_bonferroni": 1.0
       },
       {
+        "pair": "gpt54 vs sonnet46",
+        "U_statistic": 404.0,
+        "p_value": 0.1603975706399039,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "llama70b vs mistral_large",
+        "U_statistic": 145.0,
+        "p_value": 5.022538048173959e-06,
+        "p_bonferroni": 0.00022601421216782817
+      },
+      {
+        "pair": "llama70b vs mistral_small32",
+        "U_statistic": 299.5,
+        "p_value": 0.025745542908246467,
+        "p_bonferroni": 1.0
+      },
+      {
+        "pair": "llama70b vs mistral_small4",
+        "U_statistic": 639.0,
+        "p_value": 0.005268183814990908,
+        "p_bonferroni": 0.23706827167459088
+      },
+      {
+        "pair": "llama70b vs olmo3_32b",
+        "U_statistic": 283.5,
+        "p_value": 0.012950248417422419,
+        "p_bonferroni": 0.5827611787840088
+      },
+      {
         "pair": "llama70b vs qwen35_122b",
-        "U_statistic": 98.5,
-        "p_value": 5.7774199298162825e-05,
-        "p_bonferroni": 0.001617677580348559
+        "U_statistic": 147.0,
+        "p_value": 6.296802485619511e-06,
+        "p_bonferroni": 0.000283356111852878
       },
       {
         "pair": "llama70b vs qwen35_27b",
-        "U_statistic": 235.0,
-        "p_value": 0.27262509397172274,
+        "U_statistic": 307.5,
+        "p_value": 0.03512412220687851,
         "p_bonferroni": 1.0
       },
       {
         "pair": "llama70b vs qwen35_397b",
-        "U_statistic": 53.0,
-        "p_value": 2.767158707240933e-07,
-        "p_bonferroni": 7.748044380274613e-06
+        "U_statistic": 78.5,
+        "p_value": 1.1698628286210467e-08,
+        "p_bonferroni": 5.26438272879471e-07
+      },
+      {
+        "pair": "llama70b vs sonnet46",
+        "U_statistic": 32.0,
+        "p_value": 2.9053064236209884e-11,
+        "p_bonferroni": 1.3073878906294448e-09
       },
       {
         "pair": "mistral_large vs mistral_small32",
-        "U_statistic": 344.5,
-        "p_value": 0.20169172926349,
+        "U_statistic": 575.0,
+        "p_value": 0.056485324361751174,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_large vs mistral_small4",
-        "U_statistic": 527.0,
-        "p_value": 4.774283432602824e-07,
-        "p_bonferroni": 1.3367993611287907e-05
+        "U_statistic": 858.0,
+        "p_value": 1.1470451955845895e-09,
+        "p_bonferroni": 5.161703380130653e-08
       },
       {
         "pair": "mistral_large vs olmo3_32b",
-        "U_statistic": 353.5,
-        "p_value": 0.1387099340125381,
+        "U_statistic": 506.5,
+        "p_value": 0.37561948789537736,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_large vs qwen35_122b",
-        "U_statistic": 286.0,
-        "p_value": 0.9715410429516541,
+        "U_statistic": 467.0,
+        "p_value": 0.7972493236936605,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_large vs qwen35_27b",
-        "U_statistic": 415.5,
-        "p_value": 0.0054046367056732394,
-        "p_bonferroni": 0.1513298277588507
+        "U_statistic": 636.0,
+        "p_value": 0.004831999255067949,
+        "p_bonferroni": 0.21743996647805772
       },
       {
         "pair": "mistral_large vs qwen35_397b",
-        "U_statistic": 222.0,
-        "p_value": 0.08382441150496456,
+        "U_statistic": 326.0,
+        "p_value": 0.03424598563622778,
         "p_bonferroni": 1.0
       },
       {
+        "pair": "mistral_large vs sonnet46",
+        "U_statistic": 233.5,
+        "p_value": 4.030465762642676e-05,
+        "p_bonferroni": 0.0018137095931892043
+      },
+      {
         "pair": "mistral_small32 vs mistral_small4",
-        "U_statistic": 445.5,
-        "p_value": 0.0010306035373520283,
-        "p_bonferroni": 0.028856899045856792
+        "U_statistic": 719.0,
+        "p_value": 6.80096988430364e-05,
+        "p_bonferroni": 0.003060436447936638
       },
       {
         "pair": "mistral_small32 vs olmo3_32b",
-        "U_statistic": 299.0,
-        "p_value": 0.8166258192618756,
+        "U_statistic": 401.5,
+        "p_value": 0.462543078400798,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_small32 vs qwen35_122b",
-        "U_statistic": 228.5,
-        "p_value": 0.17867968033963155,
+        "U_statistic": 342.0,
+        "p_value": 0.10212311905332068,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_small32 vs qwen35_27b",
-        "U_statistic": 335.0,
-        "p_value": 0.31866920867786774,
+        "U_statistic": 487.0,
+        "p_value": 0.5847595681195688,
         "p_bonferroni": 1.0
       },
       {
         "pair": "mistral_small32 vs qwen35_397b",
-        "U_statistic": 178.0,
-        "p_value": 0.007019615780929154,
-        "p_bonferroni": 0.1965492418660163
+        "U_statistic": 223.5,
+        "p_value": 0.0002803229103061846,
+        "p_bonferroni": 0.012614530963778308
+      },
+      {
+        "pair": "mistral_small32 vs sonnet46",
+        "U_statistic": 142.5,
+        "p_value": 1.432418551586094e-07,
+        "p_bonferroni": 6.445883482137422e-06
       },
       {
         "pair": "mistral_small4 vs olmo3_32b",
-        "U_statistic": 139.0,
-        "p_value": 0.0019142643893584378,
-        "p_bonferroni": 0.053599402902036256
+        "U_statistic": 198.0,
+        "p_value": 0.00017306148387647617,
+        "p_bonferroni": 0.0077877667744414274
       },
       {
         "pair": "mistral_small4 vs qwen35_122b",
-        "U_statistic": 49.5,
-        "p_value": 5.029484737146077e-07,
-        "p_bonferroni": 1.4082557264009015e-05
+        "U_statistic": 45.0,
+        "p_value": 1.7589465083608084e-09,
+        "p_bonferroni": 7.915259287623638e-08
       },
       {
         "pair": "mistral_small4 vs qwen35_27b",
-        "U_statistic": 110.0,
-        "p_value": 0.00022963750952509744,
-        "p_bonferroni": 0.0064298502667027285
+        "U_statistic": 129.0,
+        "p_value": 2.0337942457222897e-06,
+        "p_bonferroni": 9.152074105750303e-05
       },
       {
         "pair": "mistral_small4 vs qwen35_397b",
-        "U_statistic": 32.0,
-        "p_value": 2.952825438580661e-08,
-        "p_bonferroni": 8.267911228025851e-07
+        "U_statistic": 28.5,
+        "p_value": 1.2299711572642129e-10,
+        "p_bonferroni": 5.534870207688958e-09
+      },
+      {
+        "pair": "mistral_small4 vs sonnet46",
+        "U_statistic": 15.5,
+        "p_value": 6.858144001836831e-12,
+        "p_bonferroni": 3.086164800826574e-10
       },
       {
         "pair": "olmo3_32b vs qwen35_122b",
-        "U_statistic": 221.5,
-        "p_value": 0.13282809376960256,
+        "U_statistic": 418.5,
+        "p_value": 0.6298891084431307,
         "p_bonferroni": 1.0
       },
       {
         "pair": "olmo3_32b vs qwen35_27b",
-        "U_statistic": 324.0,
-        "p_value": 0.44649097948518224,
+        "U_statistic": 529.5,
+        "p_value": 0.23043751175632832,
         "p_bonferroni": 1.0
       },
       {
         "pair": "olmo3_32b vs qwen35_397b",
-        "U_statistic": 174.0,
-        "p_value": 0.005234561242183322,
-        "p_bonferroni": 0.14656771478113303
+        "U_statistic": 300.5,
+        "p_value": 0.010739207433808436,
+        "p_bonferroni": 0.4832643345213796
+      },
+      {
+        "pair": "olmo3_32b vs sonnet46",
+        "U_statistic": 233.5,
+        "p_value": 4.0634529376360264e-05,
+        "p_bonferroni": 0.001828553821936212
       },
       {
         "pair": "qwen35_122b vs qwen35_27b",
-        "U_statistic": 413.5,
-        "p_value": 0.006194417145873819,
-        "p_bonferroni": 0.17344368008446692
+        "U_statistic": 623.5,
+        "p_value": 0.009050980014588435,
+        "p_bonferroni": 0.4072941006564796
       },
       {
         "pair": "qwen35_122b vs qwen35_397b",
-        "U_statistic": 224.0,
-        "p_value": 0.09365568208106752,
-        "p_bonferroni": 1.0
+        "U_statistic": 296.5,
+        "p_value": 0.011319903519095556,
+        "p_bonferroni": 0.5093956583593
+      },
+      {
+        "pair": "qwen35_122b vs sonnet46",
+        "U_statistic": 189.5,
+        "p_value": 3.0530439720637253e-06,
+        "p_bonferroni": 0.00013738697874286765
       },
       {
         "pair": "qwen35_27b vs qwen35_397b",
-        "U_statistic": 117.0,
-        "p_value": 8.476574074463445e-05,
-        "p_bonferroni": 0.0023734407408497644
+        "U_statistic": 177.0,
+        "p_value": 1.629878072833169e-05,
+        "p_bonferroni": 0.000733445132774926
+      },
+      {
+        "pair": "qwen35_27b vs sonnet46",
+        "U_statistic": 110.5,
+        "p_value": 1.48303226334422e-08,
+        "p_bonferroni": 6.673645185048991e-07
+      },
+      {
+        "pair": "qwen35_397b vs sonnet46",
+        "U_statistic": 357.0,
+        "p_value": 0.020605385632706724,
+        "p_bonferroni": 0.9272423534718026
       }
     ]
   },
   "temperature_effect_alignment": {
     "test": "temperature_effect",
     "metric": "alignment_mean",
-    "n_temperatures": 4,
+    "n_temperatures": 5,
     "temperatures": [
       0.0,
+      0.075,
       0.15,
       0.3,
       0.6
     ],
-    "spearman_rho": -0.08068720295709528,
-    "spearman_p": 0.26590220375366025,
-    "p_value": 0.26590220375366025,
-    "statistic": "rho=-0.081",
-    "kruskal_H": 1.7435218825886811,
-    "kruskal_p": 0.6273016231701376,
-    "kruskal_eta_sq": 0.009128386819836028,
+    "spearman_rho": -0.0825176581474315,
+    "spearman_p": 0.1539510263832574,
+    "p_value": 0.1539510263832574,
+    "statistic": "rho=-0.083",
+    "kruskal_H": 3.20605761756447,
+    "kruskal_p": 0.5239530932845848,
+    "kruskal_eta_sq": 0.010722600727640369,
     "medians_by_temp": {
-      "0.0": 0.975,
-      "0.15": 1.0,
-      "0.3": 0.95,
-      "0.6": 0.9624999999999999
+      "0.0": 0.9875,
+      "0.075": 1.0,
+      "0.15": 0.9875,
+      "0.3": 0.9875,
+      "0.6": 0.98125
     }
   }
 }

@@ -31,10 +31,10 @@ These go into Ch1-3. Draw before writing their sections.
 
 ## Writing: chapters (priority order)
 
-- [ ] **Ch3 Methods** -- 11K draft exists. Needs: diagrams inserted, model table finalized, therapy_temp values grounded
-- [ ] **Ch4 Implementation** -- stub only. Short chapter: architecture, config-driven design, artefact hierarchy. Can write now
-- [ ] **Ch2 Background** -- 6.2K draft exists. Needs: tension transitions polished, ROUGE vs BERTScore example, EU AI Act figure
-- [ ] **Ch1 Introduction** -- outline exists. Can draft from structure doc. Keep to ~2K words
+- [x] **Ch3 Methods** -- full draft. Needs: diagrams inserted, model table finalized after LLM selection
+- [x] **Ch4 Implementation** -- full draft. Needs: dirtree package for directory listing
+- [x] **Ch2 Background** -- full draft. Needs: diagrams, ROUGE vs BERTScore example, 2.3 prior-work citations
+- [x] **Ch1 Introduction** -- full draft. Needs: two conceptual diagrams
 - [ ] **Ch5 Results** -- skeleton exists. Blocked on experiment data
 - [ ] **Ch6 Discussion** -- skeleton exists. Blocked on results
 - [ ] **Ch7 Conclusion** -- not started. Blocked on discussion

@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 from scipy import stats as sp
 
-from model_display import MODEL_COLORS, display_name
+from model_display import MODEL_COLORS, display_name, sort_models
 
 
 def main() -> None:
@@ -39,8 +39,10 @@ def main() -> None:
 
     fig, ax = plt.subplots(figsize=(8, 6))
 
-    # Plot points
-    for model, row in model_stats.iterrows():
+    # Plot points in canonical order
+    ordered = sort_models(list(model_stats.index))
+    for model in ordered:
+        row = model_stats.loc[model]
         color = MODEL_COLORS.get(model, "#888888")
         ax.scatter(
             row["jaccard"],
@@ -63,16 +65,27 @@ def main() -> None:
         # Default: label to the right
         ha, dx, dy = "left", 10, 0
 
-        # Adjust for specific crowded regions
+        # Adjust for crowded regions
         if model == "qwen35_27b":
-            dx, dy = 10, 8
-        elif model == "qwen35_397b":
-            dx, dy = 10, -8
-        elif model == "llama70b":
-            dx, dy = -10, 8
+            dx, dy = -10, -12
             ha = "right"
+        elif model == "qwen35_397b":
+            dx, dy = 10, -10
+        elif model == "llama70b":
+            dx, dy = 10, 3
         elif model == "mistral_small4":
             dx, dy = 10, -10
+        elif model == "mistral_large":
+            dx, dy = 10, -10
+        elif model == "qwen35_122b":
+            dx, dy = -10, 0
+            ha = "right"
+        elif model == "olmo3_32b":
+            dx, dy = -10, 8
+            ha = "right"
+        elif model == "mistral_small32":
+            dx, dy = -10, 8
+            ha = "right"
 
         ax.annotate(
             name,

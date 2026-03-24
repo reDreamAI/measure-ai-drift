@@ -156,16 +156,35 @@ async def main() -> None:
     parser.add_argument("--slice", "-s", type=int, default=2)
     parser.add_argument("--no-therapy-temp", action="store_true",
                         help="Skip the extra therapy_temp run per model")
+    parser.add_argument("--models", type=str, nargs="+", default=None,
+                        help="Run only these models (by name). Default: all non-test targets")
+    parser.add_argument("--add", action="store_true",
+                        help="Add runs to the current latest batch instead of creating a new one")
+    parser.add_argument("--batch-dir", type=Path, default=None,
+                        help="Write runs into a specific batch directory")
     args = parser.parse_args()
 
     temps = sorted(args.temps)
 
     config = load_config()
-    targets = [
+    all_targets = [
         t["name"]
         for t in config.get("evaluation_targets", [])
         if not t["name"].endswith("_test")
     ]
+
+    # Filter to specific models if requested
+    if args.models:
+        targets = [m for m in args.models if m in all_targets]
+        missing = set(args.models) - set(all_targets)
+        if missing:
+            print(f"WARNING: models not found in config: {missing}")
+        if not targets:
+            print("No valid models to run.")
+            return
+    else:
+        targets = all_targets
+
     therapy_temps = load_therapy_temps(config)
 
     # Determine which therapy_temps actually add a new data point
@@ -184,16 +203,28 @@ async def main() -> None:
             model_temps = sorted(set(model_temps + [extra_therapy[model]]))
         total_runs += len(VIGNETTES) * len(model_temps)
 
-    # Create batch directory
+    # Batch directory: --add (append to latest), --batch-dir (explicit), or new
     from datetime import datetime
-    batch_name = datetime.now().strftime("batch_%Y%m%d_%H%M%S")
-    batch_dir = Path("experiments/runs") / batch_name
-    batch_dir.mkdir(parents=True, exist_ok=True)
-
-    # Update latest symlink
     latest_link = Path("experiments/latest")
-    latest_link.unlink(missing_ok=True)
-    latest_link.symlink_to(batch_dir.resolve())
+
+    if args.batch_dir:
+        batch_dir = args.batch_dir
+        if not batch_dir.exists():
+            print(f"Batch dir {batch_dir} does not exist")
+            return
+    elif args.add:
+        if not latest_link.exists():
+            print("No latest batch to add to. Run without --add first.")
+            return
+        batch_dir = latest_link.resolve()
+        existing = len(list(batch_dir.iterdir()))
+        print(f"  Adding to existing batch ({existing} runs already)")
+    else:
+        batch_name = datetime.now().strftime("batch_%Y%m%d_%H%M%S")
+        batch_dir = Path("experiments/runs") / batch_name
+        batch_dir.mkdir(parents=True, exist_ok=True)
+        latest_link.unlink(missing_ok=True)
+        latest_link.symlink_to(batch_dir.resolve())
 
     print(f"Experiment: {len(targets)} models x {len(VIGNETTES)} vignettes x {len(temps)} temps x slice_{args.slice}")
     print(f"  Batch: {batch_dir}")

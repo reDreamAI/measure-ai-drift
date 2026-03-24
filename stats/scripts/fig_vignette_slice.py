@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 
-from model_display import display_name
+from model_display import display_name, sort_models
 
 
 def make_heatmap(ax, df, models, vignettes, title):
@@ -52,7 +52,7 @@ def main() -> None:
     output_dir = Path(f"stats/visuals_{args.tier}")
 
     df = pd.read_csv(args.input)
-    models = sorted(df["model"].unique())
+    models = sort_models(list(df["model"].unique()))
     vignettes = sorted(df["vignette"].unique())
     temps = sorted(df["temperature"].unique())
     has_slices = "slice" in df.columns and df["slice"].notna().any()

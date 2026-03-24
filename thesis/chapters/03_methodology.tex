@@ -141,7 +141,7 @@ coherence: each slice ends after a complete therapist-patient exchange.
 %   Plan conditions the response tokens (Chain-of-Thought style)
 %   Why fused? Plan must condition the response tokens -- a separate call
 %   would decouple intent from output
-% 10 independent trials per condition sample the stochastic output distribution
+% 20 independent trials per condition sample the stochastic output distribution
 % [FIG] Evaluation stack -- frozen history -> injected prompt -> fused generation
 % [Example] Raw model output: <plan> block and response side by side
 
@@ -161,9 +161,9 @@ and response are generated in a single pass, any mismatch between declared
 intent and executed strategy reflects the model's own inconsistency rather
 than a decoupling artefact.
 
-Ten independent trials are collected per condition, yielding
-$\binom{10}{2} = 45$ pairwise comparisons. This trial count balances
-statistical power with compute cost: 45 pairs provide sufficient coverage
+Twenty independent trials are collected per condition, yielding
+$\binom{20}{2} = 190$ pairwise comparisons. This trial count balances
+statistical power with compute cost: 190 pairs provide robust coverage
 of the pairwise similarity distribution while keeping the total experiment
 within budget.
 
@@ -189,7 +189,7 @@ within budget.
 % Structured measurement independent of CoT faithfulness debate
 % Enables three independent uses:
 %   1. Strategy-level consistency scoring (Method 1)
-%   2. Plan-output alignment verification (Method 3)
+%   2. Plan-response alignment verification (Method 3)
 %   3. Human-readable clinical oversight
 % Fixed IRT strategy taxonomy constrains declarations to the therapeutic domain --
 %   prevents arbitrary strategies that cannot be clinically evaluated
@@ -329,9 +329,9 @@ discussion (\autoref{sec:disc-framework-design}).
 \label{sec:meth-metrics}
 % Why three methods? Each targets a distinct layer of the generation process --
 %   no single metric captures the full picture of clinical stability
-%   Method 1: does the model make consistent therapeutic decisions? (planning layer)
-%   Method 2: does the model produce consistent therapeutic responses? (output layer)
-%   Method 3: does the model do what it says it will do? (alignment layer)
+%   Method 1 (Plan Consistency): does the model select the same strategies?
+%   Method 2 (Response Similarity): does the model produce equivalent responses?
+%   Method 3 (Plan-Response Alignment): does the model do what it declared?
 % [FIG] Three-level framework -- plan -> output -> alignment; inputs and outputs
 %   of each method, with the clinical question each answers
 
@@ -344,10 +344,12 @@ do.
 
 % [FIG] Three-level framework -- plan, output, alignment
 
-\subsection{Method 1: Cognitive Stability (Plan Consistency)}
+% previously: Cognitive Stability (Plan Consistency) -- renamed to avoid
+% theoretically loaded term (supervisor feedback 2026-03-23)
+\subsection{Method 1: Plan Consistency}
 \label{sec:meth-m1}
 % Pairwise Jaccard similarity over strategy sets from <plan> blocks
-%   J(A,B) = |A n B| / |A u B|; mean over C(10,2) = 45 trial pairs
+%   J(A,B) = |A n B| / |A u B|; mean over C(20,2) = 190 trial pairs
 % Strategy extraction from <plan> blocks. Validity rate as upstream quality gate
 %   -- malformed plans excluded
 % Why Jaccard? Set similarity is appropriate for unordered strategy
@@ -366,7 +368,7 @@ between strategy sets:
   J(A, B) = \frac{|A \cap B|}{|A \cup B|}
 \end{equation}
 
-The mean Jaccard score is computed over all $\binom{10}{2} = 45$ trial
+The mean Jaccard score is computed over all $\binom{20}{2} = 190$ trial
 pairs per condition. Jaccard is appropriate because strategy combinations
 are unordered sets: a model that declares \techil{confrontation /
 cognitive\_reframe} has made the same clinical decision as one that declares
@@ -386,11 +388,12 @@ follow the structured output format at all.
 
 % [Example] 10 plan sets, pairwise Jaccard matrix, mean score
 
-\subsection{Method 2: Output Consistency (Semantic Stability)}
+% previously: Output Consistency (Semantic Stability) -- renamed for clarity
+\subsection{Method 2: Response Similarity}
 \label{sec:meth-m2}
 % GROUNDING: builds on the metric landscape from Section 2.4
 %
-% Pairwise BERTScore F1 over response texts; mean over C(10,2) = 45 pairs
+% Pairwise BERTScore F1 over response texts; mean over C(20,2) = 190 pairs
 % Embedding model choice: DeBERTa-XLarge-MNLI (He et al., 2021)
 %   Why this model?
 %   - NLI fine-tuning aligns with semantic equivalence over surface matching
@@ -406,7 +409,7 @@ follow the structured output format at all.
 Method~2 measures whether the model produces therapeutically equivalent
 responses across trials, independent of strategy declarations. Pairwise
 BERTScore F1 is computed over response texts (with plan blocks excluded)
-across the same 45 trial pairs.
+across the same 190 trial pairs.
 
 The embedding model is \modelname{DeBERTa-XLarge-MNLI} \parencite{8MQC2H2V}. This model
 achieves the highest human correlation ($r = 0.778$) among more than 130
@@ -425,7 +428,8 @@ semantically divergent responses when surface forms differ.
 
 % [Example] Two responses from the same condition, alignment heatmap, F1
 
-\subsection{Method 3: Plan-Output Alignment}
+% previously: Plan-Output Alignment
+\subsection{Method 3: Plan-Response Alignment}
 % originally exploratory -- may restore label depending on results
 \label{sec:meth-m3}
 % GROUNDING: addresses the multi-level gap from Section 2.4
@@ -528,18 +532,15 @@ decision stability rather than label noise.
 % EU data sovereignty as primary selection criterion -- self-hostability and EU data
 %   residency are legal constraints in the reDreamAI deployment context
 % All evaluation targets run in non-thinking mode for fair comparison.
-%   Qwen 3.5 (hybrid-thinking) runs with reasoning disabled.
+%   Qwen 3.5 and Mistral Small 4 (hybrid-thinking) run with reasoning disabled.
 %
 % Primary subject: Mistral Large 3 (675B MoE, 41B active)
 %   EU-sovereign, Apache 2.0, frontier-class
-% Proprietary ceiling: GPT-5.4 (non-thinking variant)
-%   Strongest proprietary model without thinking overhead
-% Open-weight comparators across three size classes:
-%   Small (24-32B dense): Qwen 3.5 27B, OLMo 3.1 32B
-%   Mid (70B dense): Llama 3.3 70B (continuity with prior efficacy study)
-%   Large (MoE): DeepSeek V3.2 671B (MoE comparator to Mistral Large)
+% EU-sovereign comparators: Mistral Small 4 (119B MoE), Mistral Small 3.2 (24B dense)
+% Proprietary ceiling: GPT-5.4 and Sonnet 4.6 (non-thinking variants)
+% Open-weight comparators across size classes and architectures
 % Selection rationale: size-class diversity, dense vs MoE architecture,
-%   provider diversity
+%   provider diversity, EU sovereignty depth
 % [FIG] Model selection table -- model, size, architecture, provider,
 %   sovereignty status, role in study
 
@@ -549,56 +550,84 @@ that can be self-hosted within \gls{eu} data residency boundaries
 \parencite{2QMKF3RM}. All evaluation targets run in non-thinking mode for
 fair comparison.
 
-The \textbf{primary subject} is \modelname{Mistral Large 3}
+The \textbf{primary subject} is \modelname{Mistral Large~3}
 (675B \gls{moe}, 41B active parameters, Apache~2.0). It is the \gls{eu}
 sovereign flagship and the model that reDreamAI would deploy in production.
 The research question centres on whether this model achieves stability
 comparable to proprietary alternatives.
 
-The \textbf{proprietary ceiling} is \modelname{GPT-5.4} (non-thinking
-variant). As the strongest proprietary model without thinking overhead, it
-provides an upper-bound comparison. All other evaluation targets are also
-non-thinking, ensuring a fair comparison that isolates model capacity from
-inference-time compute.
+Two additional \gls{eu}-sovereign models complete the Mistral comparison.
+\modelname{Mistral Small~4} (119B \gls{moe}, 6.5B active parameters,
+Apache~2.0) is Mistral's newest release and the most efficient \gls{moe}
+in the set, activating fewer parameters per token than any other model.
+\modelname{Mistral Small 3.2} (24B dense, Apache~2.0) serves as a
+predecessor baseline, showing whether the architectural shift from dense to
+\gls{moe} affects stability.
 
-\textbf{Open-weight comparators} span three size classes:
+The \textbf{proprietary ceiling} comprises two models.
+\modelname{GPT-5.4} (non-thinking variant) is the strongest proprietary
+model without thinking overhead. OpenAI reintroduced user-configurable
+temperature with the non-reasoning variants of \modelname{GPT-5.2},
+making controlled temperature comparison possible.
+% TODO: source for OpenAI reintroducing temperature with GPT-5.2 non-reasoning
+\modelname{Claude Sonnet~4.6} adds a second proprietary reference point;
+Anthropic's character training emphasises thoughtful, safety-aware
+interaction, which may influence therapeutic stability independently of raw
+capability.
+% TODO: add Anthropic character training citation (anthropic.com/research/claude-character)
+
+\textbf{Open-weight comparators} span three size classes and two
+architectures:
 
 \begin{table}[t]
   \centering
   \caption{Evaluation targets. All models run in non-thinking mode via OpenRouter.}
   \label{tab:models}
-  % TODO: update model table after final LLM selection (e.g. Mistral Small 4,
-  %   other new releases). Check models.yaml before finalising.
   \begin{tabularx}{\textwidth}{llrX}
     \toprule
-    Class & Model & Size & Selection rationale \\
+    Group & Model & Size & Selection rationale \\
     \midrule
-    Primary   & \modelname{Mistral Large 3} & 675B \gls{moe} (41B active) & \gls{eu}-sovereign flagship (Apache~2.0). The model reDreamAI would deploy \\
-    Small     & \modelname{Qwen 3.5 27B}    & 27B dense  & Benchmark leader at this size class. Hybrid-thinking with reasoning disabled \\
-    Small     & \modelname{OLMo 3.1 32B}    & 32B dense  & Fully open (weights, training data, code). Best provenance story \\
-    Mid       & \modelname{Llama 3.3 70B}   & 70B dense  & Original model from the efficacy study. Continuity with prior work \\
-    Large     & \modelname{DeepSeek V3.2}   & 671B \gls{moe} & Similar \gls{moe} architecture to \modelname{Mistral Large 3}. Direct architectural comparator \\
-    Ceiling   & \modelname{GPT-5.4}         & Proprietary & Strongest proprietary model without thinking overhead \\
+    \multicolumn{4}{l}{\emph{EU-sovereign (Mistral, Apache~2.0)}} \\
+    Primary   & \modelname{Mistral Large 3}   & 675B \gls{moe} (41B active)   & \gls{eu}-sovereign flagship. Production deployment candidate \\
+    EU        & \modelname{Mistral Small 4}   & 119B \gls{moe} (6.5B active)  & Newest Mistral. Fewest active parameters of any \gls{moe} in set \\
+    EU        & \modelname{Mistral Small 3.2} & 24B dense                      & Dense predecessor to Small~4 \\
+    \addlinespace
+    \multicolumn{4}{l}{\emph{Open-weight comparators}} \\
+    \gls{moe} & \modelname{Qwen 3.5 122B}    & 122B \gls{moe} (10B active)   & Peer \gls{moe} comparator to Mistral Small~4 \\
+    \gls{moe} & \modelname{Qwen 3.5 397B}    & 397B \gls{moe} (17B active)   & Large \gls{moe} comparator to Mistral Large~3 \\
+    Dense     & \modelname{Qwen 3.5 27B}     & 27B dense                      & Same size class as Mistral Small 3.2 \\
+    Dense     & \modelname{OLMo 3.1 32B}     & 32B dense                      & Fully open (weights, data, code). Best provenance \\
+    Dense     & \modelname{Llama 3.3 70B}    & 70B dense                      & Continuity with prior efficacy study \\
+    \addlinespace
+    \multicolumn{4}{l}{\emph{Proprietary ceiling}} \\
+    Ceiling   & \modelname{Claude Sonnet 4.6} & Proprietary                   & Character-trained for safety-aware interaction \\
+    Ceiling   & \modelname{GPT-5.4}           & Proprietary                   & Strongest non-thinking proprietary model \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-The selection provides size-class diversity (27--675B), architectural
-diversity (dense \vs \gls{moe}), and provider diversity. \modelname{Qwen 3.5}
-is a hybrid-thinking model that supports optional reasoning. To maintain
-fair comparison with all non-thinking targets, reasoning is disabled during
-evaluation.
+The selection provides size-class diversity (24B--675B), architectural
+diversity (dense \vs \gls{moe}), and provider diversity across five
+vendors. \modelname{Qwen 3.5} and \modelname{Mistral Small~4} are
+hybrid-thinking models that support optional reasoning. To maintain fair
+comparison, reasoning is disabled for all evaluation targets.
 
-Three models were considered and dropped: \modelname{Mistral Small 3.2}
-(redundant with Qwen/OLMo at the small class), \modelname{Mistral Medium 3.1}
-(closed weights, no differentiated thesis contribution), and
-\modelname{GLM-5} (a third \gls{moe} adds little discriminative signal over
-\modelname{DeepSeek V3.2}).
+\modelname{DeepSeek V3.2} was initially included as a large \gls{moe}
+comparator but was replaced by \modelname{Qwen 3.5 397B}. DeepSeek applies
+internal temperature scaling (API $T = 1.0$ maps to internal $T \approx
+0.3$), which would have complicated cross-model temperature comparisons.
+\modelname{Qwen 3.5 397B} occupies the same architectural niche without
+this complexity. Other models considered and dropped include
+\modelname{Mistral Medium 3.1} (closed weights),
+\modelname{GLM-5} (a third large \gls{moe} adds little signal),
+\modelname{Nemotron~3 Super} (requires $T = 1.0$ universally, complicating
+temperature comparison), and \modelname{GPT-oss} (mandatory reasoning mode
+cannot be disabled).
 
 
 \section{Experimental Conditions}
 \label{sec:meth-conditions}
-% Full factorial: 6 vignettes x 3 slices x 10 trials x T in {0.0, 0.7} x N models
+% Full factorial: 6 vignettes x 3 slices x 20 trials x T in {0.0, 0.7} x N models
 % T=0.0: deterministic baseline -- theoretical upper bound on stability
 %   (greedy decoding)
 % T=0.7: stochastic condition -- realistic clinical deployment range
@@ -609,7 +638,7 @@ The experiment follows a full factorial design:
 
 \begin{table}[t]
   \centering
-  \caption{Experimental conditions. Total: $6 \times 3 \times 10 \times 2 = 360$ trials per model, 2{,}160 across all models.}
+  \caption{Experimental conditions. Total: $6 \times 3 \times 20 \times 2 = 720$ trials per model, 4{,}320 across all models.}
   \label{tab:conditions}
   \begin{tabular}{ll}
     \toprule
@@ -617,7 +646,7 @@ The experiment follows a full factorial design:
     \midrule
     Vignettes    & anxious, avoidant, cooperative, resistant, skeptic, trauma \\
     Slices       & \techil{slice\_1}, \techil{slice\_2}, \techil{slice\_3} \\
-    Trials       & 10 per condition \\
+    Trials       & 20 per condition \\
     Temperatures & $T = 0.0$ (deterministic), $T = 0.7$ (stochastic) \\
     Models       & 6 evaluation targets (\autoref{tab:models}) \\
     \bottomrule
@@ -662,10 +691,10 @@ potentially non-normal) do not satisfy parametric assumptions.
 
 Spearman rank correlations assess the relationship between the three
 evaluation methods. If Method~1 and Method~2 correlate strongly, plan
-consistency predicts output consistency. If they diverge, the clinical
-implications differ: high plan consistency with low output consistency
-indicates stable intent but variable execution, while the reverse indicates
-different strategies producing similar surface outputs. Spearman rather
+consistency predicts response similarity. If they diverge, the clinical
+implications differ: high plan consistency with low response similarity
+indicates stable strategy selections but variable execution, while the
+reverse indicates different strategies producing similar surface outputs. Spearman rather
 than Pearson is used because Jaccard scores are ordinal and BERTScore
 distributions may be non-normal.
 

@@ -1,10 +1,8 @@
-"""Figure 5.1: Validity rate and strategy distribution per model.
-
-Left subplot: bar chart of validity rate per model.
-Right subplot: stacked bar chart of strategy frequency per model.
+"""Figure 5.1: Strategy distribution per model.
+Figure A.1 (appendix): Plan validity rate per model.
 
 Usage:
-    python stats/scripts/fig_validity_strategy.py [--input stats/data/all_runs.csv]
+    python stats/scripts/fig_validity_strategy.py [--tier experiment]
 """
 
 from __future__ import annotations
@@ -16,7 +14,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from model_display import display_name
+from model_display import MODEL_COLORS, display_name, sort_models
 
 STRATEGY_CATEGORIES = [
     "confrontation",
@@ -45,28 +43,18 @@ def main() -> None:
     if args.input is None:
         args.input = Path(f"stats/data/{args.tier}_runs.csv")
     output_dir = Path(f"stats/visuals_{args.tier}")
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     df = pd.read_csv(args.input)
-    models = sorted(df["model"].unique())
+    models = sort_models(list(df["model"].unique()))
 
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+    # --- Figure 5.1: Strategy distribution (main figure) ---
+    fig1, ax = plt.subplots(figsize=(8, 5))
 
-    # Left: validity rate per model
-    validity = df.groupby("model")["validity_rate"].mean().reindex(models)
-    ax1.bar(range(len(models)), validity.values, color="#457b9d", edgecolor="white")
-    ax1.set_xticks(range(len(models)))
-    ax1.set_xticklabels([display_name(m) for m in models], rotation=45, ha="right", fontsize=8)
-    ax1.set_ylabel("Validity rate")
-    ax1.set_ylim(0, 1.05)
-    ax1.set_title("Plan validity rate")
-    ax1.axhline(y=1.0, color="gray", linestyle="--", alpha=0.5)
-
-    # Right: stacked strategy distribution per model
     strat_cols = [f"n_{cat}" for cat in STRATEGY_CATEGORIES]
     available = [c for c in strat_cols if c in df.columns]
     strat_data = df.groupby("model")[available].sum().reindex(models)
 
-    # Normalize to percentages
     row_totals = strat_data.sum(axis=1)
     strat_pct = strat_data.div(row_totals, axis=0) * 100
 
@@ -74,7 +62,7 @@ def main() -> None:
     for col in available:
         cat = col.replace("n_", "")
         values = strat_pct[col].values
-        ax2.bar(
+        ax.bar(
             range(len(models)),
             values,
             bottom=bottom,
@@ -85,18 +73,36 @@ def main() -> None:
         )
         bottom += values
 
+    ax.set_xticks(range(len(models)))
+    ax.set_xticklabels([display_name(m) for m in models], rotation=45, ha="right", fontsize=8)
+    ax.set_ylabel("Strategy share (%)")
+    ax.set_title("Strategy distribution by model")
+    ax.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=8)
+
+    fig1.tight_layout()
+    fig1.savefig(output_dir / "fig_5_1_strategy_distribution.pdf", bbox_inches="tight")
+    fig1.savefig(output_dir / "fig_5_1_strategy_distribution.png", bbox_inches="tight", dpi=150)
+    print(f"Saved fig_5_1 to {output_dir}/")
+    plt.close(fig1)
+
+    # --- Figure A.1: Plan validity (appendix) ---
+    fig2, ax2 = plt.subplots(figsize=(8, 4))
+
+    validity = df.groupby("model")["validity_rate"].mean().reindex(models)
+    colors = [MODEL_COLORS.get(m, "#888888") for m in models]
+    ax2.bar(range(len(models)), validity.values, color=colors, edgecolor="white")
     ax2.set_xticks(range(len(models)))
     ax2.set_xticklabels([display_name(m) for m in models], rotation=45, ha="right", fontsize=8)
-    ax2.set_ylabel("Strategy share (%)")
-    ax2.set_title("Strategy distribution")
-    ax2.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=8)
+    ax2.set_ylabel("Validity rate")
+    ax2.set_ylim(0.95, 1.005)
+    ax2.set_title("Plan validity rate by model")
+    ax2.axhline(y=1.0, color="gray", linestyle="--", alpha=0.5)
 
-    fig.tight_layout()
-    output_dir.mkdir(parents=True, exist_ok=True)
-    fig.savefig(output_dir / "fig_5_1_validity_strategy.pdf", bbox_inches="tight")
-    fig.savefig(output_dir / "fig_5_1_validity_strategy.png", bbox_inches="tight", dpi=150)
-    print(f"Saved fig_5_1 to {output_dir}/")
-    plt.close(fig)
+    fig2.tight_layout()
+    fig2.savefig(output_dir / "fig_A1_validity.pdf", bbox_inches="tight")
+    fig2.savefig(output_dir / "fig_A1_validity.png", bbox_inches="tight", dpi=150)
+    print(f"Saved fig_A1 to {output_dir}/")
+    plt.close(fig2)
 
 
 if __name__ == "__main__":

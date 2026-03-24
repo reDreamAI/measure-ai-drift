@@ -1,15 +1,15 @@
-"""Shared model display names and colors for all figures."""
+"""Shared model display names, colors, and ordering for all figures."""
 
 # Internal name -> display name for figures and tables
 MODEL_NAMES = {
     # Mistral EU-sovereign
+    "mistral_small32": "Mistral Small 3.2 (24B)",
     "mistral_small4": "Mistral Small 4 (119B)",
     "mistral_large": "Mistral Large 3 (675B)",
-    "mistral_small32": "Mistral Small 3.2 (24B)",
     # Qwen family
+    "qwen35_27b": "Qwen 3.5 27B",
     "qwen35_122b": "Qwen 3.5 122B",
     "qwen35_397b": "Qwen 3.5 397B",
-    "qwen35_27b": "Qwen 3.5 27B",
     # Dense comparators
     "olmo3_32b": "OLMo 3.1 32B",
     "llama70b": "Llama 3.3 70B",
@@ -21,27 +21,47 @@ MODEL_NAMES = {
     "gpt_oss_test": "GPT-oss 120B (test)",
 }
 
+# Canonical display order for all figures and tables
+MODEL_ORDER = [
+    "mistral_small32",
+    "mistral_small4",
+    "mistral_large",
+    "qwen35_27b",
+    "qwen35_122b",
+    "qwen35_397b",
+    "olmo3_32b",
+    "llama70b",
+    "gpt54",
+    "sonnet46",
+]
+
 MODEL_COLORS = {
-    # Mistral EU-sovereign (reds)
-    "mistral_small4": "#e63946",
-    "mistral_large": "#9b2226",
-    "mistral_small32": "#d4756b",
-    # Qwen family (yellows/ambers)
-    "qwen35_122b": "#e9c46a",
-    "qwen35_397b": "#c8961e",
-    "qwen35_27b": "#f4d08f",
+    # Mistral EU-sovereign (orange, lighter=smaller, Small 4 slightly reddish)
+    "mistral_small32": "#f4a261",    # light orange (24B, smallest)
+    "mistral_small4": "#e76f51",     # reddish orange (119B, primary subject)
+    "mistral_large": "#c44536",      # dark orange-red (675B, largest)
+    # Qwen family (violet to purple, lighter=smaller)
+    "qwen35_27b": "#c4b5e0",        # light violet (27B, smallest)
+    "qwen35_122b": "#8e6bbf",       # medium purple (122B)
+    "qwen35_397b": "#5a2d82",       # dark purple (397B, largest)
     # Dense comparators
-    "olmo3_32b": "#f4a261",
-    "llama70b": "#2a9d8f",
+    "olmo3_32b": "#e891b2",         # pink
+    "llama70b": "#3a86c8",          # blue
     # Proprietary ceiling
-    "gpt54": "#457b9d",
-    "sonnet46": "#6a0dad",
+    "sonnet46": "#8b5e3c",          # brown
+    "gpt54": "#1a1a1a",             # black
     # Test
-    "llama70b_test": "#a8dadc",
-    "gpt_oss_test": "#6d6875",
+    "llama70b_test": "#a8c8e8",     # light blue
+    "gpt_oss_test": "#6d6875",      # gray
 }
 
 
 def display_name(internal_name: str) -> str:
     """Get display name for a model, fallback to internal name."""
     return MODEL_NAMES.get(internal_name, internal_name)
+
+
+def sort_models(model_list: list[str]) -> list[str]:
+    """Sort models by canonical display order. Unknown models go at the end."""
+    order_map = {m: i for i, m in enumerate(MODEL_ORDER)}
+    return sorted(model_list, key=lambda m: order_map.get(m, 999))
