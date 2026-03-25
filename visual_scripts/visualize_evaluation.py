@@ -1,10 +1,7 @@
 """Generate evaluation methods diagram — Three-Level Stability Framework.
 
-Source references:
-    src/evaluation/metrics.py      — metric computation functions
-    src/evaluation/experiment.py   — experiment orchestration
-    src/stacks/evaluation_stack.py — trial generation
-    data/prompts/evaluation/       — taxonomy, judge prompt, fused prompt
+Matches thesis terminology (Ch3) and current experiment design:
+    20 trials · 1 slice (slice_2) · 6 vignettes · 10 models · 5 temperatures
 """
 
 import matplotlib.pyplot as plt
@@ -12,9 +9,9 @@ from matplotlib.patches import FancyBboxPatch
 
 # ── colours ──────────────────────────────────────────────────────────────────
 C = {
-    "trial":      "#E67E22",   # orange — matches pipeline eval section
-    "plan":       "#F0B27A",   # light orange — matches pipeline trial
-    "resp":       "#F1948A",   # soft red — matches Method 2
+    "trial":      "#E67E22",   # orange
+    "plan":       "#F0B27A",   # light orange
+    "resp":       "#F1948A",   # soft red
     "extract":    "#E67E22",   # orange — feeds Method 1
     "taxonomy":   "#E84393",   # hot pink — feeds Method 3
     "l31":        "#E67E22",   # orange — Method 1
@@ -99,7 +96,7 @@ def section_label(x, y, text, color, fontsize=11):
 # TITLE
 # ═══════════════════════════════════════════════════════════════════════════════
 
-ax.text(9.0, 13.2, "Evaluation Methods — Three-Level Stability Framework",
+ax.text(9.0, 13.2, "Three-Level Evaluation Framework",
         fontsize=16, color=C["text"], ha="center", fontweight="bold", zorder=10)
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -112,45 +109,45 @@ ax.text(9.0, 12.55, "TRIAL OUTPUT",
         fontsize=13, color=C["text"], ha="center", fontweight="bold", zorder=5)
 
 ax.text(9.0, 12.2,
-        "10 trials per slice  ·  3 slices per vignette  ·  6 vignettes  ·  "
-        "per model & temperature",
+        "20 trials per condition  ·  6 vignettes  ·  "
+        "10 models  ·  5 temperatures",
         fontsize=9.5, color=C["text"], ha="center", zorder=5)
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # TOP: Plan Extraction | Response Texts | Judge Inputs
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# --- Left: Plan + Extraction (feeds Method 1) — aligned with METHOD 1 ---
+# --- Left: Plan + Extraction (feeds Method 1) ---
 section_bg(0.3, 9.4, 5.3, 2.1, C["extract"])
 section_label(0.6, 11.3, "PLAN EXTRACTION", C["extract"])
 
 box(0.6, 10.35, 4.7, 0.7, C["extract"],
-    "extract_plan_strategies()", fontsize=9)
+    "Parse strategy sets from plan blocks", fontsize=9)
 
 box(0.6, 9.55, 2.05, 0.45, C["extract"],
-    "10 strategy sets", fontsize=7.5, alpha=0.6)
+    "20 strategy sets", fontsize=7.5, alpha=0.6)
 
 box(3.0, 9.55, 2.25, 0.45, C["extract"],
-    "Validity Rate (1-2?)", fontsize=7.5, alpha=0.6)
+    "Validity check", fontsize=7.5, alpha=0.6)
 
-ax.text(2.95, 9.42, "from <plan> block per trial",
-        fontsize=6.5, color=C["label"], ha="center", family="monospace",
+ax.text(2.95, 9.42, "structured plan block per trial",
+        fontsize=6.5, color=C["label"], ha="center",
         style="italic")
 
-# --- Center: Response Texts (feeds Method 2) — aligned with METHOD 2 ---
+# --- Center: Response Texts (feeds Method 2) ---
 section_bg(5.9, 9.4, 5.6, 2.1, C["resp"])
 section_label(6.2, 11.3, "RESPONSE TEXTS", C["resp"])
 
-box(6.2, 9.7, 2.4, 1.3, C["plan"], "<plan>",
-    sublabel="cat1 / cat2", fontsize=9)
+box(6.2, 9.7, 2.4, 1.3, C["plan"], "Plan",
+    sublabel="strategy labels", fontsize=9)
 box(8.8, 9.7, 2.4, 1.3, C["resp"], "Response",
-    sublabel="1-3 sentences", fontsize=9)
+    sublabel="therapeutic text", fontsize=9)
 
-ax.text(8.7, 9.5, "10 response texts for pairwise comparison",
-        fontsize=6.5, color=C["label"], ha="center", family="monospace",
+ax.text(8.7, 9.5, "20 response texts for pairwise comparison",
+        fontsize=6.5, color=C["label"], ha="center",
         style="italic")
 
-# --- Right: Judge Inputs (feeds Method 3) — aligned with METHOD 3 ---
+# --- Right: Judge Inputs (feeds Method 3) ---
 section_bg(11.8, 9.4, 5.9, 2.1, C["taxonomy"])
 section_label(12.1, 11.3, "JUDGE INPUTS", C["taxonomy"])
 
@@ -163,21 +160,21 @@ box(12.1, 9.55, 2.35, 0.45, C["taxonomy"],
 box(14.8, 9.55, 2.55, 0.45, C["taxonomy"],
     "response texts", fontsize=8, alpha=0.6)
 
-ax.text(14.85, 9.42, "strategy_taxonomy.yaml",
-        fontsize=6.5, color=C["label"], ha="center", family="monospace",
+ax.text(14.85, 9.42, "taxonomy + strategies + responses",
+        fontsize=6.5, color=C["label"], ha="center",
         style="italic")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # THREE METRIC COLUMNS
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# --- Level 3.1: Cognitive Stability ---
+# --- Method 1: Plan Consistency ---
 c1x, c1w = 0.3, 5.3
 section_bg(c1x, 2.3, c1w, 6.5, C["l31"])
 section_label(c1x + 0.3, 8.5, "METHOD 1", C["l31"], fontsize=13)
 
 box(c1x + 0.3, 7.4, c1w - 0.6, 0.85, C["l31"],
-    "Cognitive Stability",
+    "Plan Consistency",
     sublabel="Are strategy choices consistent?", fontsize=11)
 
 ax.text(c1x + c1w / 2, 7.1, "input: strategy sets",
@@ -187,12 +184,12 @@ box(c1x + 0.5, 6.1, c1w - 1.0, 0.75, C["l31"],
     "Pairwise Jaccard Similarity", fontsize=9.5, alpha=0.7)
 
 ax.text(c1x + c1w / 2, 5.55,
-        "J(A, B) = |A ∩ B| / |A ∪ B|",
+        "J(A, B) = |A \u2229 B| / |A \u222a B|",
         fontsize=10, color=C["l31"], ha="center", fontweight="bold",
         family="monospace")
 
 ax.text(c1x + c1w / 2, 5.1,
-        "mean over C(10,2) = 45 pairs",
+        "mean over C(20,2) = 190 pairs",
         fontsize=8, color=C["label"], ha="center", style="italic")
 
 # Example
@@ -209,18 +206,13 @@ ax.text(c1x + c1w / 2, 4.2,
 box(c1x + 0.6, 3.1, c1w - 1.2, 0.6, C["l31"],
     "mean Jaccard (0.0 - 1.0)", fontsize=9, alpha=0.6)
 
-ax.text(c1x + c1w / 2, 2.6,
-        "compute_pairwise_jaccard()",
-        fontsize=7.5, color=C["label"], ha="center", family="monospace",
-        style="italic")
-
-# --- Level 3.2: Output Consistency ---
+# --- Method 2: Response Similarity ---
 c2x, c2w = 5.9, 5.6
 section_bg(c2x, 2.3, c2w, 6.5, C["l32"])
 section_label(c2x + 0.3, 8.5, "METHOD 2", C["l32"], fontsize=13)
 
 box(c2x + 0.3, 7.4, c2w - 0.6, 0.85, C["l32"],
-    "Output Consistency",
+    "Response Similarity",
     sublabel="Are responses semantically similar?", fontsize=11)
 
 ax.text(c2x + c2w / 2, 7.1, "input: response texts",
@@ -235,7 +227,7 @@ ax.text(c2x + c2w / 2, 5.55,
         family="monospace")
 
 ax.text(c2x + c2w / 2, 5.1,
-        "NLI-finetuned · token-level matching",
+        "token-level semantic matching",
         fontsize=8, color=C["label"], ha="center", style="italic")
 
 # Detail
@@ -244,25 +236,20 @@ ax.text(c2x + c2w / 2, 4.55,
         "precision / recall / F1",
         fontsize=8.5, color=C["l32"], ha="center", family="monospace", zorder=5)
 ax.text(c2x + c2w / 2, 4.2,
-        "45 pairwise comparisons",
+        "190 pairwise comparisons",
         fontsize=8, color=C["l32"], ha="center", style="italic", zorder=5)
 
 # Output
 box(c2x + 0.6, 3.1, c2w - 1.2, 0.6, C["l32"],
     "mean F1 (0.0 - 1.0)", fontsize=9, alpha=0.6)
 
-ax.text(c2x + c2w / 2, 2.6,
-        "compute_pairwise_bertscore()",
-        fontsize=7.5, color=C["label"], ha="center", family="monospace",
-        style="italic")
-
-# --- Level 3.3: Plan-Output Alignment ---
+# --- Method 3: Plan-Response Alignment ---
 c3x, c3w = 11.8, 5.9
 section_bg(c3x, 2.3, c3w, 6.5, C["l33"])
 section_label(c3x + 0.3, 8.5, "METHOD 3", C["l33"], fontsize=13)
 
 box(c3x + 0.3, 7.4, c3w - 0.6, 0.85, C["l33"],
-    "Plan-Output Alignment",
+    "Plan-Response Alignment",
     sublabel="Does response implement the plan?", fontsize=11)
 
 ax.text(c3x + c3w / 2, 7.1,
@@ -270,7 +257,7 @@ ax.text(c3x + c3w / 2, 7.1,
         fontsize=7.5, color=C["l33"], ha="center", style="italic")
 
 box(c3x + 0.5, 6.1, c3w - 1.0, 0.75, C["l33"],
-    "LLM Judge", sublabel="Gemini Flash · T=0.0", fontsize=9.5, alpha=0.7)
+    "LLM Judge", sublabel="Gemini 3.1 Pro \u00b7 T=1.0", fontsize=9.5, alpha=0.7)
 
 # Ternary scoring
 ax.text(c3x + c3w / 2, 5.5,
@@ -294,17 +281,12 @@ ax.text(c3x + c3w / 2, 4.5,
 # Detail
 box(c3x + 0.3, 3.7, c3w - 0.6, 0.55, C["l33"], "", bold=False, alpha=0.2)
 ax.text(c3x + c3w / 2, 3.95,
-        "per-trial · per-strategy · raw judgments",
+        "per-trial \u00b7 per-strategy \u00b7 raw judgments",
         fontsize=8, color=C["l33"], ha="center", family="monospace", zorder=5)
 
 # Output
 box(c3x + 0.6, 3.0, c3w - 1.2, 0.5, C["l33"],
     "mean alignment (0.0 - 1.0)", fontsize=9, alpha=0.6)
-
-ax.text(c3x + c3w / 2, 2.55,
-        "compute_alignment() · alignment_judge.yaml",
-        fontsize=7, color=C["label"], ha="center", family="monospace",
-        style="italic")
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # BOTTOM: Output
@@ -313,16 +295,16 @@ ax.text(c3x + c3w / 2, 2.55,
 section_bg(0.3, 0.3, 17.4, 1.7, C["output"])
 section_label(0.6, 1.75, "OUTPUT", C["output"])
 
-# metrics.json centered between L3.1 and L3.2
+# metrics.json centered between Method 1 and Method 2
 metrics_cx = (c1x + c1w / 2 + c2x + c2w / 2) / 2
 file_box(metrics_cx - 1.4, 0.5, 2.8, 0.65, C["output"], "metrics.json", fontsize=9)
 
 ax.text(metrics_cx, 0.3,
-        "validity_rate · jaccard · bertscore_f1 · alignment_mean",
+        "validity_rate \u00b7 jaccard \u00b7 bertscore_f1 \u00b7 alignment_mean",
         fontsize=7, color=C["label"], ha="center", family="monospace",
         style="italic")
 
-# judgments.json under L3.3
+# judgments.json under Method 3
 judgments_cx = c3x + c3w / 2
 file_box(judgments_cx - 1.4, 0.5, 2.8, 0.65, C["output"], "judgments.json", fontsize=9)
 
@@ -331,12 +313,7 @@ ax.text(judgments_cx, 0.3,
         fontsize=7, color=C["label"], ha="center", family="monospace",
         style="italic")
 
-ax.text(9.0, 1.75,
-        "src/evaluation/metrics.py  ·  src/evaluation/experiment.py",
-        fontsize=7, color=C["label"], ha="center", family="monospace",
-        style="italic")
-
-# Light arrows from L3.1 and L3.2 output boxes down to metrics.json
+# Light arrows from Method 1 and Method 2 output boxes down to metrics.json
 arrow(c1x + c1w / 2, 3.1, metrics_cx, 1.2, lw=1.5, color="#B0B0B0")
 arrow(c2x + c2w / 2, 3.1, metrics_cx, 1.2, lw=1.5, color="#B0B0B0")
 

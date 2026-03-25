@@ -65,7 +65,7 @@ def main() -> None:
     ax1.set_xlabel("Temperature")
     ax1.set_ylabel("Mean Alignment (SD)")
     ax1.set_ylim(0.5, 1.05)
-    ax1.set_title("Plan-output alignment by temperature")
+    ax1.set_title("Plan-response alignment by temperature")
     ax1.legend(fontsize=7, loc="lower left")
 
     # Right: bar chart per model (collapsed)

@@ -141,7 +141,7 @@ def plot_metrics_by_slice(df: pd.DataFrame, output_dir: Path) -> None:
     """Line plots: Jaccard, BERTScore, Alignment by slice, one line per temp."""
     fig, axes = plt.subplots(1, 3, figsize=(15, 5))
     metrics = [("jaccard", "Jaccard"), ("bertscore_f1", "BERTScore F1"), ("alignment", "Alignment")]
-    temp_colors = {0.075: "#e76f51", 0.15: "#c44536"}
+    temp_colors = {0.075: "#2ca02c", 0.15: "#e8a830"}
 
     for ax, (col, label) in zip(axes, metrics):
         for temp in sorted(df["temperature"].unique()):

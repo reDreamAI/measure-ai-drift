@@ -7,6 +7,52 @@
 % Direct answer to the research question: how consistent are sovereign LLMs
 %   in a structured therapeutic protocol -- and what does that mean clinically?
 
+This thesis asked how consistent \gls{llm} therapeutic responses are
+across independent runs within a structured \gls{irt} protocol. Three
+evaluation methods were applied to ten models across 6{,}000 trials
+spanning five temperature conditions.
+
+The main findings are:
+
+\begin{enumerate}
+  \item \textbf{The \gls{eu}-sovereign flagship matches proprietary models
+    at recommended temperatures.} \modelname{Mistral Large~3} achieves
+    $J = 1.000$ at $T = 0.075$ and $T = 0.15$, equal to \modelname{GPT-5.4}
+    and \modelname{Sonnet~4.6}. The sovereignty tradeoff in therapeutic
+    stability is negligible when the model operates within its vendor-recommended
+    range.
+
+  \item \textbf{Instability is a decision-making problem, not an execution
+    problem.} Temperature reduces plan consistency (Jaccard) but does not
+    reduce plan-response alignment. Models select different strategies at
+    higher temperatures but implement whichever strategy they select equally
+    well.
+
+  \item \textbf{Greedy decoding is not always optimal.} Three models achieve
+    higher consistency at $T = 0.075$ than at $T = 0.0$. A small amount of
+    sampling variance can help a model settle on a consistent strategy.
+
+  \item \textbf{The three evaluation levels capture distinct information.}
+    Cross-method correlations are moderate at best ($\rho = 0.285$ to
+    $0.560$). BERTScore is insensitive to plan-level changes. No single
+    metric captures the full picture of therapeutic stability.
+
+  \item \textbf{Patient profile matters.} A significant vignette effect
+    ($p = 0.007$) means that stability evaluations based on aggregate
+    metrics alone may miss per-profile weaknesses.
+\end{enumerate}
+
+Regarding the two contributions stated in \autoref{sec:intro-objectives}:
+the three-level framework (Contribution~1) fulfilled its design goal by
+identifying that instability is concentrated at the strategy selection
+layer, a finding that neither BERTScore nor alignment alone could have
+revealed. The cross-model comparison (Contribution~2) demonstrates that
+the \gls{eu}-sovereign \modelname{Mistral Large~3} achieves stability
+comparable to proprietary models at its recommended operating temperature,
+supporting its viability for clinical deployment under sovereignty
+constraints.
+
+
 \section{Limitations}
 \label{sec:concl-limitations}
 % Scope: single protocol, single phase (IRT rescripting only)
@@ -20,6 +66,50 @@
 %   strategies may show different stability patterns
 % Computational stability does not equal clinical safety
 
+\paragraph{Scope.}
+The study evaluates a single phase (rescripting) of a single protocol
+(\gls{irt}). Stability in other \gls{irt} stages or other therapeutic
+protocols may differ. The rescripting phase was selected because it
+requires active strategy decisions, but this focus limits the
+generalisability of the absolute scores reported.
+
+\paragraph{Synthetic patients.}
+All patient interactions are simulated by an \gls{llm}. Synthetic patients
+follow scripted behavioural profiles and do not exhibit the unpredictable
+responses of real patients. The vignettes are designed to sample the
+difficulty range (\autoref{sec:meth-dialogue}), but six profiles cannot
+claim exhaustive coverage of clinical variability. A cooperative synthetic
+patient may underestimate the challenges a model faces with a real patient
+whose behaviour deviates from any template.
+
+\paragraph{Ethical considerations.}
+This study evaluates \gls{llm} stability using synthetic patients, not
+real clinical interactions. No human participants were involved. The
+results measure computational consistency and do not constitute evidence
+of clinical safety or efficacy. \gls{irt} targets nightmares rather than
+psychiatric diagnoses, which limits clinical risk relative to full
+psychotherapy, but any deployment to real patients would require clinical
+validation beyond what this framework provides.
+
+\paragraph{Judge validation.}
+The \gls{llm} judge (\modelname{Gemini 3.1 Pro}) has not been validated
+against human annotations. Method~3 results are a computational proxy for
+clinical fidelity assessment and should be interpreted accordingly. The
+planned Cohen's $\kappa$ validation remains outstanding.
+
+\paragraph{Taxonomy constraints.}
+The six-category strategy taxonomy constrains what can be measured. If
+models employ therapeutic strategies that fall outside these categories,
+that variation is invisible to Method~1. The taxonomy was developed through
+iterative refinement (\autoref{sec:meth-taxonomy}), but different category
+boundaries would produce different absolute consistency scores.
+
+\paragraph{Consistency is not quality.}
+A model that consistently selects an inappropriate strategy scores high on
+plan consistency. Stability is a necessary but not sufficient condition for
+clinical deployment.
+
+
 \section{Future Work}
 \label{sec:concl-future}
 % Full IRT protocol evaluation -- beyond the rescripting phase
@@ -29,3 +119,34 @@
 % Clinical validation: human therapist ratings as external ground truth
 % Replication with future model generations to track whether stability
 %   improves across release cycles
+
+Several directions follow from this work.
+
+\paragraph{Full protocol evaluation.}
+Extending the evaluation beyond the rescripting phase to all five \gls{irt}
+stages would test whether the stability patterns observed here hold when
+the therapist model faces different types of clinical decisions (listening,
+summarising, rehearsing).
+
+\paragraph{Other manualized protocols.}
+The three-level framework transfers to any protocol with identifiable
+strategy categories. \gls{cbt}, dialectical behaviour therapy, and
+motivational interviewing are natural candidates. Each would require a
+domain-specific taxonomy but could reuse the evaluation infrastructure.
+
+\paragraph{Longitudinal drift.}
+Model vendors update weights and serving infrastructure without notice.
+Repeating the evaluation across model versions would reveal whether
+stability improves, degrades, or fluctuates across release cycles.
+
+\paragraph{Multi-language evaluation.}
+reDreamAI targets German-speaking users. Evaluating therapeutic stability
+in German would test whether the patterns observed in English transfer
+across languages, or whether language-specific training data introduces
+different stability profiles.
+
+\paragraph{Clinical validation.}
+Human therapist ratings on the same ternary rubric would validate Method~3
+and provide an external ground truth for the computational framework.
+Comparing human and \gls{llm} judge scores would quantify the reliability
+of automated fidelity assessment.

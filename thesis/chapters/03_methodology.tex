@@ -75,12 +75,18 @@ of reDreamAI. The router's stage classification controls which system prompt
 the therapist receives, ensuring that responses are appropriate to the
 current protocol phase.
 
-Six patient vignettes cover the range of clinical presentation difficulty
+The vignette design is informed by anonymised session data from a prior
+reDreamAI efficacy study. Because data protection requirements prevent
+using real patient transcripts directly, synthetic patient profiles were
+created and validated against published clinical research on simulated
+patients.
+
+Six vignettes cover the range of clinical presentation difficulty
 expected in \gls{irt} deployment: \emph{anxious}, \emph{avoidant},
 \emph{cooperative}, \emph{resistant}, \emph{skeptic}, and \emph{trauma}.
 These profiles range from a cooperative patient who engages readily with
 rescripting instructions to a trauma patient whose nightmare content
-triggers intense emotional responses during the session. The vignette design
+triggers intense emotional responses during the session. The design
 draws on prior synthetic patient work. \textcite{Z22JYAMU} demonstrate that
 expert-defined behavioural principles produce clinically plausible simulated
 patients. \textcite{CQ94GEYA} provide cognitive conceptualisation diagrams
@@ -659,8 +665,13 @@ motivated by vendor documentation:
 
 \begin{itemize}
   \item $T = 0.0$ (greedy decoding): deterministic upper bound on stability.
-    Any remaining inconsistency reflects floating-point non-determinism or
-    infrastructure-level variation.
+    No reproducibility seed is set, as not all vendors support one.
+    Even where a seed is available, GPU parallelisation and dynamic
+    batching introduce floating-point non-determinism that makes
+    output-level reproducibility best effort at most
+    \parencite{HITR7PL4}. The twenty-trial repetition design captures
+    this variance directly, following \textcite{WA4QD3UE}, who use the
+    same 20-trial protocol at $T = 0.0$ to quantify \gls{llm} stability.
   \item $T = 0.15$: default temperature for Mistral models, taken from the
     HuggingFace generation configuration for \modelname{Mistral Small 3.2}.
     % TODO: verify Mistral Large 3 default via /models endpoint (currently

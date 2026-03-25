@@ -1,8 +1,11 @@
 sampling:
-  n_trials: 10
+  n_trials: 20
   temperatures:
     - 0.0
-    - 0.7
+    - 0.075
+    - 0.15
+    - 0.3
+    - 0.6
   max_tokens:
     plan: 256
     response: 1024

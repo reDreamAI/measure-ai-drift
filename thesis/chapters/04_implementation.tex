@@ -28,7 +28,7 @@ source code is available in the project repository.
 The pipeline follows an async-first design. Every \gls{llm} call is
 non-blocking, and trials within a condition run concurrently via
 \techil{asyncio.gather()}. This is a direct consequence of the factorial
-design: 360 trials per model would be prohibitive if executed sequentially.
+design: 600 trials per model would be prohibitive if executed sequentially.
 Parallel execution reduces wall-clock time from hours to minutes per model.
 
 \paragraph{Configuration.}
@@ -66,7 +66,7 @@ where it would silently corrupt Jaccard scores.
 %   cross-model comparison
 A single \techil{LLMProvider} class wraps an \techil{AsyncOpenAI} client
 and exposes one async method: \techil{generate(messages, **kwargs)},
-returning a tuple of response content and token usage. All six evaluation
+returning a tuple of response content and token usage. All ten evaluation
 targets, the patient agent, and the router use OpenRouter through this
 interface. The \modelname{Gemini} judge uses Google AI Studio through the
 same interface, since Google AI Studio exposes an OpenAI-compatible
@@ -160,7 +160,7 @@ The plan extraction logic handles several output formats that different
 models produce. The primary pattern matches a closed \techil{<plan>}
 tag. Fallback patterns handle unclosed tags, bare tag-style strategy
 names, and plain-text first-line declarations. This robustness is
-necessary because the six evaluation targets do not all follow the
+necessary because the ten evaluation targets do not all follow the
 structured output format identically, despite receiving the same system
 prompt.
 

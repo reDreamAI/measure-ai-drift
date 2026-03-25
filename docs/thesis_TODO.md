@@ -6,27 +6,51 @@ Thesis-specific tasks. For pipeline and source grounding, see [TODO.md](TODO.md)
 
 ## Blocking: before writing can finish
 
-- [ ] Run full experiment (2,160 trials). Blocks Ch5, Ch6, Ch7
+- [x] Run full experiment (6,000 trials: 10 models x 6 vignettes x 5 temps x 20 trials). Data in stats/data/experiment_runs.csv
 - [ ] Judge validation: spot-check ~50 trials, compute Cohen's kappa. Blocks 3.5.3 final wording and 5.4
 - [ ] Verify remaining therapy_temp sources (see [grounded/temperature_sources.md](grounded/temperature_sources.md)). Blocks 3.7
 
 ## Stats and figures (stats/)
 
-- [ ] Run `aggregate.py` on real experiment data (currently tested on smoke data only)
-- [ ] Run `descriptives.py` and `tests.py` on real data
-- [ ] Generate all five result figures (fig scripts exist, need real data)
-- [ ] Check alignment ceiling effect. If alignment stays at 1.0, downgrade Method 3 from comparative metric to validation check (affects 5.4 and 6.1)
+- [x] Run `aggregate.py`, `descriptives.py`, `tests.py` on real N=20 data
+- [x] Generate all result figures (fig scripts in stats/scripts/)
+- [ ] Check alignment ceiling effect. If alignment stays near 1.0, downgrade Method 3 from comparative metric to validation check (affects 5.4 and 6.1)
 - [ ] Review all figures before including in thesis
 
-## Conceptual diagrams (draw, not code)
+## Conceptual diagrams (still needed)
 
-These go into Ch1-3. Generated diagrams are in `thesis/figures/`.
+- [ ] Fig 1.1: IRT five-stage overview (stages, clinical goals, where rescripting sits)
+- [ ] Fig 1.2: Gap diagram (capability benchmarks vs. clinical reliability)
+- [x] Fig 3.1-3.3: all generated, in `thesis/figures/`
 
-- [ ] 1.1: IRT five-stage overview (stages, clinical goals, where rescripting sits)
-- [ ] 1.3: Gap diagram (capability benchmarks vs. clinical reliability)
-- [x] 3.1: Two-stack pipeline (`fig_3_1_pipeline`)
-- [x] 3.3: Frozen history and measurement design (`fig_3_3_eval_stack`)
-- [x] 3.5: Three-level evaluation framework (`fig_3_2_measurement`)
+## Figure placement plan
+
+### Ch1 Introduction (conceptual, not yet drawn)
+- [ ] **Fig 1.1** in 1.1: IRT five-stage overview (stages, clinical goals, where rescripting sits)
+- [ ] **Fig 1.2** in 1.3: Gap diagram (capability benchmarks vs. clinical reliability)
+
+### Ch3 Methodology (generated, in `thesis/figures/`)
+- [ ] **Fig 3.1** in 3.1 System Overview: two-stack pipeline (`fig_3_1_pipeline.pdf`)
+- [ ] **Fig 3.2** in 3.4 Evaluation Stack: frozen history fan-out to trials (`fig_3_3_eval_stack.pdf`)
+- [ ] **Fig 3.3** in 3.7 Evaluation Metrics: three-level measurement framework (`fig_3_2_measurement.pdf`)
+
+### Ch5 Results -- main text (5 figures, in `stats/visuals_experiment/`)
+- [ ] **Fig 5.1** in 5.2 Plan Consistency: Jaccard 3-panel by family (`fig_5_2_jaccard.pdf`) -- headline result
+- [ ] **Fig 5.2** in 5.2 Plan Consistency: modal-set agreement (`fig_5_2b_modal_agreement.pdf`) -- exact-match complement
+- [ ] **Fig 5.3** in 5.4 Alignment: plan-output alignment by temperature + per model (`fig_5_6_alignment.pdf`)
+- [ ] **Fig 5.4** in 5.5 Cross-Method: strategy vs. semantic consistency scatter (`fig_5_5_correlations.pdf`)
+- [ ] **Fig 5.5** in 5.6 Secondary: slice depth stability, Mistral Large 3 (`fig_slice_depth_metrics.pdf`)
+
+### Ch6 Discussion
+- [ ] **Fig 6.1** in 6.5 Framework Reflections: seed comparison (`fig_seed_comparison.pdf`) -- seed does not help
+
+### Appendix D: Supplementary Results
+- [ ] **Fig D.1**: strategy distribution by model (`fig_5_1_strategy_distribution.pdf`)
+- [ ] **Fig D.2**: BERTScore 3-panel by family (`fig_5_3_bertscore.pdf`) -- limited sensitivity, see analysis finding 6
+- [ ] **Fig D.3**: vignette heatmaps per temperature (`fig_5_4_vignette_slice.pdf`)
+- [ ] **Fig D.4**: per-temperature correlation panels (`fig_5_6_correlations_by_temp.pdf`)
+- [ ] **Fig D.5**: slice depth heatmap (`fig_slice_depth_heatmap.pdf`)
+- [ ] **Fig D.6**: plan validity rate (`fig_A1_validity.pdf`)
 
 ## Writing: chapters (priority order)
 

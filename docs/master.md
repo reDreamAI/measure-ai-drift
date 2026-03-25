@@ -136,7 +136,7 @@ Three levels, each measuring a distinct property:
 
 **Question:** Does the model's response implement its declared therapeutic plan?
 
-**Metric:** LLM judge (Gemini Flash, T=0.0) scores each declared strategy on a ternary scale:
+**Metric:** LLM judge (Gemini 3.1 Pro, T=1.0) scores each declared strategy on a ternary scale:
 - 0 = absent, 1 = partial, 2 = implemented
 
 **Inputs:** Both the extracted strategies AND the response text, scored against the strategy taxonomy definitions.
@@ -205,13 +205,20 @@ All other roles (patient, router, judge) and all other evaluation targets have *
 
 ### 6.2 Evaluation Targets (Therapist Role)
 
-These are the 6 models being compared on the three evaluation metrics, all running in non-thinking mode.
+These are the 10 models being compared on the three evaluation metrics, all running in non-thinking mode.
 
 **Primary subject:**
 
 | Model | Size | Provider | Notes |
 |-------|------|----------|-------|
 | **Mistral Large 3** | 675B MoE (41B active) | OpenRouter | EU-sovereign, Apache 2.0. The EU flagship this thesis evaluates |
+
+**EU-sovereign (Mistral family):**
+
+| Model | Size | Provider | Why this model |
+|-------|------|----------|----------------|
+| **Mistral Small 3.2** | 24B dense | OpenRouter | Smallest Mistral, baseline within the family |
+| **Mistral Small 4** | 119B MoE (6.5B active) | OpenRouter | Newest Mistral, fewest active parameters of any MoE in the set |
 
 **Open-weight comparators (by size class):**
 
@@ -220,27 +227,30 @@ These are the 6 models being compared on the three evaluation metrics, all runni
 | Small | **Qwen 3.5 27B** | 27B dense | OpenRouter | Benchmark leader at this size class. Hybrid-thinking, reasoning disabled for fair comparison |
 | Small | **OLMo 3.1 32B** | 32B dense | OpenRouter | Fully open (weights + training data + code). Best provenance story for a thesis |
 | Mid | **Llama 3.3 70B** | 70B dense | OpenRouter | Original model from the efficacy study. Provides continuity with prior work |
-| Large | **DeepSeek V3.2** | 671B MoE | OpenRouter | Similar MoE architecture to Mistral Large 3. Direct architectural comparator |
+| Large | **Qwen 3.5 122B** | 122B MoE (10B active) | OpenRouter | Mid-size MoE comparator |
+| Large | **Qwen 3.5 397B** | 397B MoE (17B active) | OpenRouter | Large MoE comparator, replaced DeepSeek V3.2 |
 
 **Proprietary ceiling:**
 
 | Model | Provider | Why this model |
 |-------|----------|----------------|
-| **GPT-5.4** | OpenRouter ($2.50/$15.00) | Strongest proprietary model without thinking overhead. Fair comparison with all other non-thinking targets |
+| **GPT-5.4** | OpenRouter ($2.50/$15.00) | Strongest proprietary model without thinking overhead |
+| **Claude Sonnet 4.6** | OpenRouter ($3/$15) | Character-trained for safety-aware interaction. Near-Opus capability at Sonnet pricing |
 
 **Selection rationale:**
-- Size-class ladder: 27-32B (small dense) -> 70B (mid dense) -> 671-675B MoE (large) -> frontier (proprietary ceiling)
-- Small class: Qwen 3.5 (benchmark leader) + OLMo 3.1 (full data provenance)
+- Size-class ladder: 24-32B (small dense) -> 70B (mid dense) -> 119-675B MoE (large) -> frontier (proprietary ceiling)
+- Three Mistral models test sovereignty across the family
+- Qwen 3.5 at three scales (27B, 122B, 397B) tests scaling within one family
+- OLMo 3.1: full data provenance
 - Llama 3.3 70B: continuity with the original efficacy study
-- DeepSeek V3.2: MoE architecture comparator for Mistral Large 3
-- GPT-5.4 as proprietary ceiling (released Mar 5, 2026)
+- Two proprietary ceilings: GPT-5.4 + Sonnet 4.6
 
 **Dropped (kept as commented options in models.yaml):**
-- Mistral Small 3.2 (redundant with Qwen/OLMo at small class)
+- DeepSeek V3.2 (internal temperature scaling makes cross-model comparison unreliable)
 - Mistral Medium 3.1 (closed weights, weak thesis story)
-- GLM-5 (third MoE adds little over DeepSeek V3.2)
+- GLM-5 (third MoE adds little)
 
-> All 6 evaluation targets are configured in `models.yaml`. See [thesis_models.md](thesis_models.md) for the full assignment table and [SOTA_LLMs.md](SOTA_LLMs.md) for current availability and pricing.
+> All 10 evaluation targets are configured in `models.yaml`. See [thesis_models.md](thesis_models.md) for the full assignment table and [SOTA_LLMs.md](SOTA_LLMs.md) for current availability and pricing.
 
 ### 6.3 Supporting Roles
 
@@ -250,18 +260,18 @@ These models are NOT being evaluated. They serve infrastructure roles:
 |------|--------------|---------|
 | **Patient** | Dolphin Mistral Venice 24B (OpenRouter, free) | Uncensored Mistral fine-tune for nightmare/trauma roleplay |
 | **Router** | Llama 3.3 70B (OpenRouter) | Classifies IRT stage during generation |
-| **Judge** | Gemini 3.1 Pro (Google AI Studio, T=0.0) | Scores plan-output alignment (Method 3). Thinking enabled. No family overlap with eval targets |
+| **Judge** | Gemini 3.1 Pro (Google AI Studio, T=1.0) | Scores plan-output alignment (Method 3). Thinking enabled. No family overlap with eval targets |
 
 ### 6.4 Providers
 
 | Provider | Base URL | Used for |
 |----------|----------|----------|
-| OpenRouter | `openrouter.ai/api/v1` | All 6 evaluation targets, Patient (Venice), Router |
+| OpenRouter | `openrouter.ai/api/v1` | All 10 evaluation targets, Patient (Venice), Router |
 | Google AI Studio | `generativelanguage.googleapis.com/v1beta/openai/` | Judge (Gemini 3.1 Pro) |
 
 ### 6.5 OpenRouter Constraints
 
-- Per experiment: 6 vignettes x 3 slices x 10 trials = 180 calls per temperature, 360 calls per model for both T=0.0 and T=0.7
+- Per model: 6 vignettes x 1 slice x 20 trials x 5 temperatures = 600 calls
 
 ---
 
@@ -272,13 +282,13 @@ These models are NOT being evaluated. They serve infrastructure roles:
 | Dimension | Values |
 |-----------|--------|
 | Vignettes | anxious, avoidant, cooperative, resistant, skeptic, trauma |
-| Slices | slice_1, slice_2, slice_3 |
-| Trials per condition | 10 |
-| Temperatures | T=0.0 (deterministic), T=0.7 (stochastic) |
-| Models | 6 evaluation targets (see §6.2) |
+| Slice | slice_2 (second rewriting-turn boundary) |
+| Trials per condition | 20 |
+| Temperatures | T=0.0, T=0.075, T=0.15, T=0.3, T=0.6 |
+| Models | 10 evaluation targets (see §6.2) |
 
-Total per model: 6 x 3 x 10 x 2 = **360 trials**
-Total across all models: 360 x 6 = **2,160 trials**
+Total per model: 6 x 1 x 20 x 5 = **600 trials**
+Total across all models: 600 x 10 = **6,000 trials**
 
 ### 7.2 Output Structure
 
@@ -288,7 +298,7 @@ experiments/runs/{timestamp}_{model}_{vignette}/
     config.yaml           # run parameters
     frozen_history.json    # input conversation
     trials/
-        trial_01.json ... trial_10.json  # plan + response + usage + strategies
+        trial_01.json ... trial_20.json  # plan + response + usage + strategies
     metrics.json           # Jaccard, BERTScore, validity, alignment
     judgments.json          # raw LLM judge outputs with reasoning
 ```
