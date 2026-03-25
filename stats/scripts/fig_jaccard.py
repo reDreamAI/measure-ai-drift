@@ -22,9 +22,18 @@ RANDOM_BASELINE = 0.2  # Expected Jaccard for random 2-of-6 picks
 from model_display import MODEL_COLORS, display_name, sort_models
 
 
-def plot_metric(ax, df, metric, title, ylabel):
+MODEL_GROUPS = {
+    "Mistral family": ["mistral_small32", "mistral_small4", "mistral_large"],
+    "Qwen family": ["qwen35_27b", "qwen35_122b", "qwen35_397b"],
+    "US models": ["olmo3_32b", "llama70b", "gpt54", "sonnet46"],
+}
+
+
+def plot_metric(ax, df, metric, title, ylabel, model_filter=None):
     """Plot lines for a metric by model across temperatures."""
     models = sort_models(list(df["model"].unique()))
+    if model_filter is not None:
+        models = [m for m in models if m in model_filter]
     temps = sorted(df["temperature"].unique())
 
     for model in models:
@@ -71,22 +80,33 @@ def main() -> None:
 
     df = pd.read_csv(args.input)
 
-    has_modal = df["modal_set_agreement"].notna().any() if "modal_set_agreement" in df.columns else False
-
-    if has_modal:
-        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
-        plot_metric(ax1, df, "jaccard_all", "Jaccard similarity", "Median Jaccard (IQR)")
-        plot_metric(ax2, df, "modal_set_agreement", "Modal-set agreement", "Agreement rate")
-    else:
-        fig, ax1 = plt.subplots(1, 1, figsize=(8, 5))
-        plot_metric(ax1, df, "jaccard_all", "Jaccard similarity by model and temperature", "Median Jaccard (IQR)")
-
-    fig.tight_layout()
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    # --- Figure 5.2: Jaccard split into 3 family panels ---
+    fig, axes = plt.subplots(1, 3, figsize=(18, 5), sharey=True)
+    for ax, (group_name, group_models) in zip(axes, MODEL_GROUPS.items()):
+        plot_metric(ax, df, "jaccard_all", group_name, "Median Jaccard (IQR)",
+                    model_filter=set(group_models))
+    # Only leftmost axis needs the y-label
+    axes[1].set_ylabel("")
+    axes[2].set_ylabel("")
+    fig.suptitle("Jaccard similarity by model and temperature", fontsize=13, y=1.02)
+    fig.tight_layout()
     fig.savefig(output_dir / "fig_5_2_jaccard.pdf", bbox_inches="tight")
     fig.savefig(output_dir / "fig_5_2_jaccard.png", bbox_inches="tight", dpi=150)
     print(f"Saved fig_5_2 to {output_dir}/")
     plt.close(fig)
+
+    # --- Figure 5.2b: Modal-set agreement (all models, single panel) ---
+    has_modal = df["modal_set_agreement"].notna().any() if "modal_set_agreement" in df.columns else False
+    if has_modal:
+        fig2, ax2 = plt.subplots(1, 1, figsize=(8, 5))
+        plot_metric(ax2, df, "modal_set_agreement", "Most common plan combination", "Agreement rate")
+        fig2.tight_layout()
+        fig2.savefig(output_dir / "fig_5_2b_modal_agreement.pdf", bbox_inches="tight")
+        fig2.savefig(output_dir / "fig_5_2b_modal_agreement.png", bbox_inches="tight", dpi=150)
+        print(f"Saved fig_5_2b to {output_dir}/")
+        plt.close(fig2)
 
 
 if __name__ == "__main__":

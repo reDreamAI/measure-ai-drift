@@ -1,6 +1,6 @@
 # Experiment Analysis
 
-> Key findings from 296 runs (10 models x 6 vignettes x 5 temperatures x 20 trials = 5,920 trials).
+> Key findings from 300 runs (10 models x 6 vignettes x 5 temperatures x 20 trials = 6,000 trials).
 > Data: `experiments/latest/`, aggregated in `stats/data/experiment_runs.csv`.
 > Generated 2026-03-24.
 
@@ -108,9 +108,11 @@ Models do not get worse at implementing strategies as temperature rises. They pi
 
 Significant vignette effect (p=0.007). Some patient profiles produce more consistent therapeutic responses than others. Worth investigating per-vignette patterns in the heatmaps.
 
-### 6. BERTScore confound
+### 6. BERTScore is insensitive to plan-level instability
 
-BERTScore correlates with Jaccard (rho=0.560) but measures a different dimension. IRT responses share formulaic structure, so high BERTScore may reflect protocol adherence rather than true semantic similarity. Interpret alongside Jaccard, not independently.
+BERTScore correlates with Jaccard (rho=0.560) but measures a different, shallower dimension. The slice depth analysis confirms this: across conversation depths, Jaccard varies visibly (deeper slices anchor strategy choice) while BERTScore stays flat. The model produces semantically similar therapeutic text regardless of which strategies it picks. Swapping "confrontation" for "cognitive reframe" changes the plan but not the response surface enough for BERTScore to detect it.
+
+This means BERTScore captures response *style* consistency, not decision *content* consistency. It serves as a sanity check (if BERTScore were low, the model would be generating erratic text) but does not distinguish between clinically different plans. The real signal for therapeutic stability lives in Jaccard (strategy decisions) and Alignment (plan-response coherence). Discuss this limitation in Ch6.
 
 ## Figures
 

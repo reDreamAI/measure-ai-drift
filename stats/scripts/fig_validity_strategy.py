@@ -77,7 +77,8 @@ def main() -> None:
     ax.set_xticklabels([display_name(m) for m in models], rotation=45, ha="right", fontsize=8)
     ax.set_ylabel("Strategy share (%)")
     ax.set_title("Strategy distribution by model")
-    ax.legend(bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=8)
+    handles, labels = ax.get_legend_handles_labels()
+    ax.legend(handles[::-1], labels[::-1], bbox_to_anchor=(1.02, 1), loc="upper left", fontsize=8)
 
     fig1.tight_layout()
     fig1.savefig(output_dir / "fig_5_1_strategy_distribution.pdf", bbox_inches="tight")

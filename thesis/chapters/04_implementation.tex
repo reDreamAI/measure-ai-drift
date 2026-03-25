@@ -114,7 +114,7 @@ The codebase is organised into five packages:
 % [Example] Output directory tree for one complete experiment run
 
 An \techil{ExperimentRun} object manages a single evaluation run: one
-model, one vignette, one slice, one temperature, ten trials. On
+model, one vignette, one temperature, twenty trials. On
 initialisation it creates a timestamped output directory and saves the
 configuration snapshot and frozen history.
 
@@ -122,7 +122,7 @@ Execution proceeds in three phases:
 
 \begin{enumerate}
   \item \textbf{Sampling.} A \techil{Sampler} wraps the
-    \techil{EvaluationStack} and runs ten independent trials. Each trial
+    \techil{EvaluationStack} and runs twenty independent trials. Each trial
     calls the therapist model once (fused mode), producing a
     \techil{<plan>} block and a therapeutic response. Trials run in
     parallel via \techil{asyncio.gather()} with built-in retry logic for
@@ -145,7 +145,7 @@ experiments/runs/{timestamp}_{model}_{vignette}/
     trials/
         trial_01.json        # plan + response + token usage
         ...
-        trial_10.json
+        trial_20.json
     metrics.json             # Jaccard, BERTScore, validity, alignment
     judgments.json            # raw judge outputs with reasoning
 \end{verbatim}

@@ -20,14 +20,13 @@ Thesis-specific tasks. For pipeline and source grounding, see [TODO.md](TODO.md)
 
 ## Conceptual diagrams (draw, not code)
 
-These go into Ch1-3. Draw before writing their sections.
+These go into Ch1-3. Generated diagrams are in `thesis/figures/`.
 
 - [ ] 1.1: IRT five-stage overview (stages, clinical goals, where rescripting sits)
 - [ ] 1.3: Gap diagram (capability benchmarks vs. clinical reliability)
-- [ ] 3.1: Two-stack pipeline (generation/evaluation isolation, data flow)
-- [ ] 3.2: Three-agent loop (patient, router, therapist cycle)
-- [ ] 3.3: Frozen history slicing (P/T turn sequence, three cut points)
-- [ ] 3.5: Three-level evaluation framework (central figure)
+- [x] 3.1: Two-stack pipeline (`fig_3_1_pipeline`)
+- [x] 3.3: Frozen history and measurement design (`fig_3_3_eval_stack`)
+- [x] 3.5: Three-level evaluation framework (`fig_3_2_measurement`)
 
 ## Writing: chapters (priority order)
 
@@ -36,14 +35,14 @@ These go into Ch1-3. Draw before writing their sections.
 - [x] **Ch2 Background** -- full draft. Needs: diagrams, ROUGE vs BERTScore example, 2.3 prior-work citations
 - [x] **Ch1 Introduction** -- full draft. Needs: two conceptual diagrams
 - [ ] **Ch5 Results** -- skeleton exists. Blocked on experiment data
-- [ ] **Ch6 Discussion** -- skeleton exists. Blocked on results
+- [ ] **Ch6 Discussion** -- skeleton exists. Blocked on results. Include: BERTScore limitation (insensitive to plan-level instability, see [analysis.md](analysis.md) finding 6)
 - [ ] **Ch7 Conclusion** -- not started. Blocked on discussion
 
 ## Writing: appendices
 
 - [ ] **A: Strategy Taxonomy** -- category definitions, examples, v1-v4 revision history. Material exists in citations.md and strategy_taxonomy_evolution.md
 - [ ] **B: Prompts** -- system prompt, judge rubric, vignette profiles. Extract from src/
-- [ ] **C: Architecture Diagrams** -- expanded pipeline diagram
+- [ ] **C: Architecture Diagrams** -- three-agent dialogue loop (patient, router, therapist message flow during frozen history generation), expanded pipeline diagram
 - [ ] **D: Supplementary Results** -- full per-condition tables. Blocked on experiment
 
 ## Source grounding (thesis-relevant subset)
@@ -60,6 +59,19 @@ These go into Ch1-3. Draw before writing their sections.
 - [x] **Liu and Tsai (2026)**: arXiv:2603.11082v1. Zotero `32QZTBPH`, added to references.bib
 - [ ] **Google Gemini 3 Developer Guide (2026)**: https://ai.google.dev/gemini-api/docs/text-generation. Add to Zotero as web source. Grounds the T=1.0 requirement for judge
 - [ ] **2.3 prior-work citations**: find specific citations for factual consistency, output diversity, and benchmark reproducibility studies
+
+### Temperature source verification (block Ch3 3.8 finalisation)
+
+- [x] **Mistral Small 3.2 T=0.15**: HF generation_config.json [VERIFIED]
+- [ ] **Mistral Large 3 T=0.15**: query Mistral `/models` endpoint for `mistral-large-2512` default. Currently assumed same as Small 3.2
+- [ ] **Mistral Small 4 T=0.15**: query Mistral `/models` endpoint for `mistral-small-2603` default. Currently assumed same family
+- [x] **Qwen 3.5 T=0.6**: HF generation_config.json [VERIFIED]
+- [x] **OLMo 3.1 T=0.6**: HF generation_config.json [VERIFIED]
+- [ ] **Llama 3.3 T=0.6**: HF repo is gated (401). Check with gated access or llama-recipes repo
+- [ ] **GPT-5.4 T=0.7**: OpenAI API docs returned 403. Check authenticated or test empirically
+- [x] **Sonnet 4.6 T=0.7**: Anthropic API docs [VERIFIED]
+- [ ] **OpenAI reintroduced temperature with GPT-5.2**: need source (blog post, API changelog, or docs). Grounds why GPT-5.4 non-thinking accepts temperature
+- [ ] **Anthropic character training**: source for Sonnet 4.6 safety-aware interaction claim (anthropic.com/research/claude-character)
 
 ## Polish (after all chapters drafted)
 

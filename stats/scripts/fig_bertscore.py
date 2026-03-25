@@ -18,22 +18,19 @@ import pandas as pd
 
 from model_display import MODEL_COLORS, display_name, sort_models
 
+MODEL_GROUPS = {
+    "Mistral family": ["mistral_small32", "mistral_small4", "mistral_large"],
+    "Qwen family": ["qwen35_27b", "qwen35_122b", "qwen35_397b"],
+    "US models": ["olmo3_32b", "llama70b", "gpt54", "sonnet46"],
+}
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--input", type=Path, default=None)
-    parser.add_argument("--tier", choices=["test", "experiment"], default="experiment")
-    args = parser.parse_args()
 
-    if args.input is None:
-        args.input = Path(f"stats/data/{args.tier}_runs.csv")
-    output_dir = Path(f"stats/visuals_{args.tier}")
-
-    df = pd.read_csv(args.input)
+def plot_bertscore(ax, df, title, model_filter=None):
+    """Plot BERTScore F1 lines for selected models across temperatures."""
     models = sort_models(list(df["model"].unique()))
+    if model_filter is not None:
+        models = [m for m in models if m in model_filter]
     temps = sorted(df["temperature"].unique())
-
-    fig, ax = plt.subplots(figsize=(8, 5))
 
     for model in models:
         mdf = df[df["model"] == model]
@@ -61,11 +58,30 @@ def main() -> None:
     ax.set_xlabel("Temperature")
     ax.set_ylabel("Mean BERTScore F1 (SD)")
     ax.set_ylim(0.5, 1.0)
-    ax.set_title("BERTScore F1 by model and temperature")
+    ax.set_title(title)
     ax.legend(fontsize=8)
 
-    fig.tight_layout()
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", type=Path, default=None)
+    parser.add_argument("--tier", choices=["test", "experiment"], default="experiment")
+    args = parser.parse_args()
+
+    if args.input is None:
+        args.input = Path(f"stats/data/{args.tier}_runs.csv")
+    output_dir = Path(f"stats/visuals_{args.tier}")
     output_dir.mkdir(parents=True, exist_ok=True)
+
+    df = pd.read_csv(args.input)
+
+    fig, axes = plt.subplots(1, 3, figsize=(18, 5), sharey=True)
+    for ax, (group_name, group_models) in zip(axes, MODEL_GROUPS.items()):
+        plot_bertscore(ax, df, group_name, model_filter=set(group_models))
+    axes[1].set_ylabel("")
+    axes[2].set_ylabel("")
+    fig.suptitle("BERTScore F1 by model and temperature", fontsize=13, y=1.02)
+    fig.tight_layout()
     fig.savefig(output_dir / "fig_5_3_bertscore.pdf", bbox_inches="tight")
     fig.savefig(output_dir / "fig_5_3_bertscore.png", bbox_inches="tight", dpi=150)
     print(f"Saved fig_5_3 to {output_dir}/")

@@ -10,14 +10,10 @@
 % Clinician shortage as the practical motivation for scalable AI-assisted delivery
 % [FIG] IRT five-stage overview -- stages, clinical goals, where rescripting sits
 
-Nightmare disorder affects roughly 5\% of adults and frequently co-occurs with PTSD and depression \autocite{34M7Y3F8}.
-\gls{irt} is the recommended treatment: a structured, five-stage protocol in which the patient records, rewrites, summarises, rehearses, and finalises a new version of a recurring nightmare \autocite{FGA5H3ZD}.
-Among these stages, \emph{rescripting} stands out because it is the only one that requires the therapist to make active strategy decisions.
-Rather than listening (recording) or repeating (rehearsal), the therapist must choose \emph{how} the nightmare narrative should change.
-This decision-heavy structure makes IRT uniquely suited for evaluating whether an AI therapist can deliver the same intervention consistently.
-
-A persistent shortage of trained therapists limits the availability of IRT \autocite{7M7NHYXT}.
-Scalable, AI-assisted delivery could extend access, but only if the AI agent makes reliable therapeutic decisions.
+Nightmare disorder affects an estimated 2--5\% of the general adult population \parencite{YPHMANIU,HM68TTLK,Q24CN9LD} and frequently co-occurs with PTSD and depression \autocite{34M7Y3F8}.
+The recommended treatment, \gls{irt}, is a structured five-stage protocol in which the patient rewrites a recurring nightmare under therapist guidance \autocite{FGA5H3ZD}.
+A persistent shortage of trained therapists limits the availability of IRT \autocite{7M7NHYXT}, making scalable, AI-assisted delivery a practical goal.
+However, the rewriting stage requires active strategy decisions from the therapist, and an AI agent that selects different strategies on repeated runs of the same case is clinically unreliable regardless of how capable any single response may be.
 
 % TODO: [FIG] IRT five-stage overview -- stages, clinical goals, where rescripting sits
 
@@ -74,11 +70,11 @@ Capability and stability are distinct properties, but current benchmarks conflat
 The closest existing work is BOLT \autocite{B97RI7GA}, which evaluates LLM therapist behaviour using 13 behavioural codes from motivational interviewing.
 BOLT measures whether a model applies appropriate therapeutic techniques (quality).
 This study measures a different property: whether a model applies the \emph{same} techniques across repeated runs (stability).
-BOLT evaluates single responses; this study evaluates the distribution of responses across ten independent trials per condition.
+BOLT evaluates single responses; this study evaluates the distribution of responses across twenty independent trials per condition.
 
 Other therapeutic AI evaluations are qualitative, post-hoc, or single-session \autocite{JX7N8VWS}.
 They cannot detect cross-run inconsistency because they do not present the same input multiple times.
-Systematic, reproducible \emph{in silico} trials offer a way to measure stability at scale without requiring human participants.
+Systematic, reproducible in silico trials offer a way to measure stability at scale without requiring human participants.
 
 % TODO: [FIG] Gap diagram -- what capability benchmarks measure vs. what clinical
 %   reliability requires; the unmeasured space this thesis addresses

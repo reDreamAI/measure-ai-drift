@@ -162,12 +162,7 @@ def plot_metrics_by_slice(df: pd.DataFrame, output_dir: Path) -> None:
         ax.set_xticks(sorted(df["slice"].unique()))
         ax.legend(fontsize=9)
 
-        if col == "jaccard":
-            ax.set_ylim(0.4, 1.05)
-        elif col == "bertscore_f1":
-            ax.set_ylim(0.6, 1.0)
-        else:
-            ax.set_ylim(0.5, 1.05)
+        ax.set_ylim(0.5, 1.0)
 
     fig.suptitle("Mistral Large 3: stability by conversation depth", fontsize=13, y=1.02)
     fig.tight_layout()

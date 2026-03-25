@@ -100,36 +100,35 @@ evaluation entry points.
 \section{Frozen History Design}
 \label{sec:meth-frozen}
 % Deterministic evaluation entry points: identical context for every trial
-% Conversations sliced at rewriting-turn boundaries: slice_1, slice_2, slice_3
+% Conversations sliced at rewriting-turn boundaries
 %   Why frozen? Any measured inconsistency is attributable solely to the
 %   model under evaluation -- not to upstream context differences
-% Three slice depths test whether stability changes as therapeutic context accumulates
-% Rationale: evaluate at different conversation depths within the rescripting phase
+% Slice depth pilot: 5 depths tested on Mistral Large 3 to select evaluation point
+%   Slice 1: introduction to rescripting, moderate variability
+%   Slice 2: lowest consistency -- strategy not yet anchored (conservative choice)
+%   Slices 3-5: strategy locks in, consistency rises to ceiling
+% Main experiment runs at slice 2 (mid-rescripting) -- conservative lower bound
 % [FIG] Slicing diagram -- P/T turn sequence with cut points; which turns are
 %   in-context vs. excluded per slice
 
-Frozen conversation histories serve as deterministic evaluation entry points.
-Each vignette's complete therapy session is sliced at rewriting-turn
-boundaries to produce three evaluation contexts of increasing depth:
-\techil{slice\_1} (after the first rewriting exchange),
-\techil{slice\_2} (after the second), and \techil{slice\_3} (after the
-third).
+Frozen conversation histories serve as deterministic evaluation entry
+points. Each vignette's complete therapy session is sliced at
+rewriting-turn boundaries, where each slice ends after a complete
+therapist-patient exchange. Every trial, across all models and
+temperatures, receives the identical frozen history as input. This design
+eliminates context variation as a confound: if two trials produce different
+therapeutic responses, the difference is attributable to the model's
+stochastic sampling, not to differences in the input conversation.
 
-Every trial, across all models and temperatures, receives the identical
-frozen history as input. This design eliminates context variation as a
-confound: if two trials produce different therapeutic responses, the
-difference is attributable to the model's stochastic sampling, not to
-differences in the input conversation.
+A preliminary analysis tested \modelname{Mistral Large~3} at five slice
+depths across all six vignettes at $T = 0.075$ and $T = 0.15$. Jaccard
+consistency was lowest at the second slice (mean $J = 0.77$ at $T = 0.075$)
+and rose to near-ceiling values from the third slice onward ($J > 0.93$).
+The main experiment evaluates at the second rewriting-turn boundary
+(\techil{slice\_2}), making the measured stability a conservative estimate.
+Slice depth effects are reported in \autoref{sec:res-secondary}.
 
-Three slice depths test whether stability changes as therapeutic context
-accumulates. Early in the rescripting phase (\techil{slice\_1}), the model
-has limited anchoring context and may show more variable strategy selection.
-Later slices provide additional conversational grounding that could either
-stabilise or further constrain the model's decisions. Slicing at turn
-boundaries rather than arbitrary token counts preserves conversational
-coherence: each slice ends after a complete therapist-patient exchange.
-
-% [FIG] Slicing diagram -- P/T turn sequence with three cut points
+% [FIG] Slicing diagram -- P/T turn sequence with slice 2 marked
 
 
 \section{Evaluation Stack}
@@ -627,40 +626,70 @@ cannot be disabled).
 
 \section{Experimental Conditions}
 \label{sec:meth-conditions}
-% Full factorial: 6 vignettes x 3 slices x 20 trials x T in {0.0, 0.7} x N models
-% T=0.0: deterministic baseline -- theoretical upper bound on stability
-%   (greedy decoding)
-% T=0.7: stochastic condition -- realistic clinical deployment range
-%   (mechanistic grounding established in 2.3)
+% Full factorial: 6 vignettes x 5 temperatures x 20 trials x 10 models
+% Temperature sweep: 0.0, 0.075, 0.15, 0.3, 0.6
+%   0.0: deterministic baseline (greedy decoding)
+%   0.15: Mistral vendor default
+%   0.6: Qwen/Llama/OLMo vendor default, close to GPT/Sonnet 0.7
+%   0.075: added post-hoc when Mistral peaked between 0.0 and 0.15
 % [FIG] Condition matrix -- factorial design as a grid; total run count labelled
 
 The experiment follows a full factorial design:
 
 \begin{table}[t]
   \centering
-  \caption{Experimental conditions. Total: $6 \times 3 \times 20 \times 2 = 720$ trials per model, 4{,}320 across all models.}
+  \caption{Experimental conditions. Total: $6 \times 5 \times 20 = 600$ trials per model, 6{,}000 across all ten models.}
   \label{tab:conditions}
   \begin{tabular}{ll}
     \toprule
     Dimension & Values \\
     \midrule
     Vignettes    & anxious, avoidant, cooperative, resistant, skeptic, trauma \\
-    Slices       & \techil{slice\_1}, \techil{slice\_2}, \techil{slice\_3} \\
     Trials       & 20 per condition \\
-    Temperatures & $T = 0.0$ (deterministic), $T = 0.7$ (stochastic) \\
-    Models       & 6 evaluation targets (\autoref{tab:models}) \\
+    Temperatures & $T \in \{0.0,\; 0.075,\; 0.15,\; 0.3,\; 0.6\}$ \\
+    Models       & 10 evaluation targets (\autoref{tab:models}) \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-The two temperature conditions serve complementary roles. $T = 0.0$ provides
-a deterministic upper bound on stability: greedy decoding eliminates
-sampling variance, so any remaining inconsistency reflects the model's
-sensitivity to floating-point non-determinism or infrastructure-level
-variation. $T = 0.7$ represents realistic clinical deployment, where some
-response variation is expected. The gap between the two conditions
-quantifies the \emph{stochastic cost}: how much consistency a model
-sacrifices by operating at a clinically realistic temperature.
+Rather than testing only two temperature conditions, the experiment uses a
+five-point temperature sweep that spans from deterministic decoding to the
+vendor-recommended defaults. The scale is anchored at three points
+motivated by vendor documentation:
+
+\begin{itemize}
+  \item $T = 0.0$ (greedy decoding): deterministic upper bound on stability.
+    Any remaining inconsistency reflects floating-point non-determinism or
+    infrastructure-level variation.
+  \item $T = 0.15$: default temperature for Mistral models, taken from the
+    HuggingFace generation configuration for \modelname{Mistral Small 3.2}.
+    % TODO: verify Mistral Large 3 default via /models endpoint (currently
+    %   verified for Small 3.2 only, see temperature_sources.md)
+  \item $T = 0.6$: default temperature for \modelname{Qwen 3.5} and
+    \modelname{OLMo~3.1}, also close to the standard Llama chat range
+    (0.6--0.7) and the proprietary defaults (\modelname{GPT-5.4} and
+    \modelname{Sonnet~4.6} default to $T = 0.7$).
+    % Sources: Qwen 3.5 generation_config.json [VERIFIED],
+    %   OLMo 3.1 generation_config.json [VERIFIED],
+    %   Llama 3.3 -- gated HF repo, lower bound of commonly cited range
+    %   [NEEDS VERIFICATION, see temperature_sources.md]
+    %   GPT-5.4 -- OpenAI API docs returned 403
+    %   [NEEDS VERIFICATION, see temperature_sources.md]
+    %   Sonnet 4.6 -- Anthropic API docs, default 1.0, 0.7 as midpoint
+    %   [VERIFIED, see temperature_sources.md]
+\end{itemize}
+
+The intermediate points $T = 0.075$ and $T = 0.3$ fill the gap between
+Mistral's low default and the Qwen/Llama range. $T = 0.075$ was added
+after an initial four-point run revealed that several models peak in
+consistency between $T = 0.0$ and $T = 0.15$, suggesting that a small
+amount of sampling variance can be beneficial (discussed in
+\autoref{sec:res-plan-consistency}).
+
+This five-point sweep replaces a conventional binary comparison
+($T = 0.0$ \vs a single stochastic point). It reveals the full degradation
+curve rather than a single gap, and allows each model to be evaluated at
+and around its vendor-recommended operating temperature.
 
 % [FIG] Condition matrix -- factorial design as a grid
 
@@ -668,38 +697,42 @@ sacrifices by operating at a clinically realistic temperature.
 \section{Statistical Analysis}
 \label{sec:meth-stats}
 % Descriptive statistics: medians/IQR for Jaccard (ordinal), means/SD for
-%   BERTScore and alignment, confidence intervals across 45 trial pairs
-% Bootstrap 95\% confidence intervals for model comparisons
+%   BERTScore and alignment, confidence intervals across 190 trial pairs
 % Spearman rank correlations for cross-method analysis (\autoref{sec:res-cross})
+%   and per-model temperature effects
 %   Why Spearman: rank-based, robust to non-normal distributions from
 %   bounded similarity scores
+% Kruskal-Wallis for model and vignette group differences
 % No fixed threshold for ``stable enough.'' Results are interpreted comparatively
-%   (model vs model, T=0.0 vs T=0.7) rather than against an absolute cutoff.
+%   (model vs model, across temperature sweep) rather than against an absolute cutoff.
 %   Clinical significance thresholds for LLM stability do not yet exist.
 
 The analysis is primarily descriptive. For each model and temperature
 condition, central tendency and dispersion are reported for all three
-evaluation metrics, aggregated at \techil{slice\_2} (mid-rescripting).
+evaluation metrics, aggregated across vignettes.
 Jaccard scores are ordinal (discrete values from a small set), so they are
 summarised with medians and interquartile ranges. BERTScore F1 and alignment
 scores are reported with means and standard deviations.
 
-Bootstrap 95\% confidence intervals quantify uncertainty in model
-comparisons. Bootstrapping is appropriate because the underlying
-distributions of Jaccard (discrete, bounded) and BERTScore (bounded,
-potentially non-normal) do not satisfy parametric assumptions.
-
-Spearman rank correlations assess the relationship between the three
-evaluation methods. If Method~1 and Method~2 correlate strongly, plan
-consistency predicts response similarity. If they diverge, the clinical
+Spearman rank correlations serve two purposes. First, per-model
+correlations between Jaccard and temperature quantify the temperature
+sensitivity of each model across the five-point sweep. Second,
+cross-method correlations (Method~1 \vs Method~2, Method~1 \vs Method~3,
+Method~2 \vs Method~3) assess whether the three evaluation layers capture
+redundant or independent information. If they diverge, the clinical
 implications differ: high plan consistency with low response similarity
 indicates stable strategy selections but variable execution, while the
-reverse indicates different strategies producing similar surface outputs. Spearman rather
-than Pearson is used because Jaccard scores are ordinal and BERTScore
-distributions may be non-normal.
+reverse indicates different strategies producing similar surface outputs.
+Spearman rather than Pearson is used because Jaccard scores are ordinal
+and BERTScore distributions may be non-normal.
+
+Kruskal-Wallis tests assess whether models and vignettes differ
+significantly on each metric. These are exploratory rather than
+confirmatory: the study is designed to describe stability patterns, not to
+test a preregistered hypothesis.
 
 No fixed threshold defines ``stable enough.'' Clinical significance
 thresholds for \gls{llm} stability do not yet exist in the literature.
-Results are interpreted comparatively: model against model, $T = 0.0$
-against $T = 0.7$. The random Jaccard baseline (expected value for random
+Results are interpreted comparatively: model against model, across the
+temperature sweep. The random Jaccard baseline (expected value for random
 2-of-6 selections, approximately 0.2) provides a lower reference point.

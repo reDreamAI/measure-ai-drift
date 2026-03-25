@@ -3,9 +3,9 @@
 # Internal name -> display name for figures and tables
 MODEL_NAMES = {
     # Mistral EU-sovereign
-    "mistral_small32": "Mistral Small 3.2 (24B)",
-    "mistral_small4": "Mistral Small 4 (119B)",
-    "mistral_large": "Mistral Large 3 (675B)",
+    "mistral_small32": "Mistral Small 3.2",
+    "mistral_small4": "Mistral Small 4",
+    "mistral_large": "Mistral Large 3",
     # Qwen family
     "qwen35_27b": "Qwen 3.5 27B",
     "qwen35_122b": "Qwen 3.5 122B",
@@ -41,7 +41,7 @@ MODEL_COLORS = {
     "mistral_small4": "#e76f51",     # reddish orange (119B, primary subject)
     "mistral_large": "#c44536",      # dark orange-red (675B, largest)
     # Qwen family (violet to purple, lighter=smaller)
-    "qwen35_27b": "#c4b5e0",        # light violet (27B, smallest)
+    "qwen35_27b": "#b89dd6",        # light violet-pink (27B, smallest)
     "qwen35_122b": "#8e6bbf",       # medium purple (122B)
     "qwen35_397b": "#5a2d82",       # dark purple (397B, largest)
     # Dense comparators
