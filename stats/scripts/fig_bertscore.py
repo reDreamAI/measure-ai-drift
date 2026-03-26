@@ -70,7 +70,7 @@ def main() -> None:
 
     if args.input is None:
         args.input = Path(f"stats/data/{args.tier}_runs.csv")
-    output_dir = Path(f"stats/visuals_{args.tier}")
+    output_dir = Path(f"thesis/figures")
     output_dir.mkdir(parents=True, exist_ok=True)
 
     df = pd.read_csv(args.input)

@@ -28,7 +28,7 @@ def main() -> None:
 
     if args.input is None:
         args.input = Path(f"stats/data/{args.tier}_runs.csv")
-    output_dir = Path(f"stats/visuals_{args.tier}")
+    output_dir = Path(f"thesis/figures")
 
     df = pd.read_csv(args.input).dropna(subset=["jaccard_all", "bertscore_f1"])
 

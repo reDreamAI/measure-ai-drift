@@ -17,7 +17,7 @@ Jaccard--Alignment). Had any two methods been strongly correlated, one
 would be redundant. Instead, each method reveals information that the
 others miss.
 
-The most informative finding is the dissociation between plan consistency
+The most informative finding is the separation between plan consistency
 and alignment. Temperature increases reduce Jaccard (models select
 different strategies) but do not reduce alignment (models implement
 whichever strategy they select equally well). This pattern localises the
@@ -118,18 +118,14 @@ determined from these results alone.
 
 The five-point temperature sweep reveals that the relationship between
 temperature and stability is not monotonic for all models. Three models
-achieve strictly higher Jaccard at $T = 0.075$ than at $T = 0.0$, meaning
-greedy decoding is actively counterproductive for them.
-
-Three models achieve their peak Jaccard at $T = 0.075$ rather than
-$T = 0.0$: \modelname{Mistral~Small~4} ($0.722 \to 1.000$),
+achieve their peak Jaccard at $T = 0.075$ rather than $T = 0.0$, meaning
+greedy decoding is actively counterproductive for them: \modelname{Mistral~Small~4} ($0.722 \to 1.000$),
 \modelname{Mistral~Large~3} ($0.933 \to 1.000$), and
-\modelname{Llama~3.3~70B} ($0.756 \to 0.881$). This finding has a
-practical implication: clinicians or engineers deploying these models
-should not default to $T = 0.0$ for maximum stability. A small amount of
-sampling variance appears to help the model resolve between competing
-strategy candidates, producing more consistent selections than pure
-greedy decoding.
+\modelname{Llama~3.3~70B} ($0.756 \to 0.881$). For these models, defaulting to $T = 0.0$ for maximum stability may be
+counterproductive. This is consistent with Mistral's optimisation for low
+non-zero temperatures: the vendor default sits at $T = 0.15$, and the
+results suggest that stability-sensitive tasks are best served in the
+range between zero and that default.
 
 The pooled Spearman correlation ($\rho = -0.228$, $p < 0.001$,
 \autoref{tab:temp-spearman}) confirms that higher temperature generally
@@ -175,7 +171,7 @@ consistency breaks down. A model that appears stable on average may be
 unreliable for the specific patient profiles that need the most careful
 treatment.
 
-Full per-vignette analysis is provided in Appendix~D.
+Full per-vignette analysis is provided in \autoref{app:results}.
 
 % TODO: reference Fig D.3 (vignette heatmaps) when appendix written
 
@@ -197,53 +193,37 @@ Full per-vignette analysis is provided in Appendix~D.
 %   does not substitute clinical validation.
 
 \paragraph{Strengths.}
-The framework's hierarchical structure proved useful in practice. By
-measuring stability at three layers, the analysis could identify that
-instability is concentrated at the decision-making level (variable
-strategy selection) rather than the execution level (unfaithful
-implementation). A single-metric evaluation using only BERTScore, for
-instance, would have missed the plan-level instability entirely, as
-BERTScore was insensitive to strategy changes
-(\autoref{sec:res-similarity}).
-
-The frozen history design ensures strict reproducibility: every trial
-receives identical input, and any observed variance is attributable to the
-model under test. The 20-trial repetition provides statistical coverage of
-the output distribution rather than relying on a single evaluation
-\parencite{WA4QD3UE}.
+Measuring at three layers revealed that strategy selection varies while
+execution stays faithful. BERTScore alone would have missed this, since it
+captures therapeutic tone but not the underlying strategy choices
+(\autoref{sec:res-similarity}). Frozen histories and 20-trial repetition
+\parencite{WA4QD3UE} ensure that observed variance comes from the model,
+not from differences in input or sample size.
 
 \paragraph{Taxonomy sensitivity.}
-The measured consistency scores are sensitive to taxonomy design. A coarser
-taxonomy (fewer, broader categories) inflates Jaccard scores because more
-strategy selections fall into the same category. A finer taxonomy deflates
-them. The six-category taxonomy used here (\autoref{tab:taxonomy})
-represents a balance between clinical granularity and discriminative power,
-developed through four iterations that resolved a severe distribution skew
-(\autoref{sec:meth-taxonomy}). Different taxonomy choices would produce
-different absolute Jaccard scores. The \emph{relative} ordering of models
-is more robust to taxonomy changes than the absolute values, because all
-models are evaluated against the same category set.
+Consistency scores depend on how strategies are categorised. Broader
+categories inflate Jaccard (more selections land in the same bin), finer
+categories deflate it. The six-category taxonomy (\autoref{tab:taxonomy})
+balances clinical detail with the ability to tell strategies apart, but
+different category boundaries would shift the absolute numbers. The
+relative ordering of models is more stable, since all are evaluated
+against the same set.
 
 \paragraph{Declared intent, not cognition.}
-The \techil{<plan>} block is framed as declared intent rather than a
-window into model cognition (\autoref{sec:meth-plan}). This framing has
-a limitation: it cannot distinguish between a model that genuinely
-decides on a strategy and then implements it, and a model that generates
-a plausible-sounding plan after having already committed to a response
-direction. The high alignment scores observed across most models are
-consistent with either interpretation. What the plan \emph{can} claim is
-that strategy declarations vary across runs, and this variation predicts
-variable therapeutic behaviour regardless of the underlying mechanism.
+The plan block captures what the model declares, not what it internally
+computes (\autoref{sec:meth-plan}). It cannot tell apart a model that
+picks a strategy and then writes the response from one that writes a
+response and then picks a matching label. The high alignment scores fit
+either reading. What matters here is that declarations vary across runs,
+and that variation predicts variable therapeutic behaviour regardless of
+the underlying process.
 
 \paragraph{Generalisability.}
-The three-level framework is not specific to \gls{irt}. Any manualized
-therapeutic protocol with identifiable strategy categories could be
-evaluated using the same structure: extract declared strategies (Method~1),
-compare response texts (Method~2), and verify plan-response alignment
-(Method~3). Candidate protocols include \gls{cbt} (with its established
-technique taxonomy), dialectical behaviour therapy, and motivational
-interviewing. The framework would require a new strategy taxonomy for each
-protocol, but the evaluation infrastructure and metrics transfer directly.
+The framework is not specific to \gls{irt}. Other structured therapy
+protocols where the therapist chooses from a defined set of techniques
+could be evaluated the same way. \gls{cbt} and motivational interviewing
+are likely candidates. Each would need its own strategy taxonomy, but the
+evaluation setup and metrics carry over.
 
 \paragraph{Ethical scope.}
 This framework measures whether a model produces \emph{consistent}
@@ -258,8 +238,21 @@ evaluation remains necessary before any deployment to real patients.
 \paragraph{Methodological constraints.}
 No reproducibility seed was set, as not all vendors support one. Even
 where seeds are available, they provide best-effort determinism at most
-\parencite{HITR7PL4}. The trial repetition design captures stochastic
-variance directly.
+\parencite{HITR7PL4}. A supplementary seed experiment on
+\modelname{Mistral Large~3} confirms this: setting a fixed seed
+(\techil{seed=42}) does not improve consistency compared to unseeded
+runs (\autoref{fig:seed-comparison}). The trial repetition design
+captures stochastic variance directly.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_seed_comparison.pdf}
+  \caption{Seed comparison for \modelname{Mistral Large~3}. Setting a
+    fixed seed (\techil{seed=42}) does not improve Jaccard, BERTScore,
+    or alignment compared to unseeded runs. Error bars show $\pm 1$ SD
+    across vignettes. Differences are within noise.}
+  \label{fig:seed-comparison}
+\end{figure}
 
 The experiment evaluates at a single conversation depth
 (\techil{slice\_2}), chosen as a conservative estimate based on the

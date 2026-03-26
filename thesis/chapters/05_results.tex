@@ -2,12 +2,12 @@
 \label{chap:results}
 
 % All main results reported at slice_2 (mid-rescripting), aggregated across
-% vignettes. Full per-condition tables in Appendix D.
+% vignettes. Full per-condition tables in \autoref{app:results}.
 
 All results are reported at the second rewriting-turn boundary
 (\techil{slice\_2}), aggregated across six vignettes. Each data point
 represents the mean of twenty independent trials. Full per-condition
-tables appear in Appendix~D.
+tables appear in \autoref{app:results}.
 
 \section{Plan Validity and Strategy Distribution}
 \label{sec:res-validity}
@@ -43,7 +43,7 @@ model that draws from a wider repertoire has more room to vary.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\textwidth]{../stats/visuals_experiment/fig_5_1_strategy_distribution.pdf}
+  \includegraphics[width=\textwidth]{figures/fig_5_1_strategy_distribution.pdf}
   \caption{Strategy distribution by model, pooled across temperatures and
     vignettes. Each bar shows the share of trials selecting each taxonomy
     category. Models with narrower distributions have less room to vary.}
@@ -63,12 +63,27 @@ by model and temperature, grouped by model family.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\textwidth]{../stats/visuals_experiment/fig_5_2_jaccard.pdf}
+  \includegraphics[width=\textwidth]{figures/fig_5_2_jaccard.pdf}
   \caption{Mean Jaccard similarity by model and temperature, grouped by
     family. Shaded bands show $\pm 1$ SD across vignettes. The dashed
     line marks the random baseline ($J \approx 0.2$). Higher is more
     consistent.}
   \label{fig:jaccard}
+\end{figure}
+
+\autoref{fig:modal} complements the Jaccard measure with modal-set
+agreement: the proportion of trials that select the most common strategy
+combination. Where Jaccard measures average pairwise overlap, modal
+agreement measures how often the plurality strategy dominates.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=0.85\textwidth]{figures/fig_5_2b_modal_agreement.pdf}
+  \caption{Modal-set agreement by model and temperature. The agreement
+    rate is the proportion of trials selecting the most common strategy
+    combination per condition. Models with agreement near 1.0 select the
+    same strategy pair on nearly every trial.}
+  \label{fig:modal}
 \end{figure}
 
 \paragraph{Proprietary models are temperature-immune.}
@@ -154,7 +169,7 @@ BERTScore were low, the model would be generating erratic text regardless
 of strategy. The substantive signal for therapeutic stability comes from
 Jaccard and alignment.
 
-Full BERTScore results by model and temperature appear in Appendix~D.
+Full BERTScore results by model and temperature appear in \autoref{app:results}.
 
 % TODO: reference Fig D.2 (bertscore 3-panel) when appendix written
 
@@ -173,7 +188,7 @@ strategies it declared in its plan.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\textwidth]{../stats/visuals_experiment/fig_5_6_alignment.pdf}
+  \includegraphics[width=\textwidth]{figures/fig_5_6_alignment.pdf}
   \caption{Plan-response alignment by temperature (left) and overall by
     model (right). Error bars show $\pm 1$ SD. Most models implement their
     declared strategies consistently regardless of temperature.}
@@ -187,7 +202,7 @@ at implementing their declared strategies as temperature rises. They
 select \emph{different} strategies more often (lower Jaccard) but
 implement whichever strategies they select equally well (stable alignment).
 
-This dissociation has a clinical implication: temperature-induced
+This separation has a clinical implication: temperature-induced
 instability occurs at the decision-making level, not at the execution
 level. A model at high temperature does not produce incoherent responses.
 It produces coherent responses to a different therapeutic plan.
@@ -234,7 +249,7 @@ strategy and semantic consistency.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=0.7\textwidth]{../stats/visuals_experiment/fig_5_5_correlations.pdf}
+  \includegraphics[width=0.7\textwidth]{figures/fig_5_5_correlations.pdf}
   \caption{Strategy consistency (median Jaccard) versus semantic
     consistency (mean BERTScore F1) per model, pooled across temperatures.
     The proprietary models cluster in the upper-right corner.
@@ -274,7 +289,7 @@ the same strategies, its response wording varies considerably.
 Kruskal-Wallis tests detect a significant vignette effect on Jaccard
 ($p = 0.007$) and BERTScore ($p = 0.015$). Some patient profiles produce
 more consistent therapeutic responses than others across models. Full
-per-vignette heatmaps appear in Appendix~D.
+per-vignette heatmaps appear in \autoref{app:results}.
 
 % TODO: reference Fig D.3 (vignette heatmaps) when appendix written
 
@@ -286,7 +301,7 @@ and $T = 0.15$. \autoref{fig:slice-depth} shows the results.
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\textwidth]{../stats/visuals_experiment/fig_slice_depth_metrics.pdf}
+  \includegraphics[width=\textwidth]{figures/fig_slice_depth_metrics.pdf}
   \caption{Stability by conversation depth for \modelname{Mistral~Large~3}.
     Jaccard is lowest at slice~2 and rises to near-ceiling values from
     slice~3 onward. BERTScore and alignment remain flat across depths.}

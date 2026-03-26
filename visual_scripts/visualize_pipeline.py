@@ -325,8 +325,8 @@ ax.text(9.0, 10.75, "Experiment Pipeline",
         fontsize=16, color=C["text"], ha="center", fontweight="bold", zorder=10)
 
 plt.tight_layout(pad=0.5)
-plt.savefig("visualizations/pipeline_data_flow.png", dpi=200, bbox_inches="tight",
+plt.savefig("thesis/figures/pipeline_data_flow.png", dpi=200, bbox_inches="tight",
             facecolor=C["bg"], edgecolor="none")
-plt.savefig("visualizations/pipeline_data_flow.svg", bbox_inches="tight",
+plt.savefig("thesis/figures/pipeline_data_flow.svg", bbox_inches="tight",
             facecolor=C["bg"], edgecolor="none")
-print("Saved visualizations/pipeline_data_flow.png + .svg")
+print("Saved thesis/figures/pipeline_data_flow.png + .svg")

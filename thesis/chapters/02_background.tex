@@ -138,11 +138,13 @@ from a single review.
 stage confusion, and persona inconsistency. These are well-documented
 concerns for clinical AI but fall outside the scope of this study. The
 present work focuses on a narrower problem: the probabilistic nature of
-\gls{llm} outputs creates drift even in identical therapeutic contexts. When
-the same patient presents the same nightmare, stochastic sampling can produce
-different strategy selections, different therapeutic responses, and
-mismatches between declared and executed strategies. Each of these failure modes corresponds to a distinct layer of the
-generation process and requires a targeted evaluation method. Variable
+\gls{llm} outputs means that identical therapeutic contexts can produce
+different outputs on each run. When the same patient presents the same
+nightmare, stochastic sampling can lead to different strategy selections,
+different therapeutic responses, and mismatches between declared and
+executed strategies.
+
+Each of these failure modes requires a different type of measurement. Variable
 strategy selection maps to plan-level measurement (\autoref{sec:meth-m1}),
 variable response content to semantic comparison (\autoref{sec:meth-m2}),
 and plan-response mismatch to alignment verification
@@ -205,7 +207,7 @@ token is conditioned on all preceding tokens, so a single divergent token
 early in a response can cascade into a completely different therapeutic
 strategy. A model that selects ``confront'' rather than ``imagine'' at one
 token position may generate an entirely different rescripting approach in the
-subsequent response. This \emph{autoregressive cascading} means that the
+subsequent response. Because of this cascading effect, the
 clinical impact of stochastic sampling is not proportional to the per-token
 entropy but can amplify through the response.
 

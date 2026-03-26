@@ -319,8 +319,8 @@ arrow(c2x + c2w / 2, 3.1, metrics_cx, 1.2, lw=1.5, color="#B0B0B0")
 
 # ── Save ─────────────────────────────────────────────────────────────────────
 plt.tight_layout(pad=0.5)
-plt.savefig("visualizations/evaluation_methods.png", dpi=200, bbox_inches="tight",
+plt.savefig("thesis/figures/evaluation_methods.png", dpi=200, bbox_inches="tight",
             facecolor=C["bg"], edgecolor="none")
-plt.savefig("visualizations/evaluation_methods.svg", bbox_inches="tight",
+plt.savefig("thesis/figures/evaluation_methods.svg", bbox_inches="tight",
             facecolor=C["bg"], edgecolor="none")
-print("Saved visualizations/evaluation_methods.png + .svg")
+print("Saved thesis/figures/evaluation_methods.png + .svg")

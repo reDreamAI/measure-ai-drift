@@ -35,7 +35,16 @@ multiple independent trials, collecting both a strategy declaration and a
 therapeutic response per trial. Finally, an aggregation pipeline aligns all
 metrics across conditions for comparative analysis.
 
-% [FIG] Full pipeline diagram -- two-stack data flow with isolation boundary
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_3_1_pipeline.pdf}
+  \caption{Two-stack pipeline. The generation stack produces frozen
+    conversation histories (run once). The evaluation stack presents each
+    history to the model under test across twenty independent trials per
+    condition. The stacks are decoupled so that evaluation-side variance
+    cannot be contaminated by generation-side randomness.}
+  \label{fig:pipeline}
+\end{figure}
 
 
 \section{Dialogue Generation}
@@ -164,7 +173,18 @@ directly conditioned on the declared strategy. This fused approach enables
 the alignment analysis in Method~3 (\autoref{sec:meth-m3}): because plan
 and response are generated in a single pass, any mismatch between declared
 intent and executed strategy reflects the model's own inconsistency rather
-than a decoupling artefact.
+than a decoupling artefact. \autoref{fig:eval-stack} illustrates this
+measurement design.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_3_3_eval_stack.pdf}
+  \caption{Measurement design. The same frozen history is presented to
+    the model under test twenty times. Each trial independently produces
+    a plan and a therapeutic response. Variation across trials is the
+    instability this study measures.}
+  \label{fig:eval-stack}
+\end{figure}
 
 Twenty independent trials are collected per condition, yielding
 $\binom{20}{2} = 190$ pairwise comparisons. This trial count balances
@@ -347,7 +367,14 @@ therapeutic decisions. Method~2 asks whether it produces consistent
 therapeutic responses. Method~3 asks whether it does what it says it will
 do.
 
-% [FIG] Three-level framework -- plan, output, alignment
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\textwidth]{figures/fig_3_2_measurement.pdf}
+  \caption{Three-level evaluation framework. Each method targets a
+    distinct layer of the generation process: strategy selection (Jaccard),
+    response wording (BERTScore), and plan-response coherence (LLM judge).}
+  \label{fig:three-level}
+\end{figure}
 
 % previously: Cognitive Stability (Plan Consistency) -- renamed to avoid
 % theoretically loaded term (supervisor feedback 2026-03-23)
@@ -507,10 +534,9 @@ rating before assigning a score, and a transparent rubric anchors scores
 to specific behavioural criteria.
 
 \gls{nli} cross-encoders were considered and rejected as an alternative.
-Testing showed an F1 ceiling of approximately 0.55 on the strategy-response
-alignment task, insufficient for reliable scoring. Cross-encoders also
-produce no reasoning trace, making it impossible to audit individual
-judgements.
+Preliminary testing on this task showed an F1 ceiling of approximately
+0.55, insufficient for reliable scoring. Cross-encoders also produce no
+reasoning trace, making it impossible to audit individual judgements.
 
 Method~3 is labelled exploratory. Judge reliability is itself an open
 question: the judge's ternary scores are not a ground truth but a
@@ -518,14 +544,21 @@ computational proxy for clinical fidelity assessment. Validation proceeds
 through human annotation of a random subset of approximately 50 trials,
 scoring the same rubric. Cohen's $\kappa$ between human and judge provides
 a reliability estimate. If $\kappa$ is low, Method~3 results carry the
-caveat explicitly.
+caveat explicitly. In addition, 12 trials with the lowest alignment
+scores are manually reviewed to check whether the judge penalised
+valid therapeutic responses. A score of zero indicates a failed judge
+output rather than a genuine misalignment. In all observed cases, a
+single rerun of the judge call was sufficient to produce a valid score,
+so zero scores are treated as transient failures and rerun once before
+inclusion.
 
-Smoke testing showed alignment scores near ceiling (1.0) across all trials.
-If the full experiment confirms this pattern, alignment becomes a validation
-check (models consistently implement what they declare) rather than a
-comparative metric. This outcome would validate Method~1: if plans are
-faithfully executed, then Jaccard over plan sets measures genuine
-decision stability rather than label noise.
+As reported in \autoref{sec:res-alignment}, alignment scores are near
+ceiling across most models and temperature-independent. This means
+alignment serves primarily as a validation check (models consistently
+implement what they declare) rather than a comparative metric. This
+outcome validates Method~1: because plans are faithfully executed,
+Jaccard over plan sets measures genuine decision stability rather than
+label noise.
 
 % [Example] Judge input/output -- plan, response, ternary verdict with CoT
 
@@ -622,7 +655,8 @@ comparator but was replaced by \modelname{Qwen 3.5 397B}. DeepSeek applies
 internal temperature scaling (API $T = 1.0$ maps to internal $T \approx
 0.3$), which would have complicated cross-model temperature comparisons.
 \modelname{Qwen 3.5 397B} occupies the same architectural niche without
-this complexity. Other models considered and dropped include
+this complexity, and including three Qwen scales (27B, 122B, 397B) enables
+within-family scaling analysis. Other models considered and dropped include
 \modelname{Mistral Medium 3.1} (closed weights),
 \modelname{GLM-5} (a third large \gls{moe} adds little signal),
 \modelname{Nemotron~3 Super} (requires $T = 1.0$ universally, complicating

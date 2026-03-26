@@ -20,7 +20,7 @@ import yaml
 
 SEED_DIR = Path("experiments/runs/seed_batch")
 MAIN_DIR = Path("experiments/latest")
-OUTPUT_DIR = Path("stats/visuals_experiment")
+OUTPUT_DIR = Path("thesis/figures")
 
 
 def load_runs(batch_dir: Path, model_filter: str = "mistral_large") -> pd.DataFrame:

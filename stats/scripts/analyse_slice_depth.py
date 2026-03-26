@@ -218,7 +218,7 @@ def main() -> None:
         print(f"No runs found in {BATCH_DIR}")
         return
 
-    output_dir = Path("stats/visuals_experiment")
+    output_dir = Path("thesis/figures")
     output_dir.mkdir(parents=True, exist_ok=True)
 
     print_summary(df)

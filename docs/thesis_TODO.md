@@ -97,6 +97,23 @@ Thesis-specific tasks. For pipeline and source grounding, see [TODO.md](TODO.md)
 - [ ] **OpenAI reintroduced temperature with GPT-5.2**: need source (blog post, API changelog, or docs). Grounds why GPT-5.4 non-thinking accepts temperature
 - [ ] **Anthropic character training**: source for Sonnet 4.6 safety-aware interaction claim (anthropic.com/research/claude-character)
 
+## Supervisor feedback (2026-03-25)
+
+### 1. Define terms clearly, reuse a minimal set
+All terms must be clearly defined before use. Use as few terms as possible and reuse them consistently. LLMs tend to scatter undefined jargon and generate academic-sounding phrases like "inconsistency in manualized intervention is not stylistic variation but a potential clinical failure" that sound impressive but are not understandable without heavy background knowledge. Rule: define and explain terms and concepts first, then reuse them throughout.
+
+### 2. Avoid theoretically loaded labels
+Self-coined labels like "Cognitive Stability" are risky. That is an existing concept and would need strong justification for why a language model process can carry that name. Prefer descriptive labels over theoretically charged ones.
+
+### 3. Qualify novelty claims carefully
+Claims like "No systematic framework for quantifying therapeutic consistency under stochastic conditions" must be well supported. Better approach: describe what existing work comes closest to what we do, then show the differences. "Nobody has done this before" does not land well in academic contexts. Some sections already differentiate well; others still make the claim too broadly.
+
+### 4. Use scientific paragraph structure
+Apply the structure from Sebastian's document to all paragraphs:
+1. **Topic sentence** summarizing what the paragraph is about
+2. **Arguments** with supporting examples
+3. **Summary/transition sentence**
+
 ## Polish (after all chapters drafted)
 
 - [ ] Style pass: check against [STYLE.md](STYLE.md) (no em-dashes, no semicolons, active voice)

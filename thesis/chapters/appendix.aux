@@ -1,27 +1,43 @@
 \relax 
 \providecommand\hyper@newdestlabel[2]{}
-\@writefile{toc}{\contentsline {chapter}{\numberline {A}Strategy Taxonomy}{50}{appendix.A}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {A}Strategy Taxonomy}{52}{appendix.A}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{lol}{\addvspace {10\p@ }}
-\newlabel{app:taxonomy}{{A}{50}{Strategy Taxonomy}{appendix.A}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {B}Prompts}{51}{appendix.B}\protected@file@percent }
+\newlabel{app:taxonomy}{{A}{52}{Strategy Taxonomy}{appendix.A}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {A.1}{\ignorespaces Strategy taxonomy v4: full definitions as provided to the therapist model. NOT-examples reduce category overlap.}}{52}{table.caption.49}\protected@file@percent }
+\newlabel{tab:taxonomy-full}{{A.1}{52}{Strategy taxonomy v4: full definitions as provided to the therapist model. NOT-examples reduce category overlap}{table.caption.49}{}}
+\@writefile{toc}{\contentsline {paragraph}{\nonumberline Revision history.}{52}{paragraph*.50}\protected@file@percent }
+\@writefile{toc}{\contentsline {chapter}{\numberline {B}Prompts}{54}{appendix.B}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{lol}{\addvspace {10\p@ }}
-\newlabel{app:prompts}{{B}{51}{Prompts}{appendix.B}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {C}Architecture Diagrams}{52}{appendix.C}\protected@file@percent }
+\newlabel{app:prompts}{{B}{54}{Prompts}{appendix.B}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B.1}Fused Plan and Response Prompt}{54}{section.B.1}\protected@file@percent }
+\newlabel{app:fused-prompt}{{B.1}{54}{Fused Plan and Response Prompt}{section.B.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B.2}Alignment Judge Prompt}{54}{section.B.2}\protected@file@percent }
+\newlabel{app:judge-prompt}{{B.2}{54}{Alignment Judge Prompt}{section.B.2}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B.3}Example Patient Vignette}{55}{section.B.3}\protected@file@percent }
+\newlabel{app:vignette-example}{{B.3}{55}{Example Patient Vignette}{section.B.3}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {C}Supplementary Results}{57}{appendix.C}\protected@file@percent }
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{lol}{\addvspace {10\p@ }}
-\newlabel{app:architecture}{{C}{52}{Architecture Diagrams}{appendix.C}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {D}Supplementary Results}{53}{appendix.D}\protected@file@percent }
-\@writefile{lof}{\addvspace {10\p@ }}
-\@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{lol}{\addvspace {10\p@ }}
-\newlabel{app:results}{{D}{53}{Supplementary Results}{appendix.D}{}}
+\newlabel{app:results}{{C}{57}{Supplementary Results}{appendix.C}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C.1}Plan Validity Rate}{57}{section.C.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {C.1}{\ignorespaces Plan validity rate by model, pooled across temperatures and vignettes. All models exceed 99\%. The y-axis begins at 0.95 to show the small differences between models.}}{57}{figure.caption.51}\protected@file@percent }
+\newlabel{fig:app-validity}{{C.1}{57}{Plan validity rate by model, pooled across temperatures and vignettes. All models exceed 99\%. The y-axis begins at 0.95 to show the small differences between models}{figure.caption.51}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C.2}BERTScore by Model and Temperature}{57}{section.C.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {C.2}{\ignorespaces Mean BERTScore F1 by model and temperature, grouped by family. The pooled temperature effect is stronger than for Jaccard ($\rho = -0.486$), but BERTScore is insensitive to plan-level differences (\autoref {sec:res-similarity}).}}{58}{figure.caption.52}\protected@file@percent }
+\newlabel{fig:app-bertscore}{{C.2}{58}{Mean BERTScore F1 by model and temperature, grouped by family. The pooled temperature effect is stronger than for Jaccard ($\rho = -0.486$), but BERTScore is insensitive to plan-level differences (\autoref {sec:res-similarity})}{figure.caption.52}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C.3}Vignette Heatmaps}{58}{section.C.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {C.3}{\ignorespaces Jaccard by model and vignette, one panel per temperature. Some vignettes (e.\,g.~resistant, trauma) show lower consistency across multiple models. The significant vignette effect ($p = 0.007$) is visible as column-wise variation.}}{58}{figure.caption.53}\protected@file@percent }
+\newlabel{fig:app-vignette}{{C.3}{58}{Jaccard by model and vignette, one panel per temperature. Some vignettes (\eg resistant, trauma) show lower consistency across multiple models. The significant vignette effect ($p = 0.007$) is visible as column-wise variation}{figure.caption.53}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C.4}Slice Depth Heatmap}{58}{section.C.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {C.4}{\ignorespaces Jaccard by vignette and conversation depth for \textsc  {Mistral Large~3}, one panel per temperature. Slice~2 shows the lowest consistency across most vignettes, supporting its selection as a conservative evaluation point.}}{59}{figure.caption.54}\protected@file@percent }
+\newlabel{fig:app-slice-heatmap}{{C.4}{59}{Jaccard by vignette and conversation depth for \modelname {Mistral Large~3}, one panel per temperature. Slice~2 shows the lowest consistency across most vignettes, supporting its selection as a conservative evaluation point}{figure.caption.54}{}}
 \@setckpt{chapters/appendix}{
-\setcounter{page}{54}
+\setcounter{page}{60}
 \setcounter{equation}{0}
 \setcounter{enumi}{5}
 \setcounter{enumii}{0}
@@ -30,13 +46,13 @@
 \setcounter{footnote}{0}
 \setcounter{mpfootnote}{0}
 \setcounter{part}{0}
-\setcounter{chapter}{4}
-\setcounter{section}{0}
+\setcounter{chapter}{3}
+\setcounter{section}{4}
 \setcounter{subsection}{0}
 \setcounter{subsubsection}{0}
 \setcounter{paragraph}{0}
 \setcounter{subparagraph}{0}
-\setcounter{figure}{0}
+\setcounter{figure}{4}
 \setcounter{table}{0}
 \setcounter{parentequation}{0}
 \setcounter{caption@flags}{2}
