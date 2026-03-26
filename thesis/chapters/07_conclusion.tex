@@ -29,8 +29,9 @@ The main findings are:
     well.
 
   \item \textbf{Greedy decoding is not always optimal.} Three models achieve
-    higher consistency at $T = 0.075$ than at $T = 0.0$. A small amount of
-    sampling variance can help a model settle on a consistent strategy.
+    higher consistency at $T = 0.075$ than at $T = 0.0$. Whether this
+    reflects a genuine benefit of low sampling variance or an artefact of
+    the 20-trial sample size cannot be determined from these results alone.
 
   \item \textbf{The three evaluation levels capture distinct information.}
     Cross-method correlations are moderate at best ($\rho = 0.285$ to
@@ -66,48 +67,35 @@ constraints.
 %   strategies may show different stability patterns
 % Computational stability does not equal clinical safety
 
-\paragraph{Scope.}
 The study evaluates a single phase (rescripting) of a single protocol
-(\gls{irt}). Stability in other \gls{irt} stages or other therapeutic
-protocols may differ. The rescripting phase was selected because it
-requires active strategy decisions, but this focus limits the
-generalisability of the absolute scores reported.
+(\gls{irt}). The rescripting phase was selected because it requires
+active strategy decisions, but stability in other stages or other
+therapeutic protocols may differ.
 
-\paragraph{Synthetic patients.}
-All patient interactions are simulated by an \gls{llm}. Synthetic patients
-follow scripted behavioural profiles and do not exhibit the unpredictable
-responses of real patients. The vignettes are designed to sample the
-difficulty range (\autoref{sec:meth-dialogue}), but six profiles cannot
-claim exhaustive coverage of clinical variability. A cooperative synthetic
-patient may underestimate the challenges a model faces with a real patient
-whose behaviour deviates from any template.
-
-\paragraph{Ethical considerations.}
-This study evaluates \gls{llm} stability using synthetic patients, not
-real clinical interactions. No human participants were involved. The
-results measure computational consistency and do not constitute evidence
-of clinical safety or efficacy. \gls{irt} targets nightmares rather than
-psychiatric diagnoses, which limits clinical risk relative to full
-psychotherapy, but any deployment to real patients would require clinical
+All patient interactions are simulated. Synthetic patients follow scripted
+behavioural profiles and do not exhibit the unpredictable responses of
+real patients. Six profiles sample the difficulty range
+(\autoref{sec:meth-dialogue}) but cannot claim exhaustive coverage. No
+human participants were involved in this study, and the results measure
+computational consistency rather than clinical safety or efficacy.
+\gls{irt} targets nightmares rather than psychiatric diagnoses, which
+limits clinical risk, but any deployment to real patients would require
 validation beyond what this framework provides.
 
-\paragraph{Judge validation.}
-The \gls{llm} judge (\modelname{Gemini 3.1 Pro}) has not been validated
-against human annotations. Method~3 results are a computational proxy for
-clinical fidelity assessment and should be interpreted accordingly. The
-planned Cohen's $\kappa$ validation remains outstanding.
+The \gls{llm} judge (\modelname{Gemini 3.1 Pro}) has only been validated
+on a small subset of trials due to the volume of data (6{,}000 trials).
+Method~3 results should be interpreted as a computational estimate rather
+than a clinically validated measure.
 
-\paragraph{Taxonomy constraints.}
-The six-category strategy taxonomy constrains what can be measured. If
-models employ therapeutic strategies that fall outside these categories,
-that variation is invisible to Method~1. The taxonomy was developed through
-iterative refinement (\autoref{sec:meth-taxonomy}), but different category
-boundaries would produce different absolute consistency scores.
+The six-category strategy taxonomy constrains what can be measured.
+Strategies that fall outside these categories are invisible to Method~1,
+and different category boundaries would produce different absolute
+consistency scores.
 
-\paragraph{Consistency is not quality.}
-A model that consistently selects an inappropriate strategy scores high on
-plan consistency. Stability is a necessary but not sufficient condition for
-clinical deployment.
+Finally, consistency is not the same as quality. A model that consistently
+selects an inappropriate strategy scores high on plan consistency.
+Stability is necessary for clinical deployment but not sufficient on its
+own.
 
 
 \section{Future Work}
@@ -122,31 +110,32 @@ clinical deployment.
 
 Several directions follow from this work.
 
-\paragraph{Full protocol evaluation.}
-Extending the evaluation beyond the rescripting phase to all five \gls{irt}
-stages would test whether the stability patterns observed here hold when
-the therapist model faces different types of clinical decisions (listening,
-summarising, rehearsing).
+Extending the evaluation beyond the rescripting phase to all five
+\gls{irt} stages would test whether the observed patterns hold when the
+model faces different types of clinical decisions. More broadly, the
+three-level framework applies to other therapy protocols where the
+therapist chooses from a defined set of techniques, such as \gls{cbt} or
+motivational interviewing. Each would need its own strategy taxonomy, but
+the evaluation setup carries over.
 
-\paragraph{Other manualized protocols.}
-The three-level framework transfers to any protocol with identifiable
-strategy categories. \gls{cbt}, dialectical behaviour therapy, and
-motivational interviewing are natural candidates. Each would require a
-domain-specific taxonomy but could reuse the evaluation infrastructure.
+Since model vendors update weights and infrastructure without notice,
+repeating the evaluation across model versions would show whether
+stability improves or fluctuates over time. reDreamAI targets
+German-speaking users, so evaluating stability in German would test
+whether the English-language patterns transfer.
 
-\paragraph{Longitudinal drift.}
-Model vendors update weights and serving infrastructure without notice.
-Repeating the evaluation across model versions would reveal whether
-stability improves, degrades, or fluctuates across release cycles.
+On the measurement side, a larger human annotation study against the same
+ternary rubric would strengthen the judge validation that this study could
+only perform on a small subset. Comparing human and \gls{llm} judge
+scores would clarify how much trust to place in automated alignment
+assessment.
 
-\paragraph{Multi-language evaluation.}
-reDreamAI targets German-speaking users. Evaluating therapeutic stability
-in German would test whether the patterns observed in English transfer
-across languages, or whether language-specific training data introduces
-different stability profiles.
-
-\paragraph{Clinical validation.}
-Human therapist ratings on the same ternary rubric would validate Method~3
-and provide an external ground truth for the computational framework.
-Comparing human and \gls{llm} judge scores would quantify the reliability
-of automated fidelity assessment.
+Finally, newer model architectures may affect output consistency
+independently of temperature. \modelname{Qwen~3.5} already uses Gated
+DeltaNet \parencite{YJTEGJH4}, a hybrid attention mechanism where gated
+memory updates control how much prior context is retained or forgotten.
+In principle, this could reduce the effect where an early token divergence
+propagates through the rest of the response. The results here do not show
+a clear stability advantage for \modelname{Qwen~3.5} over standard
+transformers, but whether architectural choices can improve therapeutic
+consistency beyond what temperature tuning achieves remains open.

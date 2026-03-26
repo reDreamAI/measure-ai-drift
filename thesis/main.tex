@@ -217,9 +217,9 @@
     \vspace{1cm}\\
     \begin{tabular}{c}
       \MyAuthor                             \\
-      % TODO: matriculation number          \\
-      Bachelor's Program Cognitive Science    \\
-      % TODO: semester range
+      979 379                               \\
+      Bachelor's Program Cognitive Science  \\
+      Winter 2025/2026
     \end{tabular}}
   \vspace{1cm}
 
@@ -251,7 +251,35 @@ This thesis has not been submitted, either in part or whole, at this or any othe
 % --- Abstract ---
 \begin{abstract}
   \textbf{\LARGE{Abstract}}\\\\
-  % TODO: Write abstract
+  Large language models are increasingly used as therapeutic agents in
+  mental health applications, but it is unclear how consistently they
+  respond when given the same patient input multiple times. This thesis
+  measures therapeutic stability in the rescripting phase of Imagery
+  Rehearsal Therapy, where the model must choose a therapeutic strategy
+  and generate a response that carries it out.
+
+  Ten models, including the EU-sovereign Mistral Large~3, two proprietary
+  models (GPT-5.4, Claude Sonnet~4.6), and seven open-weight comparators,
+  are evaluated across 6{,}000 trials at five temperature settings. A
+  three-level evaluation framework compares strategy selections (Jaccard
+  similarity), response texts (BERTScore), and whether the model does what
+  it declared (LLM judge alignment).
+
+  The main findings are: (1)~Mistral Large~3 matches the proprietary
+  models on plan consistency at its recommended temperature range.
+  (2)~Temperature affects which strategies the model picks but not how
+  well it carries them out. The instability sits in strategy selection,
+  not in response quality. (3)~Greedy decoding ($T = 0.0$) is not
+  optimal for all models; three achieve higher consistency at $T = 0.075$.
+  (4)~BERTScore captures whether the therapeutic tone stays similar but
+  does not detect changes in the underlying strategy. The three levels
+  together reveal patterns that no single metric shows on its own.
+
+  At low temperatures, the EU-sovereign Mistral Large~3 reaches the same
+  plan consistency as the proprietary models. At higher temperatures, the
+  proprietary models remain stable while Mistral degrades. The framework
+  itself is not specific to IRT and could be applied to other structured
+  therapy protocols.
 \end{abstract}
 
 

@@ -26,16 +26,13 @@ source of instability to the \emph{decision-making} layer rather than the
 incoherent or unfaithful responses. It produces coherent responses to a
 different therapeutic plan.
 
-This distinction has practical value as a diagnostic tool. If a deployment
-shows unstable therapeutic behaviour, the framework can identify where the
-instability originates. High Jaccard with low alignment would indicate
-that the model selects consistent strategies but fails to implement them
-(an execution problem). Low Jaccard with high alignment, which is the
-dominant pattern observed here, indicates that the model implements its
-plans faithfully but selects different plans across runs (a decision
-problem). Each pattern implies a different remediation strategy:
-execution problems suggest prompt engineering or fine-tuning, while
-decision problems suggest temperature tuning or strategy constraints.
+This distinction matters in practice. If the model selected consistent
+strategies but failed to carry them out, the problem would be in the
+response generation. Instead, the pattern observed here is the opposite:
+the model carries out its plans faithfully but picks different plans across
+runs. The instability sits in strategy selection, not in response quality.
+Knowing this points toward temperature tuning rather than prompt
+redesign as the more promising adjustment.
 
 BERTScore occupies a more limited role than initially anticipated. It
 correlates moderately with Jaccard but cannot distinguish between
@@ -90,7 +87,14 @@ oscillating between candidates under greedy decoding.
 
 Among the open-weight comparators, parameter count does not straightforwardly
 predict stability. \modelname{Qwen~3.5~122B} (10B active) outperforms
-\modelname{Qwen~3.5~397B} (17B active) at every temperature point.
+\modelname{Qwen~3.5~397B} (17B active) at every temperature point. The
+two models differ in how much of their total capacity is used per token (sparsity ratio):
+the 122B model activates 8.2\% of its parameters, while the 397B model
+activates only 4.3\% (routing through 512 experts). A lower activation
+ratio means more of the output depends on which experts the router
+selects, which may make the model more sensitive to sampling randomness.
+This remains a hypothesis; confirming it would require analysis at the
+expert routing level.
 \modelname{OLMo~3.1~32B} matches larger models at low temperatures but
 degrades significantly at higher ones ($\rho = -0.632$, strongest
 temperature sensitivity in the set). The Qwen~3.5 family shows a
