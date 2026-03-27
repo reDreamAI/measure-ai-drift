@@ -513,19 +513,15 @@ than all evaluation targets, preventing self-preference bias. Its thinking
 mode supports structured reasoning about whether a response implements a
 given strategy. The judge receives the strategy definitions, the declared
 strategies, and the response text, and produces a score with explicit
-justification for each strategy.
-
-The judge runs at $T = 1.0$ rather than the conventional $T = 0.0$ because
-Gemini~3 models are architecturally optimised for their default temperature.
-Google's developer documentation warns that lowering the temperature below
-1.0 can cause looping or degraded reasoning performance. Empirical evidence
-supports this choice: \textcite{96K5MF6A} finds no statistically significant impact of temperature changes between 0.0 and 1.0
-on \gls{llm} problem-solving accuracy. Using \modelname{Gemini 3.1 Pro} as
-an \gls{llm} judge at its default temperature is consistent with recent
-practice: \textcite{32QZTBPH}\footnote{Preprint, not yet peer-reviewed.} employ it as an automated
-evaluator within a multi-agent assessment framework. Evaluation consistency
-is instead ensured through the structured ternary rubric and explicit
+justification for each strategy. 
+\modelname{Gemini~3~Pro} has been validated as a reliable judge for
+content validity assessment in psychology \parencite{XQDRY83T}.
+The judge runs at $T = 1.0$, which is the Gemini~3 default. Google's
+developer documentation warns that lowering the temperature below 1.0
+can cause looping or degraded output for these models. Evaluation
+consistency is ensured through the structured ternary rubric and explicit
 scoring format.
+
 
 Additional bias mitigations follow established recommendations
 \parencite{LVLA9LZU}: cross-model judging ensures the judge never evaluates

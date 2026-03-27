@@ -219,16 +219,16 @@ deliver consistent, evidence-based interventions, it represents a potential
 clinical failure.
 
 Prior work on \gls{llm} stability addresses different questions than
-therapeutic consistency. Factual consistency studies measure whether models
-produce the same answers to knowledge questions across runs. Output
-diversity research quantifies lexical and semantic variation in creative
-generation. Benchmark reproducibility work examines whether evaluation
-scores are stable across random seeds.
-% TODO: add specific citations for factual consistency, output diversity,
-%   and benchmark reproducibility studies once identified
-These lines of research share the concern for cross-run variation but do
-not address whether a model makes the same \emph{clinical decisions} when
-presented with identical patient contexts.
+therapeutic consistency. \textcite{BMA3X2SS} survey the consistency
+landscape, covering whether models give the same answer to the same
+question across different phrasings and contexts. \textcite{RPEDMF63}
+measure the opposite problem: \glspl{llm} generating repetitive plot
+structures in creative writing, producing too little variation rather
+than too much. \textcite{54A9ZU2N} focus on benchmark reproducibility,
+showing that evaluation scores fluctuate across repeated runs even with
+fixed seeds and $T = 0.0$. These lines of research share the concern for cross-run variation
+but none of them ask whether a model makes the same \emph{clinical
+decisions} when presented with identical patient contexts.
 
 The mechanical source of instability is well understood. What remains
 unquantified is its impact on structured therapeutic decision-making. How
